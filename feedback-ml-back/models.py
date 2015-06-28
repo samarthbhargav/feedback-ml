@@ -2,7 +2,6 @@ from schematics.models import Model
 from schematics.types import StringType, BaseType
 from schematics.types.compound import DictType
 from schematics.exceptions import ValidationError
-
 from common import  chk_type
 
 class Document(Model):
@@ -16,6 +15,7 @@ class Document(Model):
 
     def __str__(self):
         return str(self.to_primitive())
+
 
 class DocumentType(BaseType):
     def validate_document(self, value):
