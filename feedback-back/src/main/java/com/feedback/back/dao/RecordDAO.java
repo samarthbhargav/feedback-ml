@@ -75,7 +75,8 @@ public class RecordDAO
         final List<DatasetStatistic> list = new ArrayList<>();
         this.collection.aggregate( Arrays.asList( group ) ).forEach( new Block<Document>()
         {
-            @Override public void apply( Document document )
+            @Override
+            public void apply( Document document )
             {
                 DatasetStatistic statistics = new DatasetStatistic();
                 statistics.setDataset( document.getString( "_id" ) );
@@ -88,4 +89,14 @@ public class RecordDAO
         return statistics;
     }
 
+
+    public static void main( String[] args )
+    {
+        RecordDAO recordDAO = new RecordDAO();
+        Record record = new Record();
+        record.setId( "someI2d2" );
+        record.setLabel( "label" );
+        record.setContent( null );
+        recordDAO.insert( record, "dataset4" );
+    }
 }

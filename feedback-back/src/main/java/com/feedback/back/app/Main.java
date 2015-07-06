@@ -1,11 +1,20 @@
 package com.feedback.back.app;
 
-import org.glassfish.grizzly.http.server.HttpServer;
-import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
+import com.feedback.back.resources.GetRecordResource;
+import io.swagger.jaxrs.config.BeanConfig;
+import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.server.handler.ContextHandler;
+import org.eclipse.jetty.server.handler.HandlerList;
+import org.eclipse.jetty.servlet.FilterHolder;
+import org.eclipse.jetty.servlet.ServletContextHandler;
+import org.eclipse.jetty.servlet.ServletHolder;
+import org.eclipse.jetty.servlets.CrossOriginFilter;
+import org.eclipse.jetty.util.resource.Resource;
 import org.glassfish.jersey.server.ResourceConfig;
+import org.glassfish.jersey.servlet.ServletContainer;
 
-import java.io.IOException;
-import java.net.URI;
+import javax.servlet.DispatcherType;
+import java.util.EnumSet;
 
 
 /**
@@ -13,39 +22,99 @@ import java.net.URI;
  */
 public class Main
 {
-    // Base URI the Grizzly HTTP server will listen on
-    public static final String BASE_URI = "http://localhost:9999/myapp/";
+
+    private static final int PORT = 9999;
 
 
-    /**
-     * Starts Grizzly HTTP server exposing JAX-RS resources defined in this application.
-     *
-     * @return Grizzly HTTP server.
-     */
-    public static HttpServer startServer()
+    public static void main( String[] args ) throws Exception
     {
-        // create a resource config that scans for JAX-RS resources and providers
-        // in com.feedback.back.service package
-        final ResourceConfig rc = new ResourceConfig().packages( "com.feedback.back.resources" );
 
-        // create and start a new instance of grizzly http server
-        // exposing the Jersey application at BASE_URI
-        return GrizzlyHttpServerFactory.createHttpServer( URI.create( BASE_URI ), rc );
+        int serverPort = PORT;
+
+
+        // Workaround for resources from JAR files
+        Resource.setDefaultUseCaches( false );
+
+        // Build the Swagger Bean.
+        buildSwagger();
+
+        // Holds handlers
+        final HandlerList handlers = new HandlerList();
+
+        // Handler for Reviews Service and Swagger
+        handlers.addHandler( enableCors( buildContext() ) );
+
+        // Start server
+        Server server = new Server( serverPort );
+        server.setHandler( handlers );
+        server.start();
+        server.join();
     }
 
 
-    /**
-     * Main method.
-     *
-     * @param args
-     * @throws IOException
-     */
-    public static void main( String[] args ) throws IOException
+    private static void buildSwagger()
     {
-        final HttpServer server = startServer();
-        System.out.println( String
-            .format( "Jersey app started with WADL available at " + "%sapplication.wadl\nHit enter to stop it...", BASE_URI ) );
-        System.in.read();
+        // This configures Swagger
+        BeanConfig beanConfig = new BeanConfig();
+        beanConfig.setVersion( "1.0.0" );
+        beanConfig.setResourcePackage( GetRecordResource.class.getPackage().getName() );
+        beanConfig.setScan( true );
+        beanConfig.setBasePath( "/" );
+        beanConfig.setDescription( "Entity Browser API to demonstrate Swagger with Jersey2 in an "
+            + "embedded Jetty instance, with no web.xml or Spring MVC." );
+        beanConfig.setTitle( "Entity Browser" );
     }
+
+
+    private static ContextHandler buildContext()
+    {
+        ResourceConfig resourceConfig = new ResourceConfig();
+        // Replace EntityBrowser with your resource class
+        // com.wordnik.swagger.jaxrs.listing loads up Swagger resources
+        resourceConfig.packages( GetRecordResource.class.getPackage().getName(), "com.wordnik.swagger.jaxrs.listing" );
+        ServletContainer servletContainer = new ServletContainer( resourceConfig );
+        ServletHolder entityBrowser = new ServletHolder( servletContainer );
+        ServletContextHandler entityBrowserContext = new ServletContextHandler( ServletContextHandler.SESSIONS );
+        entityBrowserContext.setContextPath( "/" );
+        entityBrowserContext.addServlet( entityBrowser, "/*" );
+
+        return entityBrowserContext;
+    }
+
+
+    // This starts the Swagger UI at http://localhost:9999/docs
+    //    private static ContextHandler buildSwaggerUI() throws Exception {
+    //        final ResourceHandler swaggerUIResourceHandler = new ResourceHandler();
+    //        swaggerUIResourceHandler.setResourceBase(
+    //            App.class.getClassLoader().getResource("webapp").toURI().toString());
+    //        final ContextHandler swaggerUIContext = new ContextHandler();
+    //        swaggerUIContext.setContextPath("/docs/");
+    //        swaggerUIContext.setHandler(swaggerUIResourceHandler);
+    //
+    //        return swaggerUIContext;
+    //    }
+
+
+    public static ContextHandler enableCors( ContextHandler handler )
+    {
+        FilterHolder cors = ( (ServletContextHandler) handler )
+            .addFilter( CrossOriginFilter.class, "/*", EnumSet.of( DispatcherType.REQUEST ) );
+        cors.setInitParameter( CrossOriginFilter.ALLOWED_ORIGINS_PARAM, "*" );
+        cors.setInitParameter( CrossOriginFilter.ACCESS_CONTROL_ALLOW_ORIGIN_HEADER, "*" );
+        cors.setInitParameter( CrossOriginFilter.ALLOWED_METHODS_PARAM, "GET,POST,HEAD" );
+        cors.setInitParameter( CrossOriginFilter.ALLOWED_HEADERS_PARAM,
+            "X-Requested-With,Accept,Origin,customer-key,Content-type,X-Authurization-Header" );
+        cors.setInitParameter( CrossOriginFilter.ACCESS_CONTROL_ALLOW_HEADERS_HEADER,
+            "customer-key,Content-type,X-Authurization-Header" );
+        return handler;
+    }
+
+
+    //    public static ContextHandler enableAuth( ContextHandler handler )
+    //    {
+    //        ( (ServletContextHandler) handler ).addFilter( AuthFilter.class, "/*", EnumSet.of( DispatcherType.REQUEST ) );
+    //        return handler;
+    //    }
+
 }
 
