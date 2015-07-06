@@ -12,12 +12,16 @@ import javax.ws.rs.core.Response;
 /**
  * Created by hduser on 30/6/15.
  */
-@Path ("stats") public class StatsResource
+@Path ("stats")
+public class StatsResource
 {
-    RecordDAO recordDAO = new RecordDAO();
+    RecordDAO recordDAO = RecordDAO.getInstance();
 
 
-    @Path ("/datasets") @GET @Produces (MediaType.APPLICATION_JSON) public Response getDatasetStatistics()
+    @Path ("/datasets")
+    @GET
+    @Produces (MediaType.APPLICATION_JSON)
+    public Response getDatasetStatistics()
     {
         return Response.ok( this.recordDAO.getDatasetStatistics() ).build();
     }

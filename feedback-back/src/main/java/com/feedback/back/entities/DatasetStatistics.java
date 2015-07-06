@@ -8,16 +8,16 @@ import java.util.List;
  */
 public class DatasetStatistics
 {
-    private List<DatasetStatistic> datasetStatistics;
+    private List<DatasetStats> datasetStatistics;
 
 
-    public List<DatasetStatistic> getDatasetStatistics()
+    public List<DatasetStats> getDatasetStatistics()
     {
         return datasetStatistics;
     }
 
 
-    public void setDatasetStatistics( List<DatasetStatistic> datasetStatistics )
+    public void setDatasetStatistics( List<DatasetStats> datasetStatistics )
     {
         this.datasetStatistics = datasetStatistics;
     }

@@ -3,7 +3,7 @@ package com.feedback.back.entities;
 /**
  * Created by hduser on 30/6/15.
  */
-public class DatasetStatistic
+public class DatasetStats
 {
 
     private String dataset;

@@ -20,7 +20,7 @@ import javax.ws.rs.core.Response;
 @Api (value = "/", description = "Web Services to fetch records")
 public class GetRecordResource
 {
-    final private RecordDAO recordDAO = new RecordDAO();
+    final private RecordDAO recordDAO = RecordDAO.getInstance();
 
 
     @GET

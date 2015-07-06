@@ -10,6 +10,7 @@ import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.servlets.CrossOriginFilter;
 import org.eclipse.jetty.util.resource.Resource;
+import org.glassfish.jersey.jackson.JacksonFeature;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.servlet.ServletContainer;
 
@@ -69,6 +70,7 @@ public class Main
     private static ContextHandler buildContext()
     {
         ResourceConfig resourceConfig = new ResourceConfig();
+        resourceConfig.register( JacksonFeature.class );
         // Replace EntityBrowser with your resource class
         // com.wordnik.swagger.jaxrs.listing loads up Swagger resources
         resourceConfig.packages( GetRecordResource.class.getPackage().getName(), "com.wordnik.swagger.jaxrs.listing" );

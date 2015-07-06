@@ -1,18 +1,21 @@
 package com.feedback.back.dao;
 
-import com.feedback.back.entities.DatasetStatistic;
 import com.feedback.back.entities.DatasetStatistics;
+import com.feedback.back.entities.DatasetStats;
 import com.feedback.back.entities.Record;
 import com.feedback.back.entities.RecordsPage;
 import com.feedback.back.mongo.MongoConnector;
-import com.mongodb.Block;
+import com.feedback.back.resources.MetaDataDAO;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.Filters;
 import org.bson.Document;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -20,41 +23,63 @@ import java.util.List;
  */
 public class RecordDAO
 {
-    MongoCollection<Document> collection = MongoConnector.getDB( "feedback" ).getCollection( "Records" );
+    private static final Logger LOG = LoggerFactory.getLogger( RecordDAO.class );
+    private static final RecordDAO INSTANCE = new RecordDAO();
 
 
-    public RecordDAO()
+    public static RecordDAO getInstance()
     {
+        return INSTANCE;
+    }
+
+
+    private Map<String, MongoCollection<Document>> collections = new HashMap<>();
+    private MetaDataDAO metaDataDAO = MetaDataDAO.getInstance();
+
+
+    private MongoCollection<Document> getCollection( String dataset )
+    {
+        if ( !this.collections.containsKey( dataset ) ) {
+            this.metaDataDAO.addDataset( dataset );
+            collections.put( dataset, MongoConnector.getDB( "feedback-records" ).getCollection( dataset ) );
+        }
+        return this.collections.get( dataset );
+    }
+
+
+    private RecordDAO()
+    {
+        List<String> datasetNames = this.metaDataDAO.getDatasets();
+        LOG.info( "Found data sets: {}", datasetNames );
+        for ( String dataset : datasetNames ) {
+            collections.put( dataset, MongoConnector.getDB( "feedback-records" ).getCollection( dataset ) );
+        }
+        LOG.info( "Loaded {} data sets", this.collections.size() );
     }
 
 
     public void insert( Record record, String dataset )
     {
-        Document document = record.toDocument();
-        document.put( "dataset", dataset );
-        this.collection.insertOne( document );
+        this.getCollection( dataset ).insertOne( record.toDocument() );
     }
 
 
     public void save( Record record, String dataset )
     {
-        Document document = record.toDocument();
-        document.put( "dataset", dataset );
-        this.collection.replaceOne( new Document( "_id", record.getId() ), document );
+        this.getCollection( dataset ).replaceOne( new Document( "_id", record.getId() ), record.toDocument() );
     }
 
 
     public Record getRecord( String dataset, String id )
     {
-        return Record.fromDocument(
-            collection.find( Filters.and( Filters.eq( "_id", id ), Filters.eq( "dataset", dataset ) ) ).first() );
+        return Record.fromDocument( this.getCollection( dataset ).find( Filters.and( Filters.eq( "_id", id ) ) ).first() );
     }
 
 
     public RecordsPage getRecordsPage( String dataset, int skip, int limit )
     {
         List<Document> documents = new ArrayList<>();
-        collection.find( Filters.eq( "dataset", dataset ) ).skip( skip ).limit( limit ).into( documents );
+        this.getCollection( dataset ).find().skip( skip ).limit( limit ).into( documents );
         List<Record> records = new ArrayList<>( documents.size() );
         for ( Document document : documents ) {
             records.add( Record.fromDocument( document ) );
@@ -69,21 +94,14 @@ public class RecordDAO
 
     public DatasetStatistics getDatasetStatistics()
     {
-        Document group = new Document()
-            .append( "$group", new Document( "_id", "$dataset" ).append( "count", new Document( "$sum", 1 ) ) );
+        final List<DatasetStats> list = new ArrayList<>();
 
-        final List<DatasetStatistic> list = new ArrayList<>();
-        this.collection.aggregate( Arrays.asList( group ) ).forEach( new Block<Document>()
-        {
-            @Override
-            public void apply( Document document )
-            {
-                DatasetStatistic statistics = new DatasetStatistic();
-                statistics.setDataset( document.getString( "_id" ) );
-                statistics.setNumberOfRecords( document.getInteger( "count" ) );
-                list.add( statistics );
-            }
-        } );
+        for ( Map.Entry<String, MongoCollection<Document>> entry : this.collections.entrySet() ) {
+            DatasetStats datasetStats = new DatasetStats();
+            datasetStats.setDataset( entry.getKey() );
+            datasetStats.setNumberOfRecords( entry.getValue().count() );
+            list.add( datasetStats );
+        }
         DatasetStatistics statistics = new DatasetStatistics();
         statistics.setDatasetStatistics( list );
         return statistics;
@@ -94,9 +112,9 @@ public class RecordDAO
     {
         RecordDAO recordDAO = new RecordDAO();
         Record record = new Record();
-        record.setId( "someI2d2" );
+        record.setId( "someI2d" );
         record.setLabel( "label" );
         record.setContent( null );
-        recordDAO.insert( record, "dataset4" );
+        recordDAO.insert( record, "dataset2" );
     }
 }
