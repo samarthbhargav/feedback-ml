@@ -41,6 +41,7 @@ public class RecordResource
         @PathParam ("dataset")
         String dataset, Record record )
     {
+        System.out.println( record );
         this.recordDAO.save( record, dataset );
         return Response.ok().build();
     }
