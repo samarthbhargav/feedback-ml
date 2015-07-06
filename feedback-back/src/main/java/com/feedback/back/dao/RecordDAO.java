@@ -5,7 +5,6 @@ import com.feedback.back.entities.DatasetStats;
 import com.feedback.back.entities.Record;
 import com.feedback.back.entities.RecordsPage;
 import com.feedback.back.mongo.MongoConnector;
-import com.feedback.back.resources.MetaDataDAO;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.Filters;
 import org.bson.Document;
@@ -66,7 +65,8 @@ public class RecordDAO
 
     public void save( Record record, String dataset )
     {
-        this.getCollection( dataset ).replaceOne( new Document( "_id", record.getId() ), record.toDocument() );
+        this.getCollection( dataset )
+            .replaceOne( new Document( "_id", record.getId() ), record.toDocument(), DAOUtil.UPSERT_TRUE );
     }
 
 
@@ -115,6 +115,6 @@ public class RecordDAO
         record.setId( "someI2d" );
         record.setLabel( "label" );
         record.setContent( null );
-        recordDAO.insert( record, "dataset2" );
+        recordDAO.save( record, "dataset2" );
     }
 }

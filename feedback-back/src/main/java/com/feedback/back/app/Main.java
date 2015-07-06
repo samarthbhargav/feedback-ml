@@ -1,6 +1,6 @@
 package com.feedback.back.app;
 
-import com.feedback.back.resources.GetRecordResource;
+import com.feedback.back.resources.RecordResource;
 import io.swagger.jaxrs.config.BeanConfig;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.ContextHandler;
@@ -58,7 +58,7 @@ public class Main
         // This configures Swagger
         BeanConfig beanConfig = new BeanConfig();
         beanConfig.setVersion( "1.0.0" );
-        beanConfig.setResourcePackage( GetRecordResource.class.getPackage().getName() );
+        beanConfig.setResourcePackage( RecordResource.class.getPackage().getName() );
         beanConfig.setScan( true );
         beanConfig.setBasePath( "/" );
         beanConfig.setDescription( "Entity Browser API to demonstrate Swagger with Jersey2 in an "
@@ -73,7 +73,7 @@ public class Main
         resourceConfig.register( JacksonFeature.class );
         // Replace EntityBrowser with your resource class
         // com.wordnik.swagger.jaxrs.listing loads up Swagger resources
-        resourceConfig.packages( GetRecordResource.class.getPackage().getName(), "com.wordnik.swagger.jaxrs.listing" );
+        resourceConfig.packages( RecordResource.class.getPackage().getName(), "com.wordnik.swagger.jaxrs.listing" );
         ServletContainer servletContainer = new ServletContainer( resourceConfig );
         ServletHolder entityBrowser = new ServletHolder( servletContainer );
         ServletContextHandler entityBrowserContext = new ServletContextHandler( ServletContextHandler.SESSIONS );

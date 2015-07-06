@@ -72,4 +72,15 @@ public class Record
         record.setLabel( (String) object.get( "label" ) );
         return record;
     }
+
+
+    @Override
+    public String toString()
+    {
+        return "Record{" +
+            "label='" + label + '\'' +
+            ", id='" + id + '\'' +
+            ", content=" + content +
+            '}';
+    }
 }
