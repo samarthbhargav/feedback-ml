@@ -1,0 +1,34 @@
+{% extends "layout.html" %}
+{% block body %}
+  <div class="uk-grid" data-uk-grid-margin>
+      <div class="uk-width-1-1">
+          <h2>Records</h2>
+          {% if error %}<div class="uk-alert uk-alert-danger">{{ error }} </div>{% endif %}
+      </div>
+  </div>
+
+  <div class="uk-block">
+  <!-- Group in 3 items-->
+  <table class="uk-table uk-table-hover uk-table-striped">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Label</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for record in records %}
+        <tr>
+            <td>{{record.id}}</td>
+            {% if record.label %}
+              <td class="uk-text-bold">{{record.label}}</id>
+            {% else %}
+              <td class="uk-text-muted">Unlabelled</td>
+            {% endif %}
+        </tr>
+    {% endfor %}
+    </div>
+    </tbody>
+  </table>
+
+{% endblock %}

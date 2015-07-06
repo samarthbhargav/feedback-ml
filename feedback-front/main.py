@@ -3,14 +3,12 @@ from flask import render_template
 from flask import request, flash
 import json
 import requests
+from client import FeedBackClient
+
 
 app = Flask(__name__)
 
-STATS_RESOURCE = "http://localhost:9999/stats/datasets"
-POST_RECORDS_RESOURCE = "http://localhost:9999/record/{}/"
-
-
-JSON_HEADERS = {'Content-Type': 'application/json'}
+client = FeedBackClient()
 
 
 def chunks(l, n):
@@ -24,13 +22,15 @@ def chkNotNoneAndNotEmpty(value, name):
 
 @app.route("/")
 def index():
-    return render_template("index.html")
+    stats = client.fetch_dataset_statistics()
+    # break it up into chunks of 3
+    stat_chunks = chunks(stats, 3)
+    return render_template("index.html", stats = stats, stat_chunks = stat_chunks)
 
 
 @app.route("/stats/")
 def stats_page():
-    stats = requests.get(STATS_RESOURCE).json()["datasetStatistics"]
-
+    stats = client.fetch_dataset_statistics()
     # break it up into chunks of 3
     stat_chunks = chunks(stats, 3)
     return render_template("stats.html", stats=stats, stat_chunks = stat_chunks)
@@ -59,22 +59,25 @@ def post_record():
             "label" : data.get("label"),
             "content" : content
         }
-        endpoint = POST_RECORDS_RESOURCE.format(data["dataset"])
-        jsons = json.dumps(record)
-        app.logger.info("posting data {} to endpoint {}".format(jsons, endpoint))
 
-        resp = requests.post(endpoint, data=jsons, headers=JSON_HEADERS)
-        print resp
-
-        if resp.status_code == 200:
+        if client.save_record(record):
             return render_template("add_record.html", success="Record added successfully")
         else:
             # TODO add more desc message
             return render_template("add_record.html", error="Some error occurred")
+
     except ValueError, e:
         return render_template("add_record.html", error=e.message)
 
-
+@app.route("/records/<string:dataset>/<int:skip>/<int:limit>")
+def records(dataset, skip, limit):
+    valid, data =  client.get_records(dataset, skip, limit)
+    if valid:
+        records = data["records"]
+        return render_template("records.html", records=records)
+    else:
+        # TODO
+        return render_template("records.html", records=[], error="Some error occurred")
 
 
 if __name__ == "__main__":
