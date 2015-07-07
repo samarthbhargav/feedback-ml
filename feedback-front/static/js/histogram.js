@@ -1,4 +1,4 @@
-function render_bar_chart(data){
+function renderBarChart(data, chartDiv){
   nv.addGraph(function() {
     var chart = nv.models.discreteBarChart()
                 .x(function(d) { return d.label })
@@ -7,7 +7,7 @@ function render_bar_chart(data){
                 .tooltips(false)
                 .showValues(true)
 
-    d3.select('#chart svg')
+    d3.select(chartDiv + ' svg')
       .datum(data)
       .transition().duration(500)
       .call(chart)
