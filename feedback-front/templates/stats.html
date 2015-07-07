@@ -1,5 +1,10 @@
 {% extends "layout.html" %}
 {% block body %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/nv.d3.css') }}">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js" charset="utf-8"></script> 
+<script src="{{ url_for('static', filename='js/nv.d3.js') }}"></script>
+<script src="{{ url_for('static', filename='js/histogram.js') }}"></script>
+
   <div class="uk-grid" data-uk-grid-margin>
       <div class="uk-width-1-1">
           <h1 class="uk-heading-large">Datasets</h1>
@@ -21,7 +26,6 @@
         {% endfor %}
       ]
     }];
-    //console.log(data);
     render_bar_chart(data); // function to render bar chart and data as the parameter
   </script>
 
@@ -35,7 +39,9 @@
       {% endfor %}
     </div>
   {% endfor %}
-  <div> <!-- divison for rendering the bar chart -->
+
+  <!-- divison for rendering the bar chart -->
+  <div> 
     <style>
       #chart svg {
         height: 450px;
