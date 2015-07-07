@@ -1,6 +1,6 @@
 {% extends "layout.html" %}
 {% block body %}
-  <div class="uk-grid" data-uk-grid-margin>
+  <div onload="myHistogram()" class="uk-grid" data-uk-grid-margin>
       <div class="uk-width-1-1">
           <h1 class="uk-heading-large">Datasets</h1>
           <h2> Found {{ stats|length }} datasets </h2>
@@ -9,14 +9,58 @@
       </div>
   </div>
 
+
+  <script>
+    var data = [{
+      key : "Dataset stats",
+      values : [
+        {% for stat in stats %}
+            {
+                label : "{{ stat.dataset}}",
+                value : {{ stat.numberOfRecords }}
+            },
+        {% endfor %}
+      ]
+    }];
+    //console.log(data);
+  </script>
+  
+  <br >
+  <button onclick="myHistogram()">Show Charts</button>
+  <script>
+    $(document).ready(function(){
+        $("button").click(function(){
+            $("#chart").toggle();
+        });
+    });
+  </script>
+  <br>
+  <br>
+
   <!-- Group in 3 items-->
   {% for stat_chunk in stat_chunks %}
     <div class="uk-grid">
       {% for stat in stat_chunk %}
       <div class="uk-width-1-3">
-        <h4>Dataset Name: {{ stat.dataset }}</h4> <h4>Number of records: {{ stat.numberOfRecords }}</h4>
+        <h4>Dataset Name: {{ stat.dataset }}</h4> <h4>Number of records: {{ stat.numberOfRecords }}</h4><br>      
       </div>
       {% endfor %}
     </div>
   {% endfor %}
+  <div>
+      <!-- Bar char for each data in the dataset -->
+        <style>
+        #chart svg {
+          height: 400px;
+          background-color: 'steelblue';
+        }
+        </style>
+
+        <div id="chart">
+          <svg></svg>
+        </div>
+
+    </div>
+
+
 {% endblock %}
