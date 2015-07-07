@@ -60,7 +60,7 @@ def post_record():
             "content" : content
         }
 
-        if client.save_record(record):
+        if client.save_record(record, data["dataset"]):
             return render_template("add_record.html", success="Record added successfully")
         else:
             # TODO add more desc message

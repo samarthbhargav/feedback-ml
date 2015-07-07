@@ -17,9 +17,9 @@ class FeedBackClient(object):
     def fetch_dataset_statistics(self):
         return requests.get(STATS_RESOURCE).json()["datasetStatistics"]
 
-    def save_record(self, record):
+    def save_record(self, record, dataset):
 
-        endpoint = POST_RECORDS_RESOURCE.format(data["dataset"])
+        endpoint = POST_RECORDS_RESOURCE.format(dataset)
         jsons = json.dumps(record)
 
         resp = requests.post(endpoint, data=jsons, headers=JSON_HEADERS)
