@@ -1,20 +1,15 @@
 package com.feedback.back.dao;
 
-import com.feedback.back.entities.DatasetStatistics;
-import com.feedback.back.entities.DatasetStats;
-import com.feedback.back.entities.Record;
-import com.feedback.back.entities.RecordsPage;
+import com.feedback.back.entities.*;
 import com.feedback.back.mongo.MongoConnector;
+import com.mongodb.Block;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.Filters;
 import org.bson.Document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 
 /**
@@ -108,13 +103,38 @@ public class RecordDAO
     }
 
 
+    public RecordStatistics getRecordStatistics( String dataset )
+    {
+        Document group = new Document( "$group",
+            new Document( "_id", "$label" ).append( "count", new Document( "$sum", 1L ) ) );
+        final List<RecordStats> list = new ArrayList<>();
+        this.getCollection( dataset ).aggregate( Arrays.asList( group ) ).allowDiskUse( true ).useCursor( true )
+            .forEach( new Block<Document>()
+            {
+                @Override
+                public void apply( Document document )
+                {
+                    RecordStats recordStats = new RecordStats();
+                    recordStats.setNumberOfRecords( document.getLong( "count" ) );
+                    recordStats.setLabel( document.getString( "_id" ) );
+                    list.add( recordStats );
+                }
+            } );
+        RecordStatistics recordStatistics = new RecordStatistics();
+        recordStatistics.setStats( list );
+        return recordStatistics;
+    }
+
+
     public static void main( String[] args )
     {
         RecordDAO recordDAO = new RecordDAO();
         Record record = new Record();
         record.setId( "someI2d" );
-        record.setLabel( "label" );
+        record.setLabel( "lael" );
         record.setContent( null );
         recordDAO.save( record, "dataset2" );
+
+        System.out.println( recordDAO.getRecordStatistics( "dataset2" ) );
     }
 }
