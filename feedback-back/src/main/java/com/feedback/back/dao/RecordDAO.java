@@ -130,8 +130,7 @@ public class RecordDAO
     {
         RecordDAO recordDAO = new RecordDAO();
         Record record = new Record();
-        record.setId( "someI2d" );
-        record.setLabel( "lael" );
+        record.setId( "3" );
         record.setContent( null );
         recordDAO.save( record, "dataset2" );
 
