@@ -1,4 +1,4 @@
-function myHistogram(){
+function render_bar_chart(data){
   nv.addGraph(function() {
     var chart = nv.models.discreteBarChart()
                 .x(function(d) { return d.label })

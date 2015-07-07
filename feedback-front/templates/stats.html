@@ -1,11 +1,10 @@
 {% extends "layout.html" %}
 {% block body %}
-  <div onload="myHistogram()" class="uk-grid" data-uk-grid-margin>
+  <div class="uk-grid" data-uk-grid-margin>
       <div class="uk-width-1-1">
           <h1 class="uk-heading-large">Datasets</h1>
           <h2> Found {{ stats|length }} datasets </h2>
-          <p class="uk-text-large">Click on a dataset to view more information</p>
-
+          <p class="uk-text-large">Click on a dataset to view more information</p><br>
       </div>
   </div>
 
@@ -23,19 +22,8 @@
       ]
     }];
     //console.log(data);
+    render_bar_chart(data); // function to render bar chart and data as the parameter
   </script>
-  
-  <br >
-  <button onclick="myHistogram()">Show Charts</button>
-  <script>
-    $(document).ready(function(){
-        $("button").click(function(){
-            $("#chart").toggle();
-        });
-    });
-  </script>
-  <br>
-  <br>
 
   <!-- Group in 3 items-->
   {% for stat_chunk in stat_chunks %}
@@ -47,20 +35,15 @@
       {% endfor %}
     </div>
   {% endfor %}
-  <div>
-      <!-- Bar char for each data in the dataset -->
-        <style>
-        #chart svg {
-          height: 400px;
-          background-color: 'steelblue';
-        }
-        </style>
+  <div> <!-- divison for rendering the bar chart -->
+    <style>
+      #chart svg {
+        height: 450px;
+      }
+    </style>
 
-        <div id="chart">
-          <svg></svg>
-        </div>
-
+    <div id="chart">
+      <svg></svg>
     </div>
-
-
+  </div>
 {% endblock %}
