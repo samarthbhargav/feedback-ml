@@ -5,14 +5,11 @@
 <script src="{{ url_for('static', filename='js/nv.d3.js') }}"></script>
 <script src="{{ url_for('static', filename='js/histogram.js') }}"></script>
 
-  <div class="uk-grid" data-uk-grid-margin>
-      <div class="uk-width-1-1">
-          <h2>Datasets</h2>
-          <h2> Found {{ stats|length }} datasets </h2>
-      </div>
-  </div>
-
-
+<div class="uk-button-group">
+            <button class="uk-button uk-button-primary">Bar Chart</button>
+            <button class="uk-button uk-button-primary">Pie Chart</button>
+          </div>
+  <!-- divison for rendering the bar chart -->
   <script>
     var data = [{
       key : "Dataset stats",
@@ -27,12 +24,10 @@
     }];
     renderBarChart(data, '#chart'); // function to render bar chart and data as the parameter
   </script>
-
-  <!-- divison for rendering the bar chart -->
   <div> 
     <style>
       #chart svg {
-        height: 400px;
+        height: 450px;
       }
     </style>
 

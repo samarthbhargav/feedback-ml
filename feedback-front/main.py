@@ -35,6 +35,12 @@ def stats_page():
     stat_chunks = chunks(stats, 3)
     return render_template("stats.html", stats=stats, stat_chunks = stat_chunks)
 
+@app.route("/record_statistics/<string:dataset>")
+def record_stats_page(dataset):
+    stats = [{ "label" : "Unlabelled", "numberOfRecords" : 102 },{ "label" : "A", "numberOfRecords" : 343 }, { "label" : "B", "numberOfRecords" : 233 }]
+    stat_chunks = chunks(stats, 3)
+    return render_template("record_statistics.html", stats=stats, dataset = dataset, stat_chunks = stat_chunks)
+
 
 @app.route("/add_record")
 def add_record_page():

@@ -2,7 +2,7 @@
 {% block body %}
   <div class="uk-grid" data-uk-grid-margin>
       <div class="uk-width-1-1">
-          <h3 class="uk-heading-large">Datasets</h3>
+          <h4 class="uk-heading-large">Datasets</h4>
           <h4> Total {{ stats|length }} datasets </h4>
       </div>
   </div>
@@ -16,7 +16,8 @@
         <div class="uk-panel uk-panel-box">
           <div class="uk-panel-badge uk-badge">Number of records: {{ stat.numberOfRecords }}</div>
           <h3 class="uk-panel-title">{{ stat.dataset }}</h3>
-          <a href="{{ url_for('records', dataset=stat.dataset, skip=0, limit=10) }}">View Records</a>
+          <a href="{{ url_for('records', dataset=stat.dataset, skip=0, limit=10) }}">View Records</a> 
+          <a href="{{ url_for('record_stats_page', dataset=stat.dataset) }}">View Stats</a>
         </div>
       </div>
       {% endfor %}

@@ -4,7 +4,7 @@ function renderBarChart(data, chartDiv){
                 .x(function(d) { return d.label })
                 .y(function(d) { return d.value })
                 .staggerLabels(true)
-                .tooltips(false)
+                .tooltips(true)
                 .showValues(true)
 
     d3.select(chartDiv + ' svg')
@@ -19,3 +19,18 @@ function renderBarChart(data, chartDiv){
     });
   }
           
+function renderPieChart(data, chartDiv){
+  nv.addGraph(function() {
+  var chart = nv.models.pieChart()
+      .x(function(d) { return d.label })
+      .y(function(d) { return d.value })
+      .showLabels(true);
+
+    d3.select(chartDiv + ' svg')
+        .datum(data)
+      .transition().duration(1200)
+        .call(chart);
+
+  return chart;
+  });
+}
