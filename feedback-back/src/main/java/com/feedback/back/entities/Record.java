@@ -13,6 +13,7 @@ public class Record
     private String label;
     private String id;
     private Map<String, String> content;
+    private Long lastModified;
 
 
     public String getId()
@@ -51,12 +52,25 @@ public class Record
     }
 
 
+    public Long getLastModified()
+    {
+        return lastModified;
+    }
+
+
+    public void setLastModified( Long lastModified )
+    {
+        this.lastModified = lastModified;
+    }
+
+
     public Document toDocument()
     {
         Document document = new Document();
         document.put( "_id", this.getId() );
         document.put( "label", this.getLabel() );
         document.put( "content", this.getContent() );
+        document.put( "lastModified", this.getLastModified() );
         return document;
     }
 
@@ -68,8 +82,9 @@ public class Record
         }
         Record record = new Record();
         record.setContent( (Map<String, String>) object.get( "content" ) );
-        record.setId( (String) object.get( "_id" ) );
+        record.setId( object.getString( "_id" ) );
         record.setLabel( (String) object.get( "label" ) );
+        record.setLastModified( object.getLong( "lastModified" ) );
         return record;
     }
 
@@ -81,6 +96,7 @@ public class Record
             "label='" + label + '\'' +
             ", id='" + id + '\'' +
             ", content=" + content +
+            ", lastModified=" + lastModified +
             '}';
     }
 }

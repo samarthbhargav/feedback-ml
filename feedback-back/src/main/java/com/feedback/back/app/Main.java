@@ -1,7 +1,6 @@
 package com.feedback.back.app;
 
-import com.feedback.back.resources.RecordResource;
-import io.swagger.jaxrs.config.BeanConfig;
+import com.feedback.back.resources.DatasetResource;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.ContextHandler;
 import org.eclipse.jetty.server.handler.HandlerList;
@@ -32,12 +31,8 @@ public class Main
 
         int serverPort = PORT;
 
-
         // Workaround for resources from JAR files
         Resource.setDefaultUseCaches( false );
-
-        // Build the Swagger Bean.
-        buildSwagger();
 
         // Holds handlers
         final HandlerList handlers = new HandlerList();
@@ -53,27 +48,13 @@ public class Main
     }
 
 
-    private static void buildSwagger()
-    {
-        // This configures Swagger
-        BeanConfig beanConfig = new BeanConfig();
-        beanConfig.setVersion( "1.0.0" );
-        beanConfig.setResourcePackage( RecordResource.class.getPackage().getName() );
-        beanConfig.setScan( true );
-        beanConfig.setBasePath( "/" );
-        beanConfig.setDescription( "Entity Browser API to demonstrate Swagger with Jersey2 in an "
-            + "embedded Jetty instance, with no web.xml or Spring MVC." );
-        beanConfig.setTitle( "Entity Browser" );
-    }
-
-
     private static ContextHandler buildContext()
     {
         ResourceConfig resourceConfig = new ResourceConfig();
         resourceConfig.register( JacksonFeature.class );
         // Replace EntityBrowser with your resource class
         // com.wordnik.swagger.jaxrs.listing loads up Swagger resources
-        resourceConfig.packages( RecordResource.class.getPackage().getName(), "com.wordnik.swagger.jaxrs.listing" );
+        resourceConfig.packages( DatasetResource.class.getPackage().getName(), "com.wordnik.swagger.jaxrs.listing" );
         ServletContainer servletContainer = new ServletContainer( resourceConfig );
         ServletHolder entityBrowser = new ServletHolder( servletContainer );
         ServletContextHandler entityBrowserContext = new ServletContextHandler( ServletContextHandler.SESSIONS );
@@ -82,19 +63,6 @@ public class Main
 
         return entityBrowserContext;
     }
-
-
-    // This starts the Swagger UI at http://localhost:9999/docs
-    //    private static ContextHandler buildSwaggerUI() throws Exception {
-    //        final ResourceHandler swaggerUIResourceHandler = new ResourceHandler();
-    //        swaggerUIResourceHandler.setResourceBase(
-    //            App.class.getClassLoader().getResource("webapp").toURI().toString());
-    //        final ContextHandler swaggerUIContext = new ContextHandler();
-    //        swaggerUIContext.setContextPath("/docs/");
-    //        swaggerUIContext.setHandler(swaggerUIResourceHandler);
-    //
-    //        return swaggerUIContext;
-    //    }
 
 
     public static ContextHandler enableCors( ContextHandler handler )
@@ -110,13 +78,6 @@ public class Main
             "customer-key,Content-type,X-Authurization-Header" );
         return handler;
     }
-
-
-    //    public static ContextHandler enableAuth( ContextHandler handler )
-    //    {
-    //        ( (ServletContextHandler) handler ).addFilter( AuthFilter.class, "/*", EnumSet.of( DispatcherType.REQUEST ) );
-    //        return handler;
-    //    }
 
 }
 

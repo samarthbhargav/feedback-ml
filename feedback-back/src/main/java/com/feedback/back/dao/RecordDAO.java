@@ -1,6 +1,8 @@
 package com.feedback.back.dao;
 
+import com.feedback.back.config.Constants;
 import com.feedback.back.entities.*;
+import com.feedback.back.except.DatasetNotFoundException;
 import com.feedback.back.mongo.MongoConnector;
 import com.mongodb.Block;
 import com.mongodb.client.MongoCollection;
@@ -31,47 +33,57 @@ public class RecordDAO
     private MetaDataDAO metaDataDAO = MetaDataDAO.getInstance();
 
 
-    private MongoCollection<Document> getCollection( String dataset )
+    private RecordDAO()
     {
-        if ( !this.collections.containsKey( dataset ) ) {
-            this.metaDataDAO.addDataset( dataset );
-            collections.put( dataset, MongoConnector.getDB( "feedback-records" ).getCollection( dataset ) );
-        }
-        return this.collections.get( dataset );
+
     }
 
 
-    private RecordDAO()
+    private void reloadCollections()
     {
-        List<String> datasetNames = this.metaDataDAO.getDatasets();
-        LOG.info( "Found data sets: {}", datasetNames );
-        for ( String dataset : datasetNames ) {
-            collections.put( dataset, MongoConnector.getDB( "feedback-records" ).getCollection( dataset ) );
+        List<Dataset> datasets = this.metaDataDAO.getDatasets();
+        LOG.info( "Found data sets: {}", datasets );
+        for ( Dataset dataset : datasets ) {
+            collections
+                .put( dataset.getName(), MongoConnector.getDB( Constants.RECORDS_DB ).getCollection( dataset.getName() ) );
         }
         LOG.info( "Loaded {} data sets", this.collections.size() );
     }
 
 
-    public void insert( Record record, String dataset )
+    private MongoCollection<Document> getCollection( String dataset ) throws DatasetNotFoundException
+    {
+        if ( !this.collections.containsKey( dataset ) ) {
+            reloadCollections();
+            // Even after reloading if a dataset isn't present - throw an exception
+            if ( !this.collections.containsKey( dataset ) ) {
+                throw new DatasetNotFoundException( "dataset " + dataset + " not found!" );
+            }
+        }
+        return this.collections.get( dataset );
+    }
+
+
+    public void insert( Record record, String dataset ) throws DatasetNotFoundException
     {
         this.getCollection( dataset ).insertOne( record.toDocument() );
     }
 
 
-    public void save( Record record, String dataset )
+    public void save( Record record, String dataset ) throws DatasetNotFoundException
     {
         this.getCollection( dataset )
             .replaceOne( new Document( "_id", record.getId() ), record.toDocument(), DAOUtil.UPSERT_TRUE );
     }
 
 
-    public Record getRecord( String dataset, String id )
+    public Record getRecord( String dataset, String id ) throws DatasetNotFoundException
     {
         return Record.fromDocument( this.getCollection( dataset ).find( Filters.and( Filters.eq( "_id", id ) ) ).first() );
     }
 
 
-    public RecordsPage getRecordsPage( String dataset, int skip, int limit )
+    public RecordsPage getRecordsPage( String dataset, int skip, int limit ) throws DatasetNotFoundException
     {
         List<Document> documents = new ArrayList<>();
         this.getCollection( dataset ).find().skip( skip ).limit( limit ).into( documents );
@@ -103,7 +115,7 @@ public class RecordDAO
     }
 
 
-    public RecordStatistics getRecordStatistics( String dataset )
+    public RecordStatistics getRecordStatistics( String dataset ) throws DatasetNotFoundException
     {
         Document group = new Document( "$group",
             new Document( "_id", "$label" ).append( "count", new Document( "$sum", 1L ) ) );
@@ -123,17 +135,5 @@ public class RecordDAO
         RecordStatistics recordStatistics = new RecordStatistics();
         recordStatistics.setStats( list );
         return recordStatistics;
-    }
-
-
-    public static void main( String[] args )
-    {
-        RecordDAO recordDAO = new RecordDAO();
-        Record record = new Record();
-        record.setId( "3" );
-        record.setContent( null );
-        recordDAO.save( record, "dataset2" );
-
-        System.out.println( recordDAO.getRecordStatistics( "dataset2" ) );
     }
 }

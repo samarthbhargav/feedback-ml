@@ -1,6 +1,7 @@
 package com.feedback.back.resources;
 
 import com.feedback.back.dao.RecordDAO;
+import com.feedback.back.except.DatasetNotFoundException;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -35,6 +36,10 @@ public class StatsResource
         @PathParam ("dataset")
         String dataset )
     {
-        return Response.ok( this.recordDAO.getRecordStatistics( dataset ) ).build();
+        try {
+            return Response.ok( this.recordDAO.getRecordStatistics( dataset ) ).build();
+        } catch ( DatasetNotFoundException e ) {
+            return ResourceUtil.buildErrorEntity( e.getMessage(), Response.Status.NOT_FOUND );
+        }
     }
 }
