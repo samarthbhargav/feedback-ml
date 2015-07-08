@@ -35,7 +35,7 @@
 </script>
 
 <!-- bar chart divison -->
-<div id="Div1">
+<div id="barChart">
   <div id="chart1">
     <svg></svg> 
   </div>
@@ -43,7 +43,7 @@
 <br>
 
 <!-- pie chart divison -->
-<div id="Div2">
+<div id="pieChart">
   <div id="chart2">
     <svg></svg>
   </div>
@@ -52,15 +52,15 @@
 <!-- Javascript for toggling the charts -->
 <script>
 function switchCharts() {
-  if (document.getElementById('Div1')) {
-    if (document.getElementById('Div1').style.display == 'none') {
-        document.getElementById('Div1').style.display = 'block';
-        document.getElementById('Div2').style.display = 'none';
+  if (document.getElementById('barChart')) {
+    if (document.getElementById('barChart').style.display == 'none') {
+        document.getElementById('barChart').style.display = 'block';
+        document.getElementById('pieChart').style.display = 'none';
         document.getElementById('Button1').innerHTML = "Click Here Pie Chart";
     }
     else {
-        document.getElementById('Div1').style.display = 'none';
-        document.getElementById('Div2').style.display = 'block';
+        document.getElementById('barChart').style.display = 'none';
+        document.getElementById('pieChart').style.display = 'block';
         document.getElementById('Button1').innerHTML = "Click Here Bar Chart";   
     }
   }

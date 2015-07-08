@@ -37,7 +37,7 @@ def stats_page():
 
 @app.route("/record_statistics/<string:dataset>")
 def record_stats_page(dataset):
-    valid, stats = client.fetch_dataset_records(dataset)
+    valid, stats = client.fetch_record_statistics(dataset)
     if valid:
         return render_template("record_statistics.html", stats=stats["stats"], dataset = dataset)
     else:

@@ -18,7 +18,7 @@ class FeedBackClient(object):
     def fetch_dataset_statistics(self):
         return requests.get(STATS_RESOURCE).json()["datasetStatistics"]
 
-    def fetch_dataset_records(self, dataset):
+    def fetch_record_statistics(self, dataset):
         endpoint = RECORDS_STATS_RESOURCE.format(dataset)
         response = requests.get(endpoint)
         if response.status_code == 200:
