@@ -1,4 +1,4 @@
-package com.feedback.back.entities;
+package com.feedback.back.entities.api;
 
 /**
  * Created by Samarth Bhargav on 8/7/15.

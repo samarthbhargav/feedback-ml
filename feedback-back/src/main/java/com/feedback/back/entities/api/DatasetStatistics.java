@@ -1,10 +1,12 @@
-package com.feedback.back.entities;
+package com.feedback.back.entities.api;
+
+import com.feedback.back.entities.DatasetStats;
 
 import java.util.List;
 
 
 /**
- * Created by hduser on 30/6/15.
+ * Created by Samarth Bhargav on 30/6/15.
  */
 public class DatasetStatistics
 {

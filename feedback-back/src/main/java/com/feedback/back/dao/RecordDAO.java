@@ -2,6 +2,9 @@ package com.feedback.back.dao;
 
 import com.feedback.back.config.Constants;
 import com.feedback.back.entities.*;
+import com.feedback.back.entities.api.DatasetStatistics;
+import com.feedback.back.entities.api.RecordStatistics;
+import com.feedback.back.entities.api.RecordsPage;
 import com.feedback.back.except.DatasetNotFoundException;
 import com.feedback.back.mongo.MongoConnector;
 import com.mongodb.Block;

@@ -1,6 +1,6 @@
 package com.feedback.back.resources;
 
-import com.feedback.back.entities.ErrorEntity;
+import com.feedback.back.entities.api.ErrorEntity;
 
 import javax.ws.rs.core.Response;
 

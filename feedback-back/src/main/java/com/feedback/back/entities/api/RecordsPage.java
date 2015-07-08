@@ -1,4 +1,6 @@
-package com.feedback.back.entities;
+package com.feedback.back.entities.api;
+
+import com.feedback.back.entities.Record;
 
 import java.util.List;
 
