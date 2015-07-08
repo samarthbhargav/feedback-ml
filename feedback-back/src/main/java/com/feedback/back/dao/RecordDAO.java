@@ -46,7 +46,7 @@ public class RecordDAO
     }
 
 
-    private RecordDAO()
+    public RecordDAO()
     {
         List<String> datasetNames = this.metaDataDAO.getDatasets();
         LOG.info( "Found data sets: {}", datasetNames );
