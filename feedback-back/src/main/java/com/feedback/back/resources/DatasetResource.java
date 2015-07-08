@@ -68,11 +68,10 @@ public class DatasetResource
         @PathParam ("dataset")
         String name )
     {
-        Dataset dataset = this.metaDataDAO.getDataset( name );
-        if ( dataset != null ) {
-            return Response.ok( dataset ).build();
-        } else {
-            return ResourceUtil.buildErrorEntity( name + " not found", Response.Status.NOT_FOUND );
+        try {
+            return Response.ok( this.metaDataDAO.getDataset( name ) ).build();
+        } catch ( DatasetNotFoundException e ) {
+            return ResourceUtil.buildErrorEntity( e.getMessage(), Response.Status.NOT_FOUND );
         }
     }
 

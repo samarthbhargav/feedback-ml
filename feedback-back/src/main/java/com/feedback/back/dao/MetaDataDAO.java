@@ -2,17 +2,15 @@ package com.feedback.back.dao;
 
 import com.feedback.back.config.Constants;
 import com.feedback.back.entities.Dataset;
+import com.feedback.back.except.DatasetNotFoundException;
 import com.feedback.back.mongo.MongoConnector;
 import com.mongodb.Block;
 import com.mongodb.client.MongoCollection;
-import com.mongodb.client.model.UpdateOptions;
 import org.bson.Document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 
 
@@ -54,7 +52,7 @@ public class MetaDataDAO
                 datasets.add( Dataset.fromDocument( document ) );
             }
         } );
-        ;
+
         return datasets;
     }
 
@@ -66,34 +64,18 @@ public class MetaDataDAO
     }
 
 
-    public Dataset getDataset( String datasetName )
+    public Dataset getDataset( String datasetName ) throws DatasetNotFoundException
     {
-        return Dataset.fromDocument( this.datasetMetadata.find( new Document( "_id", datasetName ) ).first() );
-    }
-
-
-    public List<String> getFields( String dataset )
-    {
-        Document document = this.datasetMetadata.find( new Document( "_id", dataset ) ).first();
-        if ( dataset == null ) {
-            return null;
-        } else {
-            return Dataset.fromDocument( document ).getFields();
+        Document document = this.datasetMetadata.find( new Document( "_id", datasetName ) ).first();
+        if ( document == null ) {
+            throw new DatasetNotFoundException( "dataset " + datasetName + " not found!" );
         }
+        return Dataset.fromDocument( document );
     }
 
 
-    public void addField( String dataset, String fieldName )
+    public List<String> getFields( String datasetName ) throws DatasetNotFoundException
     {
-        this.addFields( dataset, Arrays.asList( fieldName ) );
+        return this.getDataset( datasetName ).getFields();
     }
-
-
-    public void addFields( String dataset, Collection<String> fields )
-    {
-        this.datasetMetadata
-            .updateOne( new Document( "_id", dataset ), new Document( "$addToSet", new Document( "fields", fields ) ),
-                new UpdateOptions().upsert( false ) );
-    }
-
 }
