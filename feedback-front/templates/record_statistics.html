@@ -2,37 +2,78 @@
 {% block body %}
 <link rel="stylesheet" href="https://cdn.rawgit.com/novus/nvd3/v1.8.1/build/nv.d3.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js" charset="utf-8"></script> 
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
 <script src="{{ url_for('static', filename='js/nv.d3.js') }}"></script>
-<script src="{{ url_for('static', filename='js/histogram.js') }}"></script>
+<script src="{{ url_for('static', filename='js/charts.js') }}"></script>
 
-<div class="uk-button-group">
-            <button class="uk-button uk-button-primary">Bar Chart</button>
-            <button class="uk-button uk-button-primary">Pie Chart</button>
-          </div>
-  <!-- divison for rendering the bar chart -->
-  <script>
-    var data = [{
-      key : "Dataset stats",
-      values : [
+<script>
+  
+  // rendering pie chart
+  var data = [{
+    key : "Dataset stats",
+    values : [
+      {% for stat in stats %}
+          {
+              label : "{{ stat.label}}",
+              value : {{ stat.numberOfRecords }}
+          },
+      {% endfor %}
+    ]
+  }];
+  renderBarChart(data, '#chart1'); // function to render bar chart and data as the parameters
+
+  // rendering bar chart
+  var data = [
         {% for stat in stats %}
-            {
-                label : "{{ stat.dataset}}",
-                value : {{ stat.numberOfRecords }}
-            },
+          {
+            label : "{{ stat.label}}",
+            value : {{ stat.numberOfRecords }}
+          },
         {% endfor %}
-      ]
-    }];
-    renderBarChart(data, '#chart'); // function to render bar chart and data as the parameter
-  </script>
-  <div> 
-    <style>
-      #chart svg {
-        height: 450px;
-      }
-    </style>
+    ];
+    renderPieChart(data, "#chart2");
+</script>
 
-    <div id="chart">
-      <svg></svg>
-    </div>
+<!-- bar chart divison -->
+<div id="Div1">
+  <div id="chart1">
+    <svg></svg> 
   </div>
+</div>
+<br>
+
+<!-- pie chart divison -->
+<div id="Div2">
+  <div id="chart2">
+    <svg></svg>
+  </div>
+</div>  
+
+<!-- Javascript for toggling the charts -->
+<script>
+function switchCharts() {
+  if (document.getElementById('Div1')) {
+    if (document.getElementById('Div1').style.display == 'none') {
+        document.getElementById('Div1').style.display = 'block';
+        document.getElementById('Div2').style.display = 'none';
+        document.getElementById('Button1').innerHTML = "Click Here Pie Chart";
+    }
+    else {
+        document.getElementById('Div1').style.display = 'none';
+        document.getElementById('Div2').style.display = 'block';
+        document.getElementById('Button1').innerHTML = "Click Here Bar Chart";   
+    }
+  }
+}
+
+</script>
+<style>
+  #chart1, #chart2 svg {
+    height: 400px;
+  }
+  #Div2{
+    display: hidden;
+  }
+</style>
+<button id="Button1" class="uk-button uk-button-primary" onclick="switchCharts();">Chart</button>
 {% endblock %}

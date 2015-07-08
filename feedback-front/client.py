@@ -3,6 +3,7 @@ import requests
 
 
 STATS_RESOURCE = "http://localhost:9999/stats/datasets"
+RECORDS_STATS_RESOURCE = "http://localhost:9999/stats/datasets/{}"
 POST_RECORDS_RESOURCE = "http://localhost:9999/record/{}/"
 RECORDS_PAGE_RESOURCE = "http://localhost:9999/page/{}/{}/{}"
 
@@ -16,6 +17,15 @@ class FeedBackClient(object):
 
     def fetch_dataset_statistics(self):
         return requests.get(STATS_RESOURCE).json()["datasetStatistics"]
+
+    def fetch_dataset_records(self, dataset):
+        endpoint = RECORDS_STATS_RESOURCE.format(dataset)
+        response = requests.get(endpoint)
+        if response.status_code == 200:
+            return True, response.json()
+        else:
+            return False, "Error Message"
+        #return requests.get(RECORDS_STATS_RESOURCE).json()["datasetStatistics"]
 
     def save_record(self, record, dataset):
 
