@@ -31,9 +31,11 @@
             {% endif %}
             
             {% if record.content %}
-              <td class="uk-text-bold" pos:'bottom-right' data-uk-tooltip title="{{record.content}}">{{record.content}} <span pos:'bottom-right' data-uk-tooltip title="{{record.content}}"></span></td>
+              {% if record.content.python %} <td data-uk-tooltip title="{{record}}">{{record.content.python}}</td>
+              {% else %} <td data-uk-tooltip title="{{record}}"></td>
+              {% endif %}
             {% else %}
-              <td class="uk-text-bold" data-uk-tooltip title="No Comments Found"> </td>
+              <td class="uk-text-bold" data-uk-tooltip title="{{record}}"> </td>
             {% endif %}
             
             <td><button class="uk-button uk-button-primary" data-uk-modal="{target:'#editRecord'}" type="button">Edit</button></td> 
