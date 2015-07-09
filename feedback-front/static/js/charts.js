@@ -41,11 +41,5 @@ nv.addGraph(function() {
 });
 }
 
-$(document).ready(function(){
-    $("#flip").click(function(){
-        $("#chart1").slideToggle("slow");
-    });
-  });
 
 
-  

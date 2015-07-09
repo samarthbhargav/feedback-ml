@@ -9,21 +9,24 @@
 <script>
   
   // rendering pie chart
-  var data = [{
+  var barChartData = [{
     key : "Dataset stats",
     values : [
       {% for stat in stats %}
           {
-              label : "{{ stat.label}}",
+              if {{stat.label}}:
+                label : "{{ stat.label}}"
+              else 
+                label : "Unlabelled",
               value : {{ stat.numberOfRecords }}
           },
       {% endfor %}
     ]
   }];
-  renderBarChart(data, '#chart1'); // function to render bar chart and data as the parameters
+  renderBarChart(barChartData, '#chart1'); // function to render bar chart and data as the parameters
 
   // rendering bar chart
-  var data = [
+  var pieChartData = [
         {% for stat in stats %}
           {
             label : "{{ stat.label}}",
@@ -31,7 +34,7 @@
           },
         {% endfor %}
     ];
-    renderPieChart(data, "#chart2");
+    renderPieChart(pieChartData, "#chart2");
 </script>
 
 <!-- bar chart divison -->
@@ -56,12 +59,12 @@ function switchCharts() {
     if (document.getElementById('barChart').style.display == 'none') {
         document.getElementById('barChart').style.display = 'block';
         document.getElementById('pieChart').style.display = 'none';
-        document.getElementById('Button1').innerHTML = "Click Here Pie Chart";
+        document.getElementById('chartToggler').innerHTML = "Click Here Pie Chart";
     }
     else {
         document.getElementById('barChart').style.display = 'none';
         document.getElementById('pieChart').style.display = 'block';
-        document.getElementById('Button1').innerHTML = "Click Here Bar Chart";   
+        document.getElementById('chartToggler').innerHTML = "Click Here Bar Chart";   
     }
   }
 }
@@ -75,5 +78,5 @@ function switchCharts() {
     display: hidden;
   }
 </style>
-<button id="Button1" class="uk-button uk-button-primary" onclick="switchCharts();">Chart</button>
+<button id="chartToggler" class="uk-button uk-button-primary" onclick="switchCharts();">Chart</button>
 {% endblock %}
