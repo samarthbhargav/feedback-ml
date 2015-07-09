@@ -1,9 +1,9 @@
 {% extends "layout.html" %}
 {% block body %}
-<link rel="stylesheet" href="https://cdn.rawgit.com/novus/nvd3/v1.8.1/build/nv.d3.css">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js" charset="utf-8"></script> 
-<script src="{{ url_for('static', filename='js/nv.d3.js') }}"></script>
-<script src="{{ url_for('static', filename='js/histogram.js') }}"></script>
+  <link rel="stylesheet" href="https://cdn.rawgit.com/novus/nvd3/v1.8.1/build/nv.d3.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js" charset="utf-8"></script> 
+  <script src="{{ url_for('static', filename='js/nv.d3.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/charts.js') }}"></script>
 
   <div class="uk-grid" data-uk-grid-margin>
       <div class="uk-width-1-1">
@@ -12,7 +12,7 @@
       </div>
   </div>
 
-
+  <!-- javascript to convert the incoming data to JSON format -->
   <script>
     var data = [{
       key : "Dataset stats",
@@ -25,18 +25,18 @@
         {% endfor %}
       ]
     }];
-    renderBarChart(data, '#chart'); // function to render bar chart and data as the parameter
+    renderBarChart(data, '#barChartSVG'); // function to render bar chart and data as the parameter
   </script>
 
   <!-- divison for rendering the bar chart -->
   <div> 
     <style>
-      #chart svg {
-        height: 450px;
+      #barChartSVG svg {
+        height: 400px;
       }
     </style>
 
-    <div id="chart">
+    <div id="barChartSVG">
       <svg></svg>
     </div>
   </div>
