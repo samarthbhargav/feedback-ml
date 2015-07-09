@@ -1,19 +1,30 @@
 {% extends "layout.html" %}
 {% block body %}
+  
   <div class="uk-grid" data-uk-grid-margin>
       <div class="uk-width-1-1">
           <h2>Records</h2>
           {% if error %}<div class="uk-alert uk-alert-danger">{{ error }} </div>{% endif %}
       </div>
+      <div class="uk-width-1-1">
+          <h3>Showing records {{records|length}} of {{records|length}}</h3>
+      </div>
   </div>
 
-  <div class="uk-block">
-  <!-- Group in 3 items-->
+  <script>
+    $.ajax({
+    success: function (res) {
+        localStorage.setItem("dataCache", JSON.stringify(res));
+    },
+  });
+  </script>
+
   <table class="uk-table uk-table-hover uk-table-striped">
     <thead>
         <tr>
             <th>ID</th>
             <th>Label</th>
+            <th>Contents</th>
         </tr>
     </thead>
     <tbody>
@@ -23,12 +34,70 @@
             {% if record.label %}
               <td class="uk-text-bold">{{record.label}}</id>
             {% else %}
-              <td class="uk-text-muted">Unlabelled</td>
+              <td id = "label-name-td" class="uk-text-muted"><button class="uk-button uk-button-success" data-uk-modal="{target:'#addLabel'}" type="button">Add Label</button></td>
             {% endif %}
+            {% if record.content %}
+              <td class="uk-text-bold" ddata-uk-tooltip title="next">{{record.content.label}}</td>
+            {% else %}
+              <td class="uk-text-bold" data-uk-tooltip title="No Comments Found"> </td>
+            {% endif %}
+            <td><button class="uk-button uk-button-primary" data-uk-modal="{target:'#editRecord'}" type="button">Edit</button></td>
+            <td><button class="uk-button uk-button-danger" data-uk-modal="{target:'#deleteRecord'}" type="button">Delete</button></td>
         </tr>
     {% endfor %}
     </div>
     </tbody>
   </table>
+
+  <!-- divison of modal to edit the label name -->
+  <div id="addLabel" class="uk-modal">
+    <div class="uk-modal-dialog">
+        <a class="uk-modal-close uk-close"></a>
+        <form class="uk-form">
+          <legend>Enter the Label Name</legend>
+          <input id="label-name" type="text" placeholder="label name" autofocus>
+          <button id="add-label-btn" class="uk-button uk-button-primary" onclick="addLabelValue()">Submit</button>
+        </form>
+    </div>
+  </div>
+
+  <!-- divison of modal to edit the record parameters -->
+  <div id="editRecord" class="uk-modal">
+    <div class="uk-modal-dialog">
+        <a class="uk-modal-close uk-close"></a>
+        <form class="uk-form">
+          <legend>Edit Record</legend>
+          <input id="label-name" type="text" placeholder="ID Value" autofocus><br><br>
+          <input id="label-name" type="text" placeholder="Dataset"><br><br>
+          <input id="label-name" type="text" placeholder="Label / Comments (Optional)"><br><br>
+          <button id="add-label-btn" class="uk-button uk-button-primary" onclick="addLabelValue()">Submit</button>
+        </form>
+    </div>
+  </div>
+
+  <!-- divison of modal to delete a record -->
+  <div id="deleteRecord" class="uk-modal">
+    <div class="uk-modal-dialog">
+        <a class="uk-modal-close uk-close"></a>
+        <form class="uk-form">
+          <legend>Are you sure you want to delete?</legend>
+          <button class="uk-button uk-button-danger">Yes</button>
+          <button class="uk-button uk-button-success">No</button>
+        </form>
+    </div>
+  </div>
+
+  <ul class="uk-pagination" data-uk-pagination="{items:100, itemsOnPage:10, currentPage:2 }">
+    <li><a href="">Previous</a></li>
+    <li class="uk-active"><span>1</span></li>
+    <li class="uk-disabled"><span>2</span></li>
+    <li><a href="">Next</a></li>
+  </ul>
+
+  <script>
+    $('[data-uk-pagination]').on('select.uk.pagination', function(e, pageIndex){
+      alert('You have selected page: ' + (pageIndex+1));
+    });
+  </script>
 
 {% endblock %}

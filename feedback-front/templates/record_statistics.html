@@ -2,7 +2,6 @@
 {% block body %}
   <link rel="stylesheet" href="https://cdn.rawgit.com/novus/nvd3/v1.8.1/build/nv.d3.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js" charset="utf-8"></script> 
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
   <script src="{{ url_for('static', filename='js/nv.d3.js') }}"></script>
   <script src="{{ url_for('static', filename='js/charts.js') }}"></script>
 
@@ -72,7 +71,7 @@
       else {
           document.getElementById('barChart').style.display = 'none';
           document.getElementById('pieChart').style.display = 'block';
-          document.getElementById('chartToggler').innerHTML = "Click For Bar Chart";   
+          document.getElementById('chartToggler').innerHTML = "Click for Bar Chart";   
       }
     }
   }
