@@ -151,7 +151,7 @@ public class DatasetResource
         String dataset, Record record )
     {
         try {
-            this.recordDAO.save( record, dataset );
+            this.recordDAO.save( dataset, record );
             return Response.ok().build();
         } catch ( DatasetNotFoundException e ) {
             return ResourceUtil.buildErrorEntity( e.getMessage(), Response.Status.NOT_FOUND );

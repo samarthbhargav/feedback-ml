@@ -2,10 +2,8 @@ package com.feedback.back.dao;
 
 import com.feedback.back.config.Constants;
 import com.feedback.back.entities.Dataset;
-import com.feedback.back.entities.DatasetStats;
 import com.feedback.back.entities.Record;
 import com.feedback.back.entities.RecordStats;
-import com.feedback.back.entities.api.DatasetStatistics;
 import com.feedback.back.entities.api.RecordStatistics;
 import com.feedback.back.entities.api.RecordsPage;
 import com.feedback.back.except.DatasetNotFoundException;
@@ -13,6 +11,8 @@ import com.feedback.back.mongo.MongoConnector;
 import com.mongodb.Block;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.Filters;
+import com.mongodb.client.model.ReplaceOneModel;
+import com.mongodb.client.model.WriteModel;
 import org.bson.Document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,6 +22,10 @@ import java.util.*;
 
 /**
  * Created by Samarth Bhargav on 30/6/15.
+ *
+ * TODO Add documentation
+ * TODO Add INFO Logging
+ * TODO Add DEBUG Logging
  */
 public class RecordDAO
 {
@@ -35,8 +39,8 @@ public class RecordDAO
     }
 
 
-    private Map<String, MongoCollection<Document>> collections = new HashMap<>();
-    private MetaDataDAO metaDataDAO = MetaDataDAO.getInstance();
+    private final Map<String, MongoCollection<Document>> collections = new HashMap<>();
+    private final MetaDataDAO metaDataDAO = MetaDataDAO.getInstance();
 
 
     private RecordDAO()
@@ -45,9 +49,10 @@ public class RecordDAO
     }
 
 
-    private void reloadCollections()
+    protected void reloadDatasets()
     {
         List<Dataset> datasets = this.metaDataDAO.getDatasets();
+        this.collections.clear();
         LOG.info( "Found data sets: {}", datasets );
         for ( Dataset dataset : datasets ) {
             collections
@@ -60,7 +65,7 @@ public class RecordDAO
     private MongoCollection<Document> getCollection( String dataset ) throws DatasetNotFoundException
     {
         if ( !this.collections.containsKey( dataset ) ) {
-            reloadCollections();
+            reloadDatasets();
             // Even after reloading if a dataset isn't present - throw an exception
             if ( !this.collections.containsKey( dataset ) ) {
                 throw new DatasetNotFoundException( "dataset " + dataset + " not found!" );
@@ -70,16 +75,25 @@ public class RecordDAO
     }
 
 
-    public void insert( Record record, String dataset ) throws DatasetNotFoundException
-    {
-        this.getCollection( dataset ).insertOne( record.toDocument() );
-    }
-
-
-    public void save( Record record, String dataset ) throws DatasetNotFoundException
+    public void save( String dataset, Record record ) throws DatasetNotFoundException
     {
         this.getCollection( dataset )
             .replaceOne( new Document( "_id", record.getId() ), record.toDocument(), DAOUtil.UPSERT_TRUE );
+    }
+
+
+    public void saveBulk( String dataset, List<Record> records ) throws DatasetNotFoundException
+    {
+        if ( records.isEmpty() ) {
+            return;
+        }
+        List<WriteModel<Document>> replaceOneModels = new ArrayList<>( records.size() );
+        for ( Record record : records ) {
+            replaceOneModels
+                .add( new ReplaceOneModel( new Document( "_id", record.getId() ), record.toDocument(), DAOUtil.UPSERT_TRUE ) );
+        }
+
+        this.getCollection( dataset ).bulkWrite( replaceOneModels );
     }
 
 
@@ -91,6 +105,9 @@ public class RecordDAO
 
     public RecordsPage getRecordsPage( String dataset, int skip, int limit ) throws DatasetNotFoundException
     {
+        if ( skip < 0 || limit < 0 ) {
+            throw new IllegalArgumentException( "invalid skip or limit" );
+        }
         List<Document> documents = new ArrayList<>();
         this.getCollection( dataset ).find().skip( skip ).limit( limit ).into( documents );
         List<Record> records = new ArrayList<>( documents.size() );
@@ -102,22 +119,6 @@ public class RecordDAO
         recordsPage.setSkip( skip );
         recordsPage.setRecords( records );
         return recordsPage;
-    }
-
-
-    public DatasetStatistics getDatasetStatistics()
-    {
-        final List<DatasetStats> list = new ArrayList<>();
-
-        for ( Map.Entry<String, MongoCollection<Document>> entry : this.collections.entrySet() ) {
-            DatasetStats datasetStats = new DatasetStats();
-            datasetStats.setDataset( entry.getKey() );
-            datasetStats.setNumberOfRecords( entry.getValue().count() );
-            list.add( datasetStats );
-        }
-        DatasetStatistics statistics = new DatasetStatistics();
-        statistics.setDatasetStatistics( list );
-        return statistics;
     }
 
 

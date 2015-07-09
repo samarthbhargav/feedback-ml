@@ -2,6 +2,8 @@ package com.feedback.back.dao;
 
 import com.feedback.back.config.Constants;
 import com.feedback.back.entities.Dataset;
+import com.feedback.back.entities.DatasetStats;
+import com.feedback.back.entities.api.DatasetStatistics;
 import com.feedback.back.except.DatasetNotFoundException;
 import com.feedback.back.mongo.MongoConnector;
 import com.mongodb.Block;
@@ -64,6 +66,15 @@ public class MetaDataDAO
     }
 
 
+    public void removeDataset( String datasetName )
+    {
+        // TODO add test
+        this.datasetMetadata.deleteOne( new Document( "_id", datasetName ) );
+        RecordDAO.getInstance().reloadDatasets();
+        // TODO Remove records as well
+    }
+
+
     public Dataset getDataset( String datasetName ) throws DatasetNotFoundException
     {
         Document document = this.datasetMetadata.find( new Document( "_id", datasetName ) ).first();
@@ -77,5 +88,23 @@ public class MetaDataDAO
     public List<String> getFields( String datasetName ) throws DatasetNotFoundException
     {
         return this.getDataset( datasetName ).getFields();
+    }
+
+
+    public DatasetStatistics getDatasetStatistics()
+    {
+        // TODO add tests
+        final List<DatasetStats> list = new ArrayList<>();
+
+        for ( Dataset dataset : this.getDatasets() ) {
+            DatasetStats datasetStats = new DatasetStats();
+            datasetStats.setDataset( dataset.getName() );
+            datasetStats
+                .setNumberOfRecords( MongoConnector.getDB( Constants.RECORDS_DB ).getCollection( dataset.getName() ).count() );
+            list.add( datasetStats );
+        }
+        DatasetStatistics statistics = new DatasetStatistics();
+        statistics.setDatasetStatistics( list );
+        return statistics;
     }
 }

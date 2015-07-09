@@ -1,5 +1,6 @@
 package com.feedback.back.resources;
 
+import com.feedback.back.dao.MetaDataDAO;
 import com.feedback.back.dao.RecordDAO;
 import com.feedback.back.except.DatasetNotFoundException;
 
@@ -17,7 +18,8 @@ import javax.ws.rs.core.Response;
 @Path ("stats")
 public class StatsResource
 {
-    RecordDAO recordDAO = RecordDAO.getInstance();
+    private final RecordDAO recordDAO = RecordDAO.getInstance();
+    private final MetaDataDAO metaDataDAO = MetaDataDAO.getInstance();
 
 
     @Path ("/datasets")
@@ -25,7 +27,7 @@ public class StatsResource
     @Produces (MediaType.APPLICATION_JSON)
     public Response getDatasetStatistics()
     {
-        return Response.ok( this.recordDAO.getDatasetStatistics() ).build();
+        return Response.ok( this.metaDataDAO.getDatasetStatistics() ).build();
     }
 
 
