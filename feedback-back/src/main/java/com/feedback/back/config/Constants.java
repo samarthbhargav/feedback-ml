@@ -9,6 +9,12 @@ import com.typesafe.config.ConfigFactory;
  */
 public class Constants
 {
+    private Constants()
+    {
+
+    }
+
+
     public static final Config config = ConfigFactory.load();
 
     public static final String RECORDS_DB = config.getString( "mongo.db.records" );
