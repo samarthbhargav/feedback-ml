@@ -73,6 +73,7 @@ public class RecordDAO
 
     public RecordsPage getRecordsPage( String dataset, int skip, int limit )
     {
+        // TODO Return total number of records as well      
         List<Document> documents = new ArrayList<>();
         this.getCollection( dataset ).find().skip( skip ).limit( limit ).into( documents );
         List<Record> records = new ArrayList<>( documents.size() );

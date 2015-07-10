@@ -1,6 +1,6 @@
 {% extends "layout.html" %}
 {% block body %}
-  
+
   <div class="uk-grid" data-uk-grid-margin>
       <div class="uk-width-1-1">
           <h2>Records</h2>
@@ -16,29 +16,22 @@
         <tr>
             <th>ID</th>
             <th>Label</th>
-            <th>Contents</th>
+            <th>Edit/View</th>
+            <th>Delete</th>
         </tr>
     </thead>
     <tbody>
     {% for record in records %}
         <tr>
             <td>{{record.id}}</td>
-            
+
             {% if record.label %}
               <td class="uk-text-bold">{{record.label}}</id>
             {% else %}
               <td id = "label-name-td" class="uk-text-muted"><button class="uk-button uk-button-success" data-uk-modal="{target:'#addLabel'}" type="button">Add Label</button></td>
             {% endif %}
-            
-            {% if record.content %}
-              {% if record.content.python %} <td data-uk-tooltip title="{{record}}">{{record.content.python}}</td>
-              {% else %} <td data-uk-tooltip title="{{record}}"></td>
-              {% endif %}
-            {% else %}
-              <td class="uk-text-bold" data-uk-tooltip title="{{record}}"> </td>
-            {% endif %}
-            
-            <td><button class="uk-button uk-button-primary" data-uk-modal="{target:'#editRecord'}" type="button">Edit</button></td> 
+
+            <td><button class="uk-button uk-button-primary" data-uk-modal="{target:'#editRecord{{record.id}}'}" type="button">Edit</button></td>
             <td><button class="uk-button uk-button-danger" data-uk-modal="{target:'#deleteRecord'}" type="button">Delete</button></td>
         </tr>
     {% endfor %}
@@ -58,19 +51,37 @@
     </div>
   </div>
 
-  <!-- divison of modal to edit the record parameters -->
-  <div id="editRecord" class="uk-modal">
-    <div class="uk-modal-dialog">
-        <a class="uk-modal-close uk-close"></a>
-        <form class="uk-form">
-          <legend>Edit Record</legend>
-          <input id="label-name" type="text" placeholder="ID Value" autofocus><br><br>
-          <input id="label-name" type="text" placeholder="Dataset"><br><br>
-          <input id="label-name" type="text" placeholder="Label / Comments (Optional)"><br><br>
-          <button id="add-label-btn" class="uk-button uk-button-primary" onclick="addLabelValue()">Submit</button>
-        </form>
+
+  {% for record in records%}  
+    <div id="editRecord{{record.id}}" class="uk-modal">
+      <div class="uk-modal-dialog">
+          <a class="uk-modal-close uk-close"></a>
+          <form class="uk-form uk-form-stacked">
+            <legend>Edit Record {{record.id}}</legend>
+            <div class="uk-form-row">
+              <label class="uk-form-label" for="ID">Record ID</label>
+              <input id="ID" type="text" placeholder="ID" value="{{record.id}}" autofocus disabled>
+            </div>
+            <div class="uk-form-row">
+              <label class="uk-form-label" for="label">Label</label>
+              <input id="label" type="text" placeholder="Label" value="{{record.label}}">
+            </div>
+            {% if record.content %}
+                {% for key, value in record.content.iteritems() %}
+                  <div class="uk-form-row">
+                    <label class="uk-form-label" for="content-{{key}}">Content - {{key}}</label>
+                    <input type='text' name='content-{{key}}' placeholder='Content - {{key}}' value={{value}} />
+                  </div>
+                {% endfor %}
+            {% endif %}
+            <div class="uk-form-row">
+              <button id="add-label-btn" class="uk-button uk-button-primary" onclick="console.log('moooo')">Submit</button>
+            </div>
+          </form>
+      </div>
     </div>
-  </div>
+  {% endfor %}
+
 
   <!-- divison of modal to delete a record -->
   <div id="deleteRecord" class="uk-modal">
