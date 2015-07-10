@@ -1,12 +1,30 @@
 {% extends "layout.html" %}
 {% block body %}
   <link rel="stylesheet" href="https://cdn.rawgit.com/novus/nvd3/v1.8.1/build/nv.d3.css">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js" charset="utf-8"></script> 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js" charset="utf-8"></script>
   <script src="{{ url_for('static', filename='js/nv.d3.js') }}"></script>
   <script src="{{ url_for('static', filename='js/charts.js') }}"></script>
 
+
+  <div class="uk-grid" data-uk-grid-margin>
+      <div class="uk-width-1-1">
+          <button class="uk-button uk-button-primary" id="chartToggle">Pie Chart</button>
+      </div>
+  </div>
+
+  <!-- chart divison -->
+  <div id="chartSVG">
+    <svg></svg>
+  </div>
+
+  <style>
+    #chartSVG svg{
+      height: 400px;
+    }
+  </style>
+
+
   <script>
-    
     // rendering pie chart
     var barChartData = [{
       key : "Dataset stats",
@@ -17,14 +35,14 @@
               label : "{{stat.label}}"
             {% else %}
               label : "Unlabelled"
-            {% endif %}  
+            {% endif %}
             ,
             value : {{stat.numberOfRecords}}
           },
         {% endfor %}
       ]
     }];
-    renderBarChart(barChartData, '#barChartSVG'); // function to render bar chart and data as the parameters
+    renderBarChart(barChartData, '#chartSVG'); // function to render bar chart and data as the parameters
 
     // rendering bar chart
     var pieChartData = [
@@ -35,51 +53,26 @@
                 label : "{{stat.label}}"
               {% else %}
                 label : "Unlabelled"
-              {% endif %}  
+              {% endif %}
               ,
               value : {{ stat.numberOfRecords }}
             },
           {% endfor %}
       ];
-      renderPieChart(pieChartData, "#pieChartSVG");
-      renderLinePlot('#simpleLinePlotSVG');
-      renderScatterPlot('#scatterPlotSVG');
+      // renderPieChart(pieChartData, "#chartSVG");
+      var active = "barChart";
+      $( "#chartToggle" ).click(function() {
+        // Remove all SVGs
+        d3.selectAll("svg > *").remove();
+        if(active == "barChart") {
+            active = "pieChart";
+            renderPieChart(pieChartData, "#chartSVG");
+            $("#chartToggle").text("Bar Chart");
+        } else {
+            active = "barChart";
+            renderBarChart(barChartData, "#chartSVG");
+            $("#chartToggle").text("Pie Chart");
+        }
+      });
   </script>
-
-  <!-- bar chart divison -->
-  <div id="barChart">
-    <div id="barChartSVG">
-      <svg></svg> 
-    </div>
-  </div>
-  <br>
-
-  <!-- pie chart divison -->
-  <div id="pieChart">
-    <div id="pieChartSVG">
-      <svg></svg>
-    </div>
-  </div> 
-
-  <div id="simpleLinePlot">
-    <div id="simpleLinePlotSVG">
-      <svg></svg>
-    </div>
-  </div> 
-
-  <div id="scatterPlot">
-    <div id="scatterPlotSVG">
-      <svg></svg>
-    </div>
-  </div> 
-
-  </script>
-  <style>
-    #pieChartSVG, #barChartSVG svg, #simpleLinePlotSVG, #scatterPlotSVG {
-      height: 400px;
-    }
-    #pieChart{
-      display: hidden;
-    }
-  </style>
 {% endblock %}

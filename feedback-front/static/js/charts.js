@@ -15,7 +15,7 @@ function renderBarChart(data, chartDiv){
 
     d3.select(chartDiv + ' svg')
       .datum(data)
-      .transition().duration(500)
+      .transition().duration(1000)
       .call(chart)
       ;
 
@@ -24,13 +24,13 @@ function renderBarChart(data, chartDiv){
     return chart;
   });
 }
-          
+
 /**
  * @function renderPieChart will Render a Pie Chart.
  * @param {JSON} data - JSON data as input to the chart, JSON format {key, value}
  * @param {HTML ID} chartDiv - Division which contains the rendered chart.
  * @return {chart} chart- Rendered Chart.
- */          
+ */
 function renderPieChart(data, chartDiv){
   nv.addGraph(function() {
     var chart = nv.models.pieChart()
@@ -45,7 +45,7 @@ function renderPieChart(data, chartDiv){
 
       d3.select(chartDiv+ ' svg')
         .datum(data)
-        .transition().duration(350)
+        .transition().duration(1000)
         .call(chart)
         ;
 
