@@ -2,7 +2,6 @@
 {% block body %}
   <link rel="stylesheet" href="https://cdn.rawgit.com/novus/nvd3/v1.8.1/build/nv.d3.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js" charset="utf-8"></script> 
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
   <script src="{{ url_for('static', filename='js/nv.d3.js') }}"></script>
   <script src="{{ url_for('static', filename='js/charts.js') }}"></script>
 
@@ -43,6 +42,8 @@
           {% endfor %}
       ];
       renderPieChart(pieChartData, "#pieChartSVG");
+      renderLinePlot('#simpleLinePlotSVG');
+      renderScatterPlot('#scatterPlotSVG');
   </script>
 
   <!-- bar chart divison -->
@@ -58,33 +59,27 @@
     <div id="pieChartSVG">
       <svg></svg>
     </div>
-  </div>  
+  </div> 
 
-  <!-- Javascript for toggling the charts -->
-  <script>
-  function switchCharts() {
-    if (document.getElementById('barChart')) {
-      if (document.getElementById('barChart').style.display == 'none') {
-          document.getElementById('barChart').style.display = 'block';
-          document.getElementById('pieChart').style.display = 'none';
-          document.getElementById('chartToggler').innerHTML = "Click For Pie Chart";
-      }
-      else {
-          document.getElementById('barChart').style.display = 'none';
-          document.getElementById('pieChart').style.display = 'block';
-          document.getElementById('chartToggler').innerHTML = "Click For Bar Chart";   
-      }
-    }
-  }
+  <div id="simpleLinePlot">
+    <div id="simpleLinePlotSVG">
+      <svg></svg>
+    </div>
+  </div> 
+
+  <div id="scatterPlot">
+    <div id="scatterPlotSVG">
+      <svg></svg>
+    </div>
+  </div> 
 
   </script>
   <style>
-    #pieChartSVG, #barChartSVG svg {
+    #pieChartSVG, #barChartSVG svg, #simpleLinePlotSVG, #scatterPlotSVG {
       height: 400px;
     }
     #pieChart{
       display: hidden;
     }
   </style>
-  <button id="chartToggler" class="uk-button uk-button-primary" onclick="switchCharts();">Chart</button>
 {% endblock %}
