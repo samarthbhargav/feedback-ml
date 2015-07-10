@@ -13,6 +13,7 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.ReplaceOneModel;
 import com.mongodb.client.model.WriteModel;
+import com.mongodb.client.result.DeleteResult;
 import org.bson.Document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,8 +56,8 @@ public class RecordDAO
         this.collections.clear();
         LOG.info( "Found data sets: {}", datasets );
         for ( Dataset dataset : datasets ) {
-            collections
-                .put( dataset.getName(), MongoConnector.getDB( Constants.RECORDS_DB ).getCollection( dataset.getName() ) );
+            collections.put( dataset.getName(),
+                MongoConnector.getDB( Constants.MONGO.RECORDS_DB ).getCollection( dataset.getName() ) );
         }
         LOG.info( "Loaded {} data sets", this.collections.size() );
     }
@@ -94,6 +95,27 @@ public class RecordDAO
         }
 
         this.getCollection( dataset ).bulkWrite( replaceOneModels );
+    }
+
+
+    public DeleteResult remove( String dataset, String id ) throws DatasetNotFoundException
+    {
+        // TODO Write test cases
+        return this.getCollection( dataset ).deleteOne( new Document( "_id", id ) );
+    }
+
+
+    public DeleteResult removeBulk( String dataset, List<String> ids ) throws DatasetNotFoundException
+    {
+        // TODO Write test cases
+        return this.getCollection( dataset ).deleteMany( new Document( "_id", new Document( "$in", ids ) ) );
+    }
+
+
+    public DeleteResult removeAll( String dataset ) throws DatasetNotFoundException
+    {
+        // TODO Write test cases
+        return this.getCollection( dataset ).deleteMany( new Document() );
     }
 
 

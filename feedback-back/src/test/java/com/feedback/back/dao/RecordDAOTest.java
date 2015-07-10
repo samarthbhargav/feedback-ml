@@ -25,8 +25,8 @@ import java.util.Map;
  */
 public class RecordDAOTest
 {
-    private static MongoDatabase META_DB = MongoConnector.getDB( Constants.META_DATA_DB );
-    private static MongoDatabase DB = MongoConnector.getDB( Constants.RECORDS_DB );
+    private static MongoDatabase META_DB = MongoConnector.getDB( Constants.MONGO.META_DATA_DB );
+    private static MongoDatabase DB = MongoConnector.getDB( Constants.MONGO.RECORDS_DB );
     private static final String DATASET = "dataset";
 
 

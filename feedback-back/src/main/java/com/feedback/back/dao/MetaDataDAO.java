@@ -18,6 +18,10 @@ import java.util.List;
 
 /**
  * Created by Samarth Bhargav on 6/7/15.
+ *
+ * TODO Add documentation
+ * TODO Add INFO Logging
+ * TODO Add DEBUG Logging
  */
 public class MetaDataDAO
 {
@@ -26,8 +30,8 @@ public class MetaDataDAO
     private static final MetaDataDAO INSTANCE = new MetaDataDAO();
 
 
-    private MongoCollection<Document> datasetMetadata = MongoConnector.getDB( Constants.META_DATA_DB )
-        .getCollection( Constants.COLLECTIONS_DATASET_METADATA );
+    private MongoCollection<Document> datasetMetadata = MongoConnector.getDB( Constants.MONGO.META_DATA_DB )
+        .getCollection( Constants.MONGO.COLLECTIONS_DATASET_METADATA );
 
 
     private MetaDataDAO()
@@ -66,12 +70,12 @@ public class MetaDataDAO
     }
 
 
-    public void removeDataset( String datasetName )
+    public void removeDataset( String datasetName ) throws DatasetNotFoundException
     {
         // TODO add test
+        RecordDAO.getInstance().removeAll( datasetName );
         this.datasetMetadata.deleteOne( new Document( "_id", datasetName ) );
         RecordDAO.getInstance().reloadDatasets();
-        // TODO Remove records as well
     }
 
 
@@ -99,8 +103,8 @@ public class MetaDataDAO
         for ( Dataset dataset : this.getDatasets() ) {
             DatasetStats datasetStats = new DatasetStats();
             datasetStats.setDataset( dataset.getName() );
-            datasetStats
-                .setNumberOfRecords( MongoConnector.getDB( Constants.RECORDS_DB ).getCollection( dataset.getName() ).count() );
+            datasetStats.setNumberOfRecords(
+                MongoConnector.getDB( Constants.MONGO.RECORDS_DB ).getCollection( dataset.getName() ).count() );
             list.add( datasetStats );
         }
         DatasetStatistics statistics = new DatasetStatistics();

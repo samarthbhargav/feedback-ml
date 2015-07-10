@@ -19,7 +19,7 @@ import java.util.List;
  */
 public class MetaDataDAOTest
 {
-    private static MongoDatabase DB = MongoConnector.getDB( Constants.META_DATA_DB );
+    private static MongoDatabase DB = MongoConnector.getDB( Constants.MONGO.META_DATA_DB );
 
 
     @After

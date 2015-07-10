@@ -1,8 +1,13 @@
 package com.feedback.back.mongo;
 
+import com.feedback.back.config.Constants;
+import com.feedback.util.Util;
 import com.mongodb.MongoClient;
-import com.mongodb.MongoClientURI;
+import com.mongodb.MongoCredential;
+import com.mongodb.ServerAddress;
 import com.mongodb.client.MongoDatabase;
+
+import java.util.Arrays;
 
 
 /**
@@ -12,13 +17,19 @@ public enum MongoConnector
 {
     INSTANCE;
 
-    private MongoClient client;
+    private final MongoClient client;
 
 
     private MongoConnector()
     {
-        // TODO make this configurable
-        client = new MongoClient( new MongoClientURI( "mongodb://localhost:27017" ) );
+        if ( Util.isNullOrEmpty( Constants.MONGO.USERNAME ) ) {
+            client = new MongoClient( Constants.MONGO.HOST, Constants.MONGO.PORT );
+        } else {
+            final MongoCredential credential = MongoCredential
+                .createCredential( Constants.MONGO.USERNAME, Constants.MONGO.AUTH_DB, Constants.MONGO.PASSWORD.toCharArray() );
+            client = new MongoClient( new ServerAddress( Constants.MONGO.HOST, Constants.MONGO.PORT ),
+                Arrays.asList( credential ) );
+        }
     }
 
 
