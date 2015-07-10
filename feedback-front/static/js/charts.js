@@ -43,5 +43,54 @@ function renderPieChart(data, chartDiv){
   });
 }
 
+// function to render simple line plot
+function renderLinePlot(plottingData, chartDiv){
+  nv.addGraph(function() {
+    var chart = nv.models.lineChart()
+      .useInteractiveGuideline(true)
+      ;
+
+    chart.xAxis
+      .axisLabel('Label')
+      .tickFormat(d3.format(',r'))
+      ;
+
+    chart.yAxis
+      .axisLabel('Value')
+      .tickFormat(d3.format('.02f'))
+      ;
+
+    d3.select(chartDiv+' svg')
+      .datum(plottingData)
+      .transition().duration(500)
+      .call(chart)
+      ;
+
+    nv.utils.windowResize(chart.update);
+
+    return chart;
+  });
+}
 
 
+//function to render scatter plots
+function renderScatterPlot(plottingData, chartDiv){
+  nv.addGraph(function() {
+    var chart = nv.models.scatterChart()
+                  .showDistX(true)
+                  .showDistY(true)
+                  .color(d3.scale.category10().range());
+
+    chart.xAxis.tickFormat(d3.format('.02f'));
+    chart.yAxis.tickFormat(d3.format('.02f'));
+
+    d3.select(chartDiv+' svg')
+        .datum(plottingData)
+      .transition().duration(500)
+        .call(chart);
+
+    nv.utils.windowResize(chart.update);
+
+    return chart;
+  });
+}
