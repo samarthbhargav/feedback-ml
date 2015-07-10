@@ -1,4 +1,9 @@
-// function renderBarChart will render the bar chart
+/**
+ * @function renderBarChart will Render a Bar Chart.
+ * @param {JSON} data - JSON data as input to the chart, JSON format {key, value}
+ * @param {HTML ID} chartDiv - Division which contains the rendered chart.
+ * @return {chart} - chart will be returned by the function after rendering.
+ */
 function renderBarChart(data, chartDiv){
   nv.addGraph(function() {
     var chart = nv.models.discreteBarChart()
@@ -20,7 +25,12 @@ function renderBarChart(data, chartDiv){
   });
 }
           
-// function renderPieChart will render Pie Chart          
+/**
+ * @function renderPieChart will Render a Pie Chart.
+ * @param {JSON} data - JSON data as input to the chart, JSON format {key, value}
+ * @param {HTML ID} chartDiv - Division which contains the rendered chart.
+ * @return {chart} chart- Rendered Chart.
+ */          
 function renderPieChart(data, chartDiv){
   nv.addGraph(function() {
     var chart = nv.models.pieChart()
@@ -43,8 +53,36 @@ function renderPieChart(data, chartDiv){
   });
 }
 
-// function to render simple line plot
-function renderLinePlot(plottingData, chartDiv){
+/**
+ * @function renderBarChart will Render a Bar Chart.
+ * @param {JSON} plottingData - JSON data as input to the chart, JSON format {key, value}
+ * @param {HTML ID} chartDiv - Division which contains the rendered chart.
+ * @return {chart} - chart will be returned by the function after rendering.
+ */
+function renderLinePlot(chartDiv){
+  function plottingData() {
+    var sin = [],
+        cos = [];
+
+    for (var i = 0; i < 100; i++) {
+      sin.push({x: i, y: Math.sin(i/10)});
+      cos.push({x: i, y: .5 * Math.cos(i/10)});
+    }
+
+    return [
+      {
+        values: sin,
+        key: 'Sine Wave',
+        color: '#ff7f0e'
+      },
+      {
+        values: cos,
+        key: 'Cosine Wave',
+        color: '#2ca02c'
+      }
+    ];
+  }
+
   nv.addGraph(function() {
     var chart = nv.models.lineChart()
       .useInteractiveGuideline(true)
@@ -61,7 +99,7 @@ function renderLinePlot(plottingData, chartDiv){
       ;
 
     d3.select(chartDiv+' svg')
-      .datum(plottingData)
+      .datum(plottingData())
       .transition().duration(500)
       .call(chart)
       ;
@@ -72,9 +110,37 @@ function renderLinePlot(plottingData, chartDiv){
   });
 }
 
+/**
+ * @function renderBarChart will Render a Bar Chart.
+ * @param {JSON} data - JSON data as input to the chart, JSON format {key, value}
+ * @param {HTML ID} chartDiv - Division which contains the rendered chart.
+ * @return {chart} - chart will be returned by the function after rendering.
+ */
+function renderScatterPlot(chartDiv){
+  function data(groups, points) {
+    var data = [],
+        shapes = ['circle', 'cross', 'triangle-up', 'triangle-down', 'diamond', 'square'],
+        random = d3.random.normal();
 
-//function to render scatter plots
-function renderScatterPlot(plottingData, chartDiv){
+    for (i = 0; i < groups; i++) {
+      data.push({
+        key: 'Group ' + i,
+        values: []
+      });
+
+      for (j = 0; j < points; j++) {
+        data[i].values.push({
+          x: random()
+        , y: random()
+        , size: Math.random()
+        //, shape: shapes[j % 6]
+        });
+      }
+    }
+
+    return data;
+  }
+
   nv.addGraph(function() {
     var chart = nv.models.scatterChart()
                   .showDistX(true)
@@ -85,7 +151,7 @@ function renderScatterPlot(plottingData, chartDiv){
     chart.yAxis.tickFormat(d3.format('.02f'));
 
     d3.select(chartDiv+' svg')
-        .datum(plottingData)
+        .datum(data(4,40))
       .transition().duration(500)
         .call(chart);
 

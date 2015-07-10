@@ -42,6 +42,8 @@
           {% endfor %}
       ];
       renderPieChart(pieChartData, "#pieChartSVG");
+      renderLinePlot('#simpleLinePlotSVG');
+      renderScatterPlot('#scatterPlotSVG');
   </script>
 
   <!-- bar chart divison -->
@@ -57,33 +59,27 @@
     <div id="pieChartSVG">
       <svg></svg>
     </div>
-  </div>  
+  </div> 
 
-  <!-- Javascript for toggling the charts -->
-  <script>
-  function switchCharts() {
-    if (document.getElementById('barChart')) {
-      if (document.getElementById('barChart').style.display == 'none') {
-          document.getElementById('barChart').style.display = 'block';
-          document.getElementById('pieChart').style.display = 'none';
-          document.getElementById('chartToggler').innerHTML = "Click For Pie Chart";
-      }
-      else {
-          document.getElementById('barChart').style.display = 'none';
-          document.getElementById('pieChart').style.display = 'block';
-          document.getElementById('chartToggler').innerHTML = "Click for Bar Chart";   
-      }
-    }
-  }
+  <div id="simpleLinePlot">
+    <div id="simpleLinePlotSVG">
+      <svg></svg>
+    </div>
+  </div> 
+
+  <div id="scatterPlot">
+    <div id="scatterPlotSVG">
+      <svg></svg>
+    </div>
+  </div> 
 
   </script>
   <style>
-    #pieChartSVG, #barChartSVG svg {
+    #pieChartSVG, #barChartSVG svg, #simpleLinePlotSVG, #scatterPlotSVG {
       height: 400px;
     }
     #pieChart{
       display: hidden;
     }
   </style>
-  <button id="chartToggler" class="uk-button uk-button-primary" onclick="switchCharts();">Chart</button>
 {% endblock %}
