@@ -1,5 +1,7 @@
 package com.feedback.back.entities;
 
+import com.feedback.back.except.InvalidEntityException;
+import com.feedback.util.Util;
 import org.bson.Document;
 
 import java.util.Map;
@@ -13,6 +15,7 @@ public class Record
     private String label;
     private String id;
     private Map<String, String> content;
+    private Long lastModified;
 
 
     public String getId()
@@ -51,26 +54,50 @@ public class Record
     }
 
 
-    public Document toDocument()
+    public Long getLastModified()
     {
+        return lastModified;
+    }
+
+
+    public void setLastModified( Long lastModified )
+    {
+        this.lastModified = lastModified;
+    }
+
+
+    public Document toDocument() throws InvalidEntityException
+    {
+        this.validate();
         Document document = new Document();
         document.put( "_id", this.getId() );
         document.put( "label", this.getLabel() );
         document.put( "content", this.getContent() );
+        document.put( "lastModified", this.getLastModified() );
         return document;
     }
 
 
-    public static Record fromDocument( Document object )
+    public static Record fromDocument( Document object ) throws InvalidEntityException
     {
         if ( object == null ) {
             return null;
         }
         Record record = new Record();
         record.setContent( (Map<String, String>) object.get( "content" ) );
-        record.setId( (String) object.get( "_id" ) );
+        record.setId( object.getString( "_id" ) );
         record.setLabel( (String) object.get( "label" ) );
+        record.setLastModified( object.getLong( "lastModified" ) );
+        record.validate();
         return record;
+    }
+
+
+    private void validate() throws InvalidEntityException
+    {
+        if ( Util.isNullOrEmpty( this.getId() ) ) {
+            throw new InvalidEntityException( "id field cannot be null" );
+        }
     }
 
 
@@ -81,6 +108,7 @@ public class Record
             "label='" + label + '\'' +
             ", id='" + id + '\'' +
             ", content=" + content +
+            ", lastModified=" + lastModified +
             '}';
     }
 }

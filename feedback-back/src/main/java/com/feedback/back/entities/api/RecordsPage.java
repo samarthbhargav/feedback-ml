@@ -1,4 +1,6 @@
-package com.feedback.back.entities;
+package com.feedback.back.entities.api;
+
+import com.feedback.back.entities.Record;
 
 import java.util.List;
 
@@ -10,6 +12,7 @@ public class RecordsPage
 {
     private int skip;
     private int limit;
+    private long totalNumberOfRecords;
     private List<Record> records;
 
 
@@ -37,6 +40,18 @@ public class RecordsPage
     }
 
 
+    public long getTotalNumberOfRecords()
+    {
+        return totalNumberOfRecords;
+    }
+
+
+    public void setTotalNumberOfRecords( long totalNumberOfRecords )
+    {
+        this.totalNumberOfRecords = totalNumberOfRecords;
+    }
+
+
     public List<Record> getRecords()
     {
         return records;
@@ -46,5 +61,17 @@ public class RecordsPage
     public void setRecords( List<Record> records )
     {
         this.records = records;
+    }
+
+
+    @Override
+    public String toString()
+    {
+        return "RecordsPage{" +
+            "skip=" + skip +
+            ", limit=" + limit +
+            ", totalNumberOfRecords=" + totalNumberOfRecords +
+            ", records=" + records +
+            '}';
     }
 }
