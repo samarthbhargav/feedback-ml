@@ -5,6 +5,7 @@ import com.feedback.back.dao.RecordDAO;
 import com.feedback.back.entities.Dataset;
 import com.feedback.back.entities.Record;
 import com.feedback.back.except.DatasetNotFoundException;
+import com.feedback.back.except.InvalidEntityException;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -121,6 +122,9 @@ public class DatasetResource
             return Response.ok( recordDAO.getRecordsPage( dataset, skipValue, limitValue ) ).build();
         } catch ( DatasetNotFoundException e ) {
             return ResourceUtil.buildErrorEntity( e.getMessage(), Response.Status.NOT_FOUND );
+        } catch ( InvalidEntityException e ) {
+            // TODO log this
+            return ResourceUtil.buildErrorEntity( e.getMessage(), Response.Status.INTERNAL_SERVER_ERROR );
         }
     }
 
@@ -138,6 +142,9 @@ public class DatasetResource
             return Response.ok( recordDAO.getRecord( dataset, id ) ).build();
         } catch ( DatasetNotFoundException e ) {
             return ResourceUtil.buildErrorEntity( e.getMessage(), Response.Status.NOT_FOUND );
+        } catch ( InvalidEntityException e ) {
+            // TODO log this
+            return ResourceUtil.buildErrorEntity( e.getMessage(), Response.Status.INTERNAL_SERVER_ERROR );
         }
     }
 
@@ -155,6 +162,8 @@ public class DatasetResource
             return Response.ok().build();
         } catch ( DatasetNotFoundException e ) {
             return ResourceUtil.buildErrorEntity( e.getMessage(), Response.Status.NOT_FOUND );
+        } catch ( InvalidEntityException e ) {
+            return ResourceUtil.buildErrorEntity( e.getMessage(), Response.Status.BAD_REQUEST );
         }
     }
 

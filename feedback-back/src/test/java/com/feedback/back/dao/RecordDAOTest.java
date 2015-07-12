@@ -7,17 +7,16 @@ import com.feedback.back.entities.RecordStats;
 import com.feedback.back.entities.api.RecordStatistics;
 import com.feedback.back.entities.api.RecordsPage;
 import com.feedback.back.except.DatasetNotFoundException;
+import com.feedback.back.except.InvalidEntityException;
 import com.feedback.back.mongo.MongoConnector;
 import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.result.DeleteResult;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 
 /**
@@ -176,6 +175,7 @@ public class RecordDAOTest
         Assert.assertNotNull( recordsPage );
         Assert.assertNotNull( recordsPage.getRecords() );
         Assert.assertTrue( recordsPage.getRecords().isEmpty() );
+        Assert.assertEquals( recordsPage.getTotalNumberOfRecords(), 0 );
 
         // Add 100 records
         int howMany = 100;
@@ -197,7 +197,7 @@ public class RecordDAOTest
         Assert.assertTrue( skip == recordsPage.getSkip() );
         Assert.assertEquals( skip.toString(), recordsPage.getRecords().get( 0 ).getId() );
         Assert.assertEquals( String.valueOf( skip + limit - 1 ), recordsPage.getRecords().get( limit - 1 ).getId() );
-
+        Assert.assertEquals( recordsPage.getTotalNumberOfRecords(), 100 );
 
         skip = 50;
         limit = 20;
@@ -208,8 +208,7 @@ public class RecordDAOTest
         Assert.assertTrue( skip == recordsPage.getSkip() );
         Assert.assertEquals( skip.toString(), recordsPage.getRecords().get( 0 ).getId() );
         Assert.assertEquals( String.valueOf( skip + limit - 1 ), recordsPage.getRecords().get( limit - 1 ).getId() );
-
-
+        Assert.assertEquals( recordsPage.getTotalNumberOfRecords(), 100 );
         // There are only 100 records, so check if only 50 are there
         skip = 50;
         limit = 100;
@@ -220,7 +219,7 @@ public class RecordDAOTest
         Assert.assertTrue( skip == recordsPage.getSkip() );
         Assert.assertEquals( skip.toString(), recordsPage.getRecords().get( 0 ).getId() );
         Assert.assertEquals( String.valueOf( howMany - 1 ), recordsPage.getRecords().get( howMany - skip - 1 ).getId() );
-
+        Assert.assertEquals( recordsPage.getTotalNumberOfRecords(), 100 );
 
         skip = 100;
         limit = 100;
@@ -228,6 +227,7 @@ public class RecordDAOTest
         Assert.assertNotNull( recordsPage );
         Assert.assertNotNull( recordsPage.getRecords() );
         Assert.assertTrue( recordsPage.getRecords().isEmpty() );
+        Assert.assertEquals( recordsPage.getTotalNumberOfRecords(), 100 );
     }
 
 
@@ -252,5 +252,49 @@ public class RecordDAOTest
 
         RecordsPage page = recordDAO.getRecordsPage( DATASET, 0, 1000 );
         Assert.assertEquals( howMany, page.getRecords().size() );
+    }
+
+
+    @Test
+    public void testRemove() throws Exception
+    {
+        createDataset();
+        RecordDAO recordDAO = RecordDAO.getInstance();
+
+        // Doesn't exist - no exception must be thrown
+        recordDAO.remove( DATASET, "id" );
+
+        // Save 10 records
+        int howMany = 10;
+        for ( Integer i = 0; i < howMany; i++ ) {
+            Record record = new Record();
+            record.setId( i.toString() );
+            Map<String, String> content = new HashMap<>();
+            content.put( "content-key", "content-value" );
+            record.setContent( content );
+            recordDAO.save( DATASET, record );
+        }
+
+        // Removing one document
+        DeleteResult result = recordDAO.remove( DATASET, "0" );
+        Assert.assertEquals( 1, result.getDeletedCount() );
+
+        // Remove bulk
+        List<String> toRemove = Arrays.asList( "1", "2" );
+        result = recordDAO.removeBulk( DATASET, toRemove );
+        Assert.assertEquals( toRemove.size(), result.getDeletedCount() );
+
+        // Remove the rest
+        result = recordDAO.removeAll( DATASET );
+        Assert.assertEquals( result.getDeletedCount(), howMany - toRemove.size() - 1 );
+    }
+
+
+    @Test (expected = InvalidEntityException.class)
+    public void testInvalidRecord() throws Exception
+    {
+        createDataset();
+        Record record = new Record();
+        RecordDAO.getInstance().save( DATASET, record );
     }
 }

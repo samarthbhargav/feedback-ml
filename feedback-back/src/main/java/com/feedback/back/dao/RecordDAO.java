@@ -7,6 +7,7 @@ import com.feedback.back.entities.RecordStats;
 import com.feedback.back.entities.api.RecordStatistics;
 import com.feedback.back.entities.api.RecordsPage;
 import com.feedback.back.except.DatasetNotFoundException;
+import com.feedback.back.except.InvalidEntityException;
 import com.feedback.back.mongo.MongoConnector;
 import com.mongodb.Block;
 import com.mongodb.client.MongoCollection;
@@ -76,14 +77,14 @@ public class RecordDAO
     }
 
 
-    public void save( String dataset, Record record ) throws DatasetNotFoundException
+    public void save( String dataset, Record record ) throws DatasetNotFoundException, InvalidEntityException
     {
         this.getCollection( dataset )
             .replaceOne( new Document( "_id", record.getId() ), record.toDocument(), DAOUtil.UPSERT_TRUE );
     }
 
 
-    public void saveBulk( String dataset, List<Record> records ) throws DatasetNotFoundException
+    public void saveBulk( String dataset, List<Record> records ) throws DatasetNotFoundException, InvalidEntityException
     {
         if ( records.isEmpty() ) {
             return;
@@ -100,32 +101,30 @@ public class RecordDAO
 
     public DeleteResult remove( String dataset, String id ) throws DatasetNotFoundException
     {
-        // TODO Write test cases
         return this.getCollection( dataset ).deleteOne( new Document( "_id", id ) );
     }
 
 
     public DeleteResult removeBulk( String dataset, List<String> ids ) throws DatasetNotFoundException
     {
-        // TODO Write test cases
         return this.getCollection( dataset ).deleteMany( new Document( "_id", new Document( "$in", ids ) ) );
     }
 
 
     public DeleteResult removeAll( String dataset ) throws DatasetNotFoundException
     {
-        // TODO Write test cases
         return this.getCollection( dataset ).deleteMany( new Document() );
     }
 
 
-    public Record getRecord( String dataset, String id ) throws DatasetNotFoundException
+    public Record getRecord( String dataset, String id ) throws DatasetNotFoundException, InvalidEntityException
     {
         return Record.fromDocument( this.getCollection( dataset ).find( Filters.and( Filters.eq( "_id", id ) ) ).first() );
     }
 
 
-    public RecordsPage getRecordsPage( String dataset, int skip, int limit ) throws DatasetNotFoundException
+    public RecordsPage getRecordsPage( String dataset, int skip, int limit )
+        throws DatasetNotFoundException, InvalidEntityException
     {
         if ( skip < 0 || limit < 0 ) {
             throw new IllegalArgumentException( "invalid skip or limit" );
@@ -140,6 +139,7 @@ public class RecordDAO
         recordsPage.setLimit( limit );
         recordsPage.setSkip( skip );
         recordsPage.setRecords( records );
+        recordsPage.setTotalNumberOfRecords( this.getCollection( dataset ).count() );
         return recordsPage;
     }
 

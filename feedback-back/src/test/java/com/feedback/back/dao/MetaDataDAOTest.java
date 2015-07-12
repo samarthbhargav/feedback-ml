@@ -2,6 +2,9 @@ package com.feedback.back.dao;
 
 import com.feedback.back.config.Constants;
 import com.feedback.back.entities.Dataset;
+import com.feedback.back.entities.DatasetStats;
+import com.feedback.back.entities.Record;
+import com.feedback.back.entities.api.DatasetStatistics;
 import com.feedback.back.except.DatasetNotFoundException;
 import com.feedback.back.mongo.MongoConnector;
 import com.mongodb.client.MongoDatabase;
@@ -19,7 +22,8 @@ import java.util.List;
  */
 public class MetaDataDAOTest
 {
-    private static MongoDatabase DB = MongoConnector.getDB( Constants.MONGO.META_DATA_DB );
+    private static MongoDatabase META_DB = MongoConnector.getDB( Constants.MONGO.META_DATA_DB );
+    private static MongoDatabase DB = MongoConnector.getDB( Constants.MONGO.RECORDS_DB );
 
 
     @After
@@ -28,6 +32,7 @@ public class MetaDataDAOTest
     {
         // Clean up after / before tests
         DB.drop();
+        META_DB.drop();
     }
 
 
@@ -124,4 +129,61 @@ public class MetaDataDAOTest
         MetaDataDAO.getInstance().getFields( "dataset-1" );
     }
 
+
+    @Test
+    public void testDatasetStatistics() throws Exception
+    {
+        MetaDataDAO metaDataDAO = MetaDataDAO.getInstance();
+        // For 0 datasets, it should be empty
+        DatasetStatistics statistics = metaDataDAO.getDatasetStatistics();
+        Assert.assertNotNull( statistics );
+        Assert.assertNotNull( statistics.getDatasetStatistics() );
+        Assert.assertTrue( statistics.getDatasetStatistics().isEmpty() );
+
+
+        // Add a dataset with 0 records
+        Dataset dataset = new Dataset();
+        dataset.setName( "dataset" );
+        metaDataDAO.save( dataset );
+
+        statistics = metaDataDAO.getDatasetStatistics();
+        Assert.assertEquals( 1, statistics.getDatasetStatistics().size() );
+        DatasetStats stats = statistics.getDatasetStatistics().get( 0 );
+        Assert.assertEquals( 0, stats.getNumberOfRecords() );
+        Assert.assertEquals( dataset.getName(), stats.getDataset() );
+
+        // Add one record
+        Record record = new Record();
+        record.setId( "Bleh" );
+        RecordDAO.getInstance().save( dataset.getName(), record );
+        statistics = metaDataDAO.getDatasetStatistics();
+        Assert.assertEquals( 1, statistics.getDatasetStatistics().size() );
+        stats = statistics.getDatasetStatistics().get( 0 );
+        Assert.assertEquals( 1, stats.getNumberOfRecords() );
+        Assert.assertEquals( dataset.getName(), stats.getDataset() );
+    }
+
+
+    @Test (expected = DatasetNotFoundException.class)
+    public void testInvalidRemoveDataset() throws Exception
+    {
+        MetaDataDAO metaDataDAO = MetaDataDAO.getInstance();
+        metaDataDAO.removeDataset( "non-existent-dataset" );
+    }
+
+
+    @Test
+    public void testRemoveDataset() throws Exception
+    {
+        MetaDataDAO metaDataDAO = MetaDataDAO.getInstance();
+
+        Dataset dataset = new Dataset();
+        dataset.setName( "bleh" );
+        metaDataDAO.save( dataset );
+
+        metaDataDAO.removeDataset( dataset.getName() );
+
+        // Dataset should be removed
+        Assert.assertEquals( 0, metaDataDAO.getDatasets().size() );
+    }
 }

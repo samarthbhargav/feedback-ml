@@ -9,6 +9,10 @@ function bindEvent(element, type, handler) {
    }
 }
 
+/**
+@function getXHR will create a xmlhttp object.
+@return {xmlhttp} - getXHR will return the xmlhttp object.
+*/
 function getXHR() {
   console.log("getXHR called")
   if (window.XMLHttpRequest) {
@@ -20,6 +24,11 @@ function getXHR() {
     }
     return xmlhttp;
 }
+
+/**
+@function fetch_stats will fetch the data and will append it to the div tag.
+@return {output} - The output will be a div element appended with the fetched data .
+*/
 
 function fetch_stats() {
   RESOURCE = "/stats/datasets"

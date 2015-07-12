@@ -72,7 +72,6 @@ public class MetaDataDAO
 
     public void removeDataset( String datasetName ) throws DatasetNotFoundException
     {
-        // TODO add test
         RecordDAO.getInstance().removeAll( datasetName );
         this.datasetMetadata.deleteOne( new Document( "_id", datasetName ) );
         RecordDAO.getInstance().reloadDatasets();
@@ -97,9 +96,7 @@ public class MetaDataDAO
 
     public DatasetStatistics getDatasetStatistics()
     {
-        // TODO add tests
         final List<DatasetStats> list = new ArrayList<>();
-
         for ( Dataset dataset : this.getDatasets() ) {
             DatasetStats datasetStats = new DatasetStats();
             datasetStats.setDataset( dataset.getName() );

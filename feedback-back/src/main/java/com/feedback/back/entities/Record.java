@@ -1,5 +1,7 @@
 package com.feedback.back.entities;
 
+import com.feedback.back.except.InvalidEntityException;
+import com.feedback.util.Util;
 import org.bson.Document;
 
 import java.util.Map;
@@ -64,8 +66,9 @@ public class Record
     }
 
 
-    public Document toDocument()
+    public Document toDocument() throws InvalidEntityException
     {
+        this.validate();
         Document document = new Document();
         document.put( "_id", this.getId() );
         document.put( "label", this.getLabel() );
@@ -75,7 +78,7 @@ public class Record
     }
 
 
-    public static Record fromDocument( Document object )
+    public static Record fromDocument( Document object ) throws InvalidEntityException
     {
         if ( object == null ) {
             return null;
@@ -85,7 +88,16 @@ public class Record
         record.setId( object.getString( "_id" ) );
         record.setLabel( (String) object.get( "label" ) );
         record.setLastModified( object.getLong( "lastModified" ) );
+        record.validate();
         return record;
+    }
+
+
+    private void validate() throws InvalidEntityException
+    {
+        if ( Util.isNullOrEmpty( this.getId() ) ) {
+            throw new InvalidEntityException( "id field cannot be null" );
+        }
     }
 
 
