@@ -1,0 +1,34 @@
+{% extends "layout.html" %}
+{% block body %}
+  {% if error %}<div class="uk-alert uk-alert-danger">{{ error }} </div>{% endif %}
+  {% if success %}<div class="uk-alert">{{ success }}</div>{% endif %}
+
+  <form class="uk-form" action="{{ url_for('post_dataset') }}" method="post" id="add-dataset-form">
+      <fieldset>
+          <legend>Add Dataset</legend>
+          <div class="uk-form-row">
+            <input type="text" name="DatasetName" placeholder="Dataset Name">
+          </div>
+          <div class="uk-form-row">
+            <input class="uk-button" type="submit" name="submit" value="Submit">
+          </div>
+      </fieldset>
+  </form>
+
+  <script>
+
+    function addContentDiv() {
+      var name = window.prompt("Enter name for content-variable:");
+      if(name && name.length > 0) {
+        addContent(name);
+      }
+    }
+
+    function addContent(name) {
+      var newdiv = document.createElement('div');
+      newdiv.innerHTML = "<div class='uk-form-row'><input type='text' name='content-{0}' placeholder='Content - {0}'></div>".format(name);
+      console.log(newdiv.innerHTML);
+      document.getElementById("content").appendChild(newdiv);
+    }
+  </script>
+{% endblock %}
