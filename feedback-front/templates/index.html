@@ -16,12 +16,26 @@
         <div class="uk-panel uk-panel-box">
           <div class="uk-panel-badge uk-badge">Number of records: {{ stat.numberOfRecords }}</div>
           <h3 class="uk-panel-title">{{ stat.dataset }}</h3>
-          <a href="{{ url_for('records', dataset=stat.dataset, skip=0, limit=10) }}">View Records</a> 
-          <a href="{{ url_for('record_stats_page', dataset=stat.dataset) }}">View Stats</a>
+          <a href="{{ url_for('records', dataset=stat.dataset, skip=0, limit=10) }}"><button class="uk-button uk-button-primary">Records</button></a> 
+          <a href="{{ url_for('record_stats_page', dataset=stat.dataset) }}"><button class="uk-button uk-button-primary">Stats</button></a>
+          <a href="#"><button class="uk-button uk-button-primary">Edit</button></a>
+          <a href="#"><button class="uk-button uk-button-primary" data-uk-modal="{target:'#deleteDataset'}">Delete</button></a>
         </div>
       </div>
       {% endfor %}
     </div>
   {% endfor %}
+
+    <!-- divison of modal to delete a record -->
+    <div id="deleteDataset" class="uk-modal">
+      <div class="uk-modal-dialog">
+          <a class="uk-modal-close uk-close"></a>
+          <form class="uk-form">
+            <legend>Are you sure?</legend>
+            <button class="uk-button uk-button-success">Yes</button>
+            <button class="uk-button uk-button-danger">No</button>
+          </form>
+      </div>
+    </div>
   </div>
 {% endblock %}

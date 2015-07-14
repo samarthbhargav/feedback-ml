@@ -71,11 +71,15 @@ def post_record():
             "content" : content
         }
 
-        if client.save_record(record, data["dataset"]):
-            return render_template("add_record.html", success="Record added successfully")
+        valid, status  =  client.save_record(record, data["dataset"])
+        if valid:
+            return render_template("add_record.html", success="Record added successfully", errno=None)
         else:
             # TODO add more desc message
-            return render_template("add_record.html", error="Some error occurred")
+                if status['statusCode'] == 404:
+                    return render_template("add_record.html", error=status["message"], errno=status["statusCode"])
+                else:   
+                    return render_template("add_record.html", error="Some Error Occurred", errno = None)
 
     except ValueError, e:
         return render_template("add_record.html", error=e.message)
@@ -101,7 +105,7 @@ def post_dataset():
         if client.save_dataset(new_dataset):
             return render_template("add_dataset.html", success="Dataset added successfully")
         else:
-            return render_template("add_dataset.html", error="Some error occurred while trying to create new dataset")
+            return render_template("add_dataset.html", error="Some error occurred while trying to create new")
 
     except ValueError, e:
             return render_template("add_dataset.html", error=e.message)

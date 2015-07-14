@@ -1,6 +1,16 @@
 {% extends "layout.html" %}
 {% block body %}
-  {% if error %}<div class="uk-alert uk-alert-danger">{{ error }} </div>{% endif %}
+  {% if error %}
+    <div class="uk-alert uk-alert-danger">
+      {% if errno %}
+        Message : {{ error }} 
+        <br> 
+        Status : {{errno}}
+      {% else %}
+        {{ error }}
+      {% endif %} 
+    </div>
+  {% endif %}
   {% if success %}<div class="uk-alert">{{ success }}</div>{% endif %}
 
   <form class="uk-form" action="{{ url_for('post_record') }}" method="post" id="add-record-form">

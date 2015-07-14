@@ -37,17 +37,23 @@ class FeedBackClient(object):
         print resp
 
         if resp.status_code == 200:
-            return True
+            return True, "Success"
         else:
             # TODO add more desc message
-            return False
+            if resp.status_code == 404:
+                return False, resp.json()
+            else:
+                return False, "Error Occurred"
+
 
     def save_dataset(self, new_dataset):
 
-        endpoint = POST_DATASET_RESOURCE.format(new_dataset)
 
-        resp = requests.post(endpoint)
-        print resp
+        endpoint = POST_DATASET_RESOURCE
+        jsons = json.dumps(new_dataset)
+        print "JSON", jsons
+        resp = requests.post(endpoint, data=jsons, headers = JSON_HEADERS)
+        print "Response", resp.text
 
         if resp.status_code == 200:
             return True
@@ -61,3 +67,9 @@ class FeedBackClient(object):
             return True, response.json()
         else:
             return False, None
+
+    def delete_dataset():
+        pass
+
+    def edit_dataset():
+        pass
