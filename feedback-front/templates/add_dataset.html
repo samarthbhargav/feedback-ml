@@ -15,20 +15,4 @@
       </fieldset>
   </form>
 
-  <script>
-
-    function addContentDiv() {
-      var name = window.prompt("Enter name for content-variable:");
-      if(name && name.length > 0) {
-        addContent(name);
-      }
-    }
-
-    function addContent(name) {
-      var newdiv = document.createElement('div');
-      newdiv.innerHTML = "<div class='uk-form-row'><input type='text' name='content-{0}' placeholder='Content - {0}'></div>".format(name);
-      console.log(newdiv.innerHTML);
-      document.getElementById("content").appendChild(newdiv);
-    }
-  </script>
 {% endblock %}

@@ -92,7 +92,8 @@ def post_dataset():
         data = request.form
         print data
         keys = ["DatasetName"]
-
+        for key in keys:
+            chkNotNoneAndNotEmpty(data.get(key), key)
 
     #   if key in keys:
     #       if key is None or len(key) == 0:
