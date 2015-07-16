@@ -11,7 +11,7 @@ import java.util.List;
 public class Dataset
 {
     private String name;
-    private List<String> fields;
+    private List<Field> fields;
     private Long updateTime;
 
 
@@ -27,13 +27,13 @@ public class Dataset
     }
 
 
-    public List<String> getFields()
+    public List<Field> getFields()
     {
         return fields;
     }
 
 
-    public void setFields( List<String> fields )
+    public void setFields( List<Field> fields )
     {
         this.fields = fields;
     }
@@ -53,7 +53,7 @@ public class Dataset
 
     public Document toDocument()
     {
-        return new Document( "_id", this.getName() ).append( "fields", this.getFields() )
+        return new Document( "_id", this.getName() ).append( "fields", Field.toDocumentList( this.getFields() ) )
             .append( "updateTime", this.getUpdateTime() );
     }
 
@@ -65,7 +65,7 @@ public class Dataset
         }
         Dataset dataset = new Dataset();
         dataset.setUpdateTime( document.getLong( "updateTime" ) );
-        dataset.setFields( (List<String>) document.get( "fields" ) );
+        dataset.setFields( Field.fromDocumentList( (List<Document>) document.get( "fields" ) ) );
         dataset.setName( document.getString( "_id" ) );
         return dataset;
     }

@@ -6,6 +6,7 @@ import com.feedback.back.entities.Dataset;
 import com.feedback.back.entities.Record;
 import com.feedback.back.except.DatasetNotFoundException;
 import com.feedback.back.except.InvalidEntityException;
+import com.mongodb.client.result.DeleteResult;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -42,6 +43,13 @@ public class DatasetResource
     }
 
 
+    // ------------- Endpoints for CRUD operations on Datasets --------------------
+
+
+    /**
+     * Get all Datasets
+     * @return
+     */
     @GET
     @Produces (MediaType.APPLICATION_JSON)
     public Response getAllDatasets()
@@ -53,6 +61,11 @@ public class DatasetResource
     }
 
 
+    /**
+     * Saves a dataset. This operation is idempotent.
+     * @param dataset
+     * @return
+     */
     @POST
     @Consumes (MediaType.APPLICATION_JSON)
     public Response saveDataset( Dataset dataset )
@@ -62,6 +75,11 @@ public class DatasetResource
     }
 
 
+    /**
+     * Returns a particular dataset and all records associated with it
+     * @param name
+     * @return
+     */
     @GET
     @Path ("/{dataset}/")
     @Produces (MediaType.APPLICATION_JSON)
@@ -77,6 +95,36 @@ public class DatasetResource
     }
 
 
+    /**
+     * Deletes a Dataset
+     * @param name the name of the dataset to be deleted
+     * @return
+     */
+    @DELETE
+    @Path ("/{dataset}")
+    @Produces (MediaType.APPLICATION_JSON)
+    public Response removeDataset(
+        @PathParam ("dataset")
+        String name )
+    {
+        try {
+            this.metaDataDAO.removeDataset( name );
+            return Response.ok().build();
+        } catch ( DatasetNotFoundException e ) {
+            return ResourceUtil.buildErrorEntity( e.getMessage(), Response.Status.NOT_FOUND );
+        }
+    }
+
+
+    // ------------- Endpoints for CRUD operations on Records --------------------
+
+
+    /**
+     * Returns a 'page' of records
+     * @param dataset the dataset name
+     * @param skip number of records to skip
+     * @return
+     */
     @GET
     @Path ("/{dataset}/records/")
     @Produces (MediaType.APPLICATION_JSON)
@@ -91,6 +139,14 @@ public class DatasetResource
         return this.getRecordsWithSkipAndLimit( dataset, "0", "100" );
     }
 
+
+    /**
+     * Returns a 'page' of records
+     * @param dataset
+     * @param skip number of records to skip
+     * @param limit number of records to return at once
+     * @return
+     */
 
     @GET
     @Path ("/{dataset}/records/{skip}/{limit}")
@@ -129,8 +185,14 @@ public class DatasetResource
     }
 
 
+    /**
+     * Returns a particular record
+     * @param dataset the name of the dataset
+     * @param id the id of the record
+     * @return
+     */
     @GET
-    @Path ("/{dataset}/record//{id}")
+    @Path ("/{dataset}/record/{id}")
     @Produces (MediaType.APPLICATION_JSON)
     public Response getRecord(
         @PathParam ("dataset")
@@ -149,6 +211,12 @@ public class DatasetResource
     }
 
 
+    /**
+     * Saves a record. This operation is idempotent
+     * @param dataset the name of the dataset
+     * @param record the record to save
+     * @return
+     */
     @POST
     @Path ("/{dataset}/record/")
     @Consumes (MediaType.APPLICATION_JSON)
@@ -167,4 +235,27 @@ public class DatasetResource
         }
     }
 
+
+    /**
+     * Deletes a particular record
+     * @param dataset
+     * @param id
+     * @return
+     */
+    @DELETE
+    @Path ("/{dataset}/record/{id}")
+    @Produces (MediaType.APPLICATION_JSON)
+    public Response removeRecord(
+        @PathParam ("dataset")
+        String dataset,
+        @PathParam ("id")
+        String id )
+    {
+        try {
+            DeleteResult result = recordDAO.remove( dataset, id );
+            return Response.ok( result ).build();
+        } catch ( DatasetNotFoundException e ) {
+            return ResourceUtil.buildErrorEntity( e.getMessage(), Response.Status.NOT_FOUND );
+        }
+    }
 }
