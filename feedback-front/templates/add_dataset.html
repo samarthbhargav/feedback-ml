@@ -1,0 +1,18 @@
+{% extends "layout.html" %}
+{% block body %}
+  {% if error %}<div class="uk-alert uk-alert-danger">{{ error }} </div>{% endif %}
+  {% if success %}<div class="uk-alert">{{ success }}</div>{% endif %}
+
+  <form class="uk-form" action="{{ url_for('post_dataset') }}" method="post" id="add-dataset-form">
+      <fieldset>
+          <legend>Add Dataset</legend>
+          <div class="uk-form-row">
+            <input type="text" name="DatasetName" placeholder="Dataset Name">
+          </div>
+          <div class="uk-form-row">
+            <input class="uk-button" type="submit" name="submit" value="Submit">
+          </div>
+      </fieldset>
+  </form>
+
+{% endblock %}

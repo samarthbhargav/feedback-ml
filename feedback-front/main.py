@@ -47,6 +47,10 @@ def record_stats_page(dataset):
 def add_record_page():
     return render_template("add_record.html")
 
+@app.route("/add_dataset")
+def add_dataset_page():
+    return render_template("add_dataset.html")
+
 @app.route("/post_record", methods = ["POST"])
 def post_record():
     try:
@@ -67,14 +71,46 @@ def post_record():
             "content" : content
         }
 
-        if client.save_record(record, data["dataset"]):
-            return render_template("add_record.html", success="Record added successfully")
+        valid, status  =  client.save_record(record, data["dataset"])
+        if valid:
+            return render_template("add_record.html", success="Record added successfully", errno=None)
         else:
             # TODO add more desc message
-            return render_template("add_record.html", error="Some error occurred")
+                if status['statusCode'] == 404:
+                    return render_template("add_record.html", error=status["message"], errno=status["statusCode"])
+                else:   
+                    return render_template("add_record.html", error="Some Error Occurred", errno = None)
 
     except ValueError, e:
         return render_template("add_record.html", error=e.message)
+
+
+# code for adding new record
+@app.route("/post_dataset", methods=["POST"])
+def post_dataset():
+    try:
+        data = request.form
+        print data
+        keys = ["DatasetName"]
+        for key in keys:
+            chkNotNoneAndNotEmpty(data.get(key), key)
+
+    #   if key in keys:
+    #       if key is None or len(key) == 0:
+    #              raise ValueError("{} cannot be empty".format(key))
+        
+        new_dataset = {
+            "name" : data["DatasetName"]
+        }
+
+        if client.save_dataset(new_dataset):
+            return render_template("add_dataset.html", success="Dataset added successfully")
+        else:
+            return render_template("add_dataset.html", error="Some error occurred while trying to create new")
+
+    except ValueError, e:
+            return render_template("add_dataset.html", error=e.message)
+
 
 @app.route("/records/<string:dataset>/<int:skip>/<int:limit>")
 def records(dataset, skip, limit):

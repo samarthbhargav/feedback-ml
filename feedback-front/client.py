@@ -4,8 +4,9 @@ import requests
 
 STATS_RESOURCE = "http://localhost:9999/stats/datasets"
 RECORDS_STATS_RESOURCE = "http://localhost:9999/stats/datasets/{}"
-POST_RECORDS_RESOURCE = "http://localhost:9999/record/{}/"
-RECORDS_PAGE_RESOURCE = "http://localhost:9999/page/{}/{}/{}"
+POST_RECORDS_RESOURCE = "http://localhost:9999/dataset/{}/record/"
+RECORDS_PAGE_RESOURCE = "http://localhost:9999/dataset/{}/records/{}/{}"
+POST_DATASET_RESOURCE = "http://localhost:9999/dataset/"
 
 JSON_HEADERS = {'Content-Type': 'application/json'}
 
@@ -36,9 +37,27 @@ class FeedBackClient(object):
         print resp
 
         if resp.status_code == 200:
-            return True
+            return True, "Success"
         else:
             # TODO add more desc message
+            if resp.status_code == 404:
+                return False, resp.json()
+            else:
+                return False, "Error Occurred"
+
+
+    def save_dataset(self, new_dataset):
+
+
+        endpoint = POST_DATASET_RESOURCE
+        jsons = json.dumps(new_dataset)
+        print "JSON", jsons
+        resp = requests.post(endpoint, data=jsons, headers = JSON_HEADERS)
+        print "Response", resp.text
+
+        if resp.status_code == 200:
+            return True
+        else:
             return False
 
     def get_records(self, dataset, skip, limit):
@@ -48,3 +67,9 @@ class FeedBackClient(object):
             return True, response.json()
         else:
             return False, None
+
+    def delete_dataset():
+        pass
+
+    def edit_dataset():
+        pass
