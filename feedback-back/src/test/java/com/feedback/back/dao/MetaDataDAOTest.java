@@ -1,9 +1,7 @@
 package com.feedback.back.dao;
 
 import com.feedback.back.config.Constants;
-import com.feedback.back.entities.Dataset;
-import com.feedback.back.entities.DatasetStats;
-import com.feedback.back.entities.Record;
+import com.feedback.back.entities.*;
 import com.feedback.back.entities.api.DatasetStatistics;
 import com.feedback.back.except.DatasetNotFoundException;
 import com.feedback.back.mongo.MongoConnector;
@@ -98,15 +96,19 @@ public class MetaDataDAOTest
         MetaDataDAO metaDataDAO = MetaDataDAO.getInstance();
         Dataset dataset = new Dataset();
         dataset.setName( "dataset" );
-        dataset.setFields( Arrays.asList( "field1", "field2" ) );
+
+        dataset.setFields(
+            Arrays.asList( new Field( FieldType.CATEGORICAL, "field1" ), new Field( FieldType.NUMERICAL, "field2" ) ) );
         metaDataDAO.save( dataset );
         Dataset savedDataset = metaDataDAO.getDataset( "dataset" );
         assertDatasetCorrectness( savedDataset, "dataset" );
-        Assert.assertEquals( Arrays.asList( "field1", "field2" ), savedDataset.getFields() );
 
+        List<Field> fields = metaDataDAO.getFields( "dataset" );
+        Assert.assertEquals( FieldType.CATEGORICAL, fields.get( 0 ).getType() );
+        Assert.assertEquals( FieldType.NUMERICAL, fields.get( 1 ).getType() );
+        Assert.assertEquals( "field1", fields.get( 0 ).getName() );
+        Assert.assertEquals( "field2", fields.get( 1 ).getName() );
 
-        List<String> fields = metaDataDAO.getFields( "dataset" );
-        Assert.assertEquals( Arrays.asList( "field1", "field2" ), fields );
     }
 
 

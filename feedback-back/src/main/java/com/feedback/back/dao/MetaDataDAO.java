@@ -3,6 +3,7 @@ package com.feedback.back.dao;
 import com.feedback.back.config.Constants;
 import com.feedback.back.entities.Dataset;
 import com.feedback.back.entities.DatasetStats;
+import com.feedback.back.entities.Field;
 import com.feedback.back.entities.api.DatasetStatistics;
 import com.feedback.back.except.DatasetNotFoundException;
 import com.feedback.back.mongo.MongoConnector;
@@ -88,7 +89,7 @@ public class MetaDataDAO
     }
 
 
-    public List<String> getFields( String datasetName ) throws DatasetNotFoundException
+    public List<Field> getFields( String datasetName ) throws DatasetNotFoundException
     {
         return this.getDataset( datasetName ).getFields();
     }
