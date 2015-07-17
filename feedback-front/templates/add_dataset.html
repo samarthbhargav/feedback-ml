@@ -3,7 +3,7 @@
   {% if error %}<div class="uk-alert uk-alert-danger">{{ error }} </div>{% endif %}
   {% if success %}<div class="uk-alert">{{ success }}</div>{% endif %}
 
-  <form class="uk-form" action="{{ url_for('post_dataset') }}" method="post" id="add-dataset-form">
+  <form class="uk-form" id="add-dataset-form" onsubmit="client.addDataset('add-dataset-form'); return false;">
       <fieldset>
           <legend>Add Dataset</legend>
           <div class="uk-form-row">
@@ -11,30 +11,32 @@
           </div>
           <div class="uk-form-row" id="addField">
           </div>
-          <div class="uk-form-row">
-            <select>
-              <option selected disabled> ---- Field Type ---- </option>
-              <option>CATEGORICAL</option>
-              <option>NUMERICAL</option>
-              <option>TEXT</option>
-            </select>
-          </div>
           <br>
           <div class="uk-form-row">
-            <input type="button" class="uk-button" value="Field" onclick="addFieldDiv()"/>
+            <input type="button" class="uk-button" value="Add Field" onclick="addFieldDiv()"/>
           </div>
           <div class="uk-form-row">
-            <input class="uk-button" type="submit" name="submit" value="Submit">
+            <button class="uk-button" onclick="">Submit</button>
           </div>
           <!-- Not able to print the select tag multiple times -->
           <script>
             function addFieldDiv(){
               var fieldDiv = document.createElement('div');
-              fieldDiv.innerHTML = "<div class='uk-form-row'><input type='text' name='Field' name= 'Field' placeholder='Field'/></div>";
+              var start = "<div class='uk-form-row'><input type='text' name='field' name='Field' placeholder='Field'/>";
+              start += "<select name='fieldType'>"
+              for(var i = 0; i < availableFieldTypes.length; i++) {
+                  start += "<option>" + availableFieldTypes[i] + "</option>";
+              }
+              start += "</div>";
+              fieldDiv.innerHTML = start;
               document.getElementById("addField").appendChild(fieldDiv);
             }
           </script>
       </fieldset>
   </form>
 
+  <script>
+    var availableFieldTypes = client.getAvailableFieldTypes();
+
+  </script>
 {% endblock %}

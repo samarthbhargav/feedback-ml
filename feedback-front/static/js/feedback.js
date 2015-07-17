@@ -1,60 +1,79 @@
+// TODO remove console.logs
 
-URI = "http://localhost:9999"
+var FeedBackClient = function(name) {
+    this.baseURL = "http://localhost:9999";
 
-function bindEvent(element, type, handler) {
-   if(element.addEventListener) {
-      element.addEventListener(type, handler, false);
-   } else {
-      element.attachEvent('on'+type, handler);
-   }
-}
-
-/**
-@function getXHR will create a xmlhttp object.
-@return {xmlhttp} - getXHR will return the xmlhttp object.
-*/
-function getXHR() {
-  console.log("getXHR called")
-  if (window.XMLHttpRequest) {
-        // code for IE7+, Firefox, Chrome, Opera, Safari
-        xmlhttp = new XMLHttpRequest();
-    } else {
-        // code for IE6, IE5
-        xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
-    }
-    return xmlhttp;
-}
-
-/**
-@function fetch_stats will fetch the data and will append it to the div tag.
-@return {output} - The output will be a div element appended with the fetched data .
-*/
-
-function fetch_stats() {
-  RESOURCE = "/stats/datasets"
-  xmlhttp = getXHR()
-  xmlhttp.onreadystatechange=function() {
-    if (xmlhttp.readyState==4 && xmlhttp.status==200) {
-        console.log(xmlhttp.responseText);
-        data = xmlhttp.responseText;
-        parentDiv = document.getElementById("datastatsDiv")
-        if(data) {
-          data = JSON.parse(data);
-          arr = data.datasetStatistics;
-          for (i = 0; i < arr.length; i++) {
-              div = document.createElement('div')
-              div.innerHTML = arr[i].dataset + "-" + arr[i].numberOfRecords;
-              parentDiv.appendChild(div);
-          }
+    this.getAvailableFieldTypes = function() {
+        if(this.availableFieldTypes !== undefined) {
+            return this.availableFieldTypes;
         }
-     }
-  }
-  xmlhttp.open("GET", URI + RESOURCE, true);
-  xmlhttp.send();
-}
+        // strUrl is whatever URL you need to call
+        var types = [];
+
+        $.ajax({
+          url: this.baseURL + "/meta/availableFieldTypes",
+          success: function(json) {
+            types = json["types"];
+          },
+          async:false
+        });
+
+        this.availableFieldTypes = types;
+        return types;
+    };
+
+    /** Function to parse a form and post the parsed JSON data to the API **/
+    this.addRecord = function(formID) {
+        // TODO:Mahesh use the next function as a template and complete this
+    };
+
+    /** Function to parse a form and post the parsed JSON data to the API **/
+    this.addDataset = function(formID) {
+        var rawJSON = $("#" + formID).serializeObject();
+
+        // TODO:Mahesh Validate the data
+        // TODO:Mahesh Dataset should be defined and non-empty
+        // TODO:Mahesh fields, if present, should be defined, non-empty and have a corresponding
+        // TODO:Mahesh field type which belongs to this.availableFieldTypes
+
+        json = {
+          "name" : rawJSON["DatasetName"]
+        }
+
+        console.log(json);
+
+        $.ajax({
+          type: "POST",
+          url: this.baseURL + "/dataset/",
+          headers: {
+            "Content-Type" : "application/json"
+          },
+          data: JSON.stringify(json),
+          success: function(data) {
+            // TODO:Mahesh Display success message in UI
+
+            console.log("Success!");
+            console.log(data);
+          }
+        }).fail(function (jqxhr) {
+            // TODO:Mahesh Display failure message in UI
+            console.log("Dataset creation failed!");
+
+            if(jqxhr.getResponseHeader('Content-Type') == "text/plain") {
+                // TODO:Mahesh Plain Text error - display in UI
+                console.log(jqxhr.responseText);
+            } else if(jqxhr.getResponseHeader('Content-Type') == "application/json") {
+                // TODO:Mahesh Display error message in UI
+                var errorJSON = $.parseJSON(jqxhr.responseText);
+                console.log(errorJSON);
+            }
+
+        });
+
+        return false;
+    };
+};
 
 
-
-
-// bind
-bindEvent(window, 'load', fetch_stats);
+// Instantiate
+client = new FeedBackClient()

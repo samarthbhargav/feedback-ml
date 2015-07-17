@@ -63,6 +63,7 @@ class FeedBackClient(object):
     def get_records(self, dataset, skip, limit):
         endpoint = RECORDS_PAGE_RESOURCE.format(dataset, skip, limit)
         response = requests.get(endpoint)
+	print response.text
         if response.status_code == 200:
             return True, response.json()
         else:
@@ -73,3 +74,6 @@ class FeedBackClient(object):
 
     def edit_dataset():
         pass
+
+if __name__ == "__main__":
+    print FeedBackClient().get_records("dataset1", 0, 10)

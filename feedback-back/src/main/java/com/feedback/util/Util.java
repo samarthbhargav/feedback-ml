@@ -10,4 +10,17 @@ public class Util
     {
         return string == null || string.isEmpty();
     }
+
+
+    public static Double getDouble( Object object )
+    {
+        if ( object == null ) {
+            return null;
+        }
+        if ( object instanceof Number ) {
+            return ( (Number) object ).doubleValue();
+        } else {
+            return Double.parseDouble( object.toString() );
+        }
+    }
 }
