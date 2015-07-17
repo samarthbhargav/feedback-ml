@@ -13,44 +13,46 @@
   {% endif %}
   {% if success %}<div class="uk-alert">{{ success }}</div>{% endif %}
 
-  <form class="uk-form" action="{{ url_for('post_record') }}" method="post" id="add-record-form">
+  <form class="uk-form" action="{{ url_for('post_record', dataset=dataset) }}" method="post" id="add-record-form">
       <fieldset>
           <legend>Add Record</legend>
           <div class="uk-form-row">
             <input type="text" name="ID" placeholder="ID">
           </div>
           <div class="uk-form-row">
-            <input type="text" name="dataset" placeholder="Dataset">
-          </div>
-          <div class="uk-form-row">
             <input type="text" name="label" placeholder="Label (Optional)">
           </div>
           <div class="uk-form-row" id="content">
-
           </div>
           <div class="uk-form-row">
-            <button class="uk-button" type="button" onclick="addContentDiv();">Add Content</button>
+            <button id="content" class="uk-button" type="button" onclick="addContentDiv()">Add Content</button>
           </div>
+          <br>
           <div class="uk-form-row">
-            <input class="uk-button" type="submit" name="submit" value="Submit">
+            <button class="uk-button" value="Submit" onclick="processBeforePost()">Submit</button>
           </div>
       </fieldset>
   </form>
-
+  <!-- Not able to add Key:Value values to the database -->
   <script>
-
     function addContentDiv() {
-      var name = window.prompt("Enter name for content-variable:");
-      if(name && name.length > 0) {
-        addContent(name);
-      }
+      var newdiv = document.createElement('div');
+      newdiv.innerHTML = "<div class='uk-form-row'><input value='' type='text' placeholder='Content-Key' value='Content-'>"
+      document.getElementById("content").appendChild(newdiv);
+
+      var newdiv = document.createElement('div');
+      newdiv.innerHTML = "<input type='text' placeholder='Content-Value' value=''></form><br>"
+      document.getElementById("content").appendChild(newdiv);
     }
 
-    function addContent(name) {
-      var newdiv = document.createElement('div');
-      newdiv.innerHTML = "<div class='uk-form-row'><input type='text' name='content-{0}' placeholder='Content - {0}'></div>".format(name);
-      console.log(newdiv.innerHTML);
-      document.getElementById("content").appendChild(newdiv);
+    function processBeforePost(){
+      var key = document.getElementById('contentDivKey').value;
+      var value = document.getElementById('contentDivValue').value;
+
+      mydata = JSON.stringify($('#contentForm').serialize());
+      alert(mydata);
+      alert(key);
+      alert(value);
     }
   </script>
 {% endblock %}

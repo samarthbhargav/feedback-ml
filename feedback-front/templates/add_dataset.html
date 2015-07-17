@@ -9,9 +9,31 @@
           <div class="uk-form-row">
             <input type="text" name="DatasetName" placeholder="Dataset Name">
           </div>
+          <div class="uk-form-row" id="addField">
+          </div>
+          <div class="uk-form-row">
+            <select>
+              <option selected disabled> ---- Field Type ---- </option>
+              <option>CATEGORICAL</option>
+              <option>NUMERICAL</option>
+              <option>TEXT</option>
+            </select>
+          </div>
+          <br>
+          <div class="uk-form-row">
+            <input type="button" class="uk-button" value="Field" onclick="addFieldDiv()"/>
+          </div>
           <div class="uk-form-row">
             <input class="uk-button" type="submit" name="submit" value="Submit">
           </div>
+          <!-- Not able to print the select tag multiple times -->
+          <script>
+            function addFieldDiv(){
+              var fieldDiv = document.createElement('div');
+              fieldDiv.innerHTML = "<div class='uk-form-row'><input type='text' name='Field' name= 'Field' placeholder='Field'/></div>";
+              document.getElementById("addField").appendChild(fieldDiv);
+            }
+          </script>
       </fieldset>
   </form>
 

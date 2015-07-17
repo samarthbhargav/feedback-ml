@@ -16,10 +16,16 @@
         <div class="uk-panel uk-panel-box">
           <div class="uk-panel-badge uk-badge">Number of records: {{ stat.numberOfRecords }}</div>
           <h3 class="uk-panel-title">{{ stat.dataset }}</h3>
-          <a href="{{ url_for('records', dataset=stat.dataset, skip=0, limit=10) }}"><button class="uk-button uk-button-primary">Records</button></a> 
-          <a href="{{ url_for('record_stats_page', dataset=stat.dataset) }}"><button class="uk-button uk-button-primary">Stats</button></a>
-          <a href="#"><button class="uk-button uk-button-primary" data-uk-modal="{ target: '#editDataset{{ stat.dataset }}'}">Edit</button></a>
-          <a href="#"><button class="uk-button uk-button-primary" data-uk-modal="{target:'#deleteDataset'}">Delete</button></a>
+            <div>
+             <a href="{{ url_for('records', dataset=stat.dataset, skip=0, limit=10) }}"><button class="uk-button uk-button-primary">Records</button></a> 
+            <a href="{{ url_for('record_stats_page', dataset=stat.dataset) }}"><button class="uk-button uk-button-primary">Stats</button></a>
+            <a href="#"><button class="uk-button uk-button-primary" data-uk-modal="{ target: '#editDataset{{ stat.dataset }}'}">Edit</button></a>
+            <a href="#"><button class="uk-button uk-button-primary" data-uk-modal="{target:'#deleteDataset'}">Delete</button></a>
+          </div>
+          <br>
+          <div>
+            <a href="{{ url_for('add_record_page', dataset=stat.dataset) }}"><button class="uk-button uk-button-success">Add Record</button></a>
+          </div>            
         </div>
       </div>
       {% endfor %}
