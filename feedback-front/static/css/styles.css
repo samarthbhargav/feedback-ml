@@ -1,0 +1,41 @@
+html {
+  background: white;
+  font-family: "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", "DejaVu Sans", Verdana, sans-serif;
+}
+
+#menu-wrapper{
+	background-color: steelblue;
+}
+
+#menu-wrapper a{
+	color: white;
+}
+
+#menu-wrapper li a:hover{
+	color: steelblue;
+}
+
+#menu-wrapper a{
+	font-family: "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", "DejaVu Sans", Verdana, sans-serif;
+}
+
+.uk-grid h4{
+	font-family: "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", "DejaVu Sans", Verdana, sans-serif;
+}
+
+.uk-panel-title, table{
+	font-family: "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", "DejaVu Sans", Verdana, sans-serif;
+}
+
+.uk-width-1-1 h2, h3{
+	font-family: "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", "DejaVu Sans", Verdana, sans-serif;
+}
+
+#contentDivKey{
+	float: left;
+	margin-right: 10px;
+}
+
+#contentDivValue{
+	float: inherit;
+}

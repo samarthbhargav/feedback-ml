@@ -43,20 +43,21 @@ def record_stats_page(dataset):
     else:
         return render_template("record_statistics.html", error = stats)
 
-@app.route("/add_record")
-def add_record_page():
-    return render_template("add_record.html")
+@app.route("/add_record/<string:dataset>")
+def add_record_page(dataset):
+    return render_template("add_record.html", dataset=dataset)
 
 @app.route("/add_dataset")
 def add_dataset_page():
     return render_template("add_dataset.html")
 
-@app.route("/post_record", methods = ["POST"])
-def post_record():
+@app.route("/post_record/<string:dataset>", methods = ["POST"])
+def post_record(dataset):
+    stats = client.fetch_dataset_statistics()
     try:
         data = request.form
         print data
-        keys = ["ID", "dataset"]
+        keys = ["ID"]
         for key in keys:
             chkNotNoneAndNotEmpty(data.get(key), key)
 
@@ -71,18 +72,18 @@ def post_record():
             "content" : content
         }
 
-        valid, status  =  client.save_record(record, data["dataset"])
+        valid, status  =  client.save_record(record, dataset)
         if valid:
-            return render_template("add_record.html", success="Record added successfully", errno=None)
+            return render_template("add_record.html", dataset=dataset, success="Record added successfully", errno=None)
         else:
             # TODO add more desc message
                 if status['statusCode'] == 404:
                     return render_template("add_record.html", error=status["message"], errno=status["statusCode"])
                 else:   
-                    return render_template("add_record.html", error="Some Error Occurred", errno = None)
+                    return render_template("add_record.html", dataset=dataset, error="Some Error Occurred", errno = None)
 
     except ValueError, e:
-        return render_template("add_record.html", error=e.message)
+        return render_template("add_record.html", dataset=dataset,  stats=stats, error=e.message)
 
 
 # code for adding new record
@@ -117,10 +118,10 @@ def records(dataset, skip, limit):
     valid, data =  client.get_records(dataset, skip, limit)
     if valid:
         records = data["records"]
-        return render_template("records.html", records=records)
+        return render_template("records.html", dataset=dataset, records=records)
     else:
         # TODO
-        return render_template("records.html", records=[], error="Some error occurred")
+        return render_template("records.html", dataset=dataset, records=[], error="Some error occurred")
 
 
 if __name__ == "__main__":
