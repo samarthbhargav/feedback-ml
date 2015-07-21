@@ -120,6 +120,5 @@ def records(dataset, skip, limit):
         # TODO
         return render_template("records.html", dataset=dataset, records=[], error="Some error occurred")
 
-
 if __name__ == "__main__":
     app.run(debug=True)
