@@ -19,11 +19,11 @@
             <div>
              <a href="{{ url_for('records', dataset=stat.dataset, skip=0, limit=10) }}"><button class="uk-button uk-button-primary">Records</button></a> 
             <a href="{{ url_for('record_stats_page', dataset=stat.dataset) }}"><button class="uk-button uk-button-primary">Stats</button></a>
-            <a href="#"><button class="uk-button uk-button-primary" data-uk-modal="{ target: '#editDataset{{ stat.dataset }}'}">Edit</button></a>
-            <a href="#"><button class="uk-button uk-button-primary" data-uk-modal="{target:'#deleteDataset'}">Delete</button></a>
+            <a href="#"><button class="uk-button uk-button-primary" data-uk-modal="{ target: '#editDataset{{ stat.dataset }}'}">View Details</button></a>
           </div>
           <br>
           <div>
+            <a href="#"><button class="uk-button uk-button-primary" data-uk-modal="{target:'#deleteDataset'}">Delete</button></a>
             <a href="{{ url_for('add_record_page', dataset=stat.dataset) }}"><button class="uk-button uk-button-success">Add Record</button></a>
           </div>            
         </div>
@@ -55,6 +55,18 @@
             <div class="uk-form-row">
               <label class="uk-form-label" for="ID">Dataset Name</label>
               <input id="ID" type="text" placeholder="ID" value="{{stat.dataset}}" autofocus disabled>
+            </div>
+            <div class="uk-form-row">
+            {% for field_obj in datasetFields %}
+              {% if stat.dataset == field_obj.name %}
+                {% for field_data in field_obj.fields %}
+                  <label class="uk-form-label" for="ID">Field Name</label>
+                  <input id="ID" type="text" value="{{field_data.name}}" autofocus disabled>
+                  <label class="uk-form-label" for="ID">Field Type</label>
+                  <input id="ID" type="text" value="{{field_data.type}}" autofocus disabled>
+                {% endfor %}
+              {% endif %}
+            {% endfor %}
             </div>
             <div class="uk-form-row">
               <button id="add-label-btn" class="uk-button uk-button-primary" onclick="console.log('moooo')">Submit</button>
