@@ -37,10 +37,29 @@ var FeedBackClient = function(name) {
         // TODO:Mahesh field type which belongs to this.availableFieldTypes
 
         json = {
-          "name" : rawJSON["DatasetName"]
+          "name" : rawJSON["DatasetName"],
+          "fields" : []
+        }
+
+        if(rawJSON['field'] instanceof Array){
+          for(var i=0; i<rawJSON['field'].length;i++){
+            console.log(rawJSON['field'][i]);
+            console.log(rawJSON['fieldType'][i]);
+            json.fields.push({
+              "name" : rawJSON['field'][i],
+              "type" : rawJSON['fieldType'][i]
+            });
+          }
+        }
+        else{
+          json.fields.push({
+            "name" : rawJSON['field'],
+            "type" : rawJSON['fieldType']
+          });
         }
 
         console.log(json);
+        console.log(rawJSON['field'].length);
 
         $.ajax({
           type: "POST",
@@ -51,9 +70,8 @@ var FeedBackClient = function(name) {
           data: JSON.stringify(json),
           success: function(data) {
             // TODO:Mahesh Display success message in UI
-
-            console.log("Success!");
             console.log(data);
+            console.log("Success!");
           }
         }).fail(function (jqxhr) {
             // TODO:Mahesh Display failure message in UI
