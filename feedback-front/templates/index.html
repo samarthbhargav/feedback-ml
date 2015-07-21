@@ -44,6 +44,8 @@
       </div>
     </div>
 
+    
+
     <!-- division of modal to edit a dataset-->
     {% for stat_chunk in stat_chunks %}
       {% for stat in stat_chunk %}
@@ -60,10 +62,16 @@
             {% for field_obj in datasetFields %}
               {% if stat.dataset == field_obj.name %}
                 {% for field_data in field_obj.fields %}
-                  <label class="uk-form-label" for="ID">Field Name</label>
-                  <input id="ID" type="text" value="{{field_data.name}}" autofocus disabled>
-                  <label class="uk-form-label" for="ID">Field Type</label>
-                  <input id="ID" type="text" value="{{field_data.type}}" autofocus disabled>
+                  <div class="uk-grid">
+                    <div class="uk-width-1-2">
+                      <label class="uk-form-label" for="ID">Field Name</label>
+                      <input id="ID" type="text" value="{{field_data.name}}" autofocus disabled>
+                    </div>
+                    <div class="uk-width-1-2">
+                      <label class="uk-form-label" for="ID">Field Type</label>
+                      <input id="ID" type="text" value="{{field_data.type}}" autofocus disabled>
+                    </div>
+                  </div>
                 {% endfor %}
               {% endif %}
             {% endfor %}
