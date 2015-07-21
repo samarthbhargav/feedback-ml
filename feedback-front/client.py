@@ -17,8 +17,8 @@ class FeedBackClient(object):
         pass
 
     def fetch_dataset_fields(self):
-        return requests.get(POST_DATASET_RESOURCE).json()["datasets"]    
-        
+        return requests.get(POST_DATASET_RESOURCE).json()["datasets"]
+
     def fetch_dataset_statistics(self):
         return requests.get(STATS_RESOURCE).json()["datasetStatistics"]
 
@@ -41,13 +41,8 @@ class FeedBackClient(object):
 
         if resp.status_code == 200:
             return True, "Success"
-        else:
-            # TODO add more desc message
-            if resp.status_code == 404:
-                return False, resp.json()
-            else:
-                return False, "Error Occurred"
-
+        else:            
+            return False, resp.json()
 
     def save_dataset(self, new_dataset):
 

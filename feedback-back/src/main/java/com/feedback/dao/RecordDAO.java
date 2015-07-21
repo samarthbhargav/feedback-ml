@@ -79,6 +79,8 @@ public class RecordDAO
 
     public void save( String dataset, Record record ) throws DatasetNotFoundException, InvalidEntityException
     {
+
+        this.metaDataDAO.getDataset( dataset ).validateRecordForDataset( record );
         this.getCollection( dataset )
             .replaceOne( new Document( "_id", record.getId() ), record.toDocument(), DAOUtil.UPSERT_TRUE );
     }
@@ -88,6 +90,10 @@ public class RecordDAO
     {
         if ( records.isEmpty() ) {
             return;
+        }
+        Dataset dset = this.metaDataDAO.getDataset( dataset );
+        for ( Record record : records ) {
+            dset.validateRecordForDataset( record );
         }
         List<WriteModel<Document>> replaceOneModels = new ArrayList<>( records.size() );
         for ( Record record : records ) {
