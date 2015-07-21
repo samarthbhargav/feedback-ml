@@ -40,7 +40,8 @@ var FeedBackClient = function(name) {
           "name" : rawJSON["DatasetName"],
           "fields" : []
         }
-
+        
+        // checking if the rawJSON['field'] is of Array instance
         if(rawJSON['field'] instanceof Array){
           for(var i=0; i<rawJSON['field'].length;i++){
             console.log(rawJSON['field'][i]);
@@ -58,13 +59,12 @@ var FeedBackClient = function(name) {
           });
         }
 
-
-
         console.log(json);
         console.log(rawJSON['field'].length);
 
 
         console.log(json);
+        console.log(rawJSON['field'].length);
 
         $.ajax({
           type: "POST",
