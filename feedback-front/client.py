@@ -16,6 +16,9 @@ class FeedBackClient(object):
     def __init__(self):
         pass
 
+    def fetch_dataset_fields(self):
+        return requests.get(POST_DATASET_RESOURCE).json()["datasets"]    
+        
     def fetch_dataset_statistics(self):
         return requests.get(STATS_RESOURCE).json()["datasetStatistics"]
 
