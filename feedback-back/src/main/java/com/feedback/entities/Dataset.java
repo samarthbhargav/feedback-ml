@@ -5,6 +5,7 @@ import com.feedback.util.Util;
 import org.bson.Document;
 
 import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -13,6 +14,7 @@ import java.util.List;
 public class Dataset
 {
     private String name;
+    private boolean strictValidation;
     private List<Field> fields;
     private Long updateTime;
 
@@ -53,10 +55,51 @@ public class Dataset
     }
 
 
+    public boolean isStrictValidation()
+    {
+        return strictValidation;
+    }
+
+
+    public void setStrictValidation( boolean strictValidation )
+    {
+        this.strictValidation = strictValidation;
+    }
+
+
     private void validate() throws InvalidEntityException
     {
         if ( Util.isNullOrEmpty( this.getName() ) ) {
             throw new InvalidEntityException( "name field cannot be null" );
+        }
+
+        if ( this.strictValidation ) {
+            if ( this.fields == null || this.fields.isEmpty() ) {
+                throw new InvalidEntityException( "strictValidation is set - provide at least one field" );
+            }
+        }
+    }
+
+
+    public void validateRecordForDataset( Record record ) throws InvalidEntityException
+    {
+        // Validation is not enabled
+        if ( !this.strictValidation ) {
+            return;
+        }
+
+        Map<String, Object> content = record.getContent();
+        if ( content == null || content.isEmpty() ) {
+            throw new InvalidEntityException( "content cannot be null or empty" );
+        }
+
+        for ( Field field : this.fields ) {
+            Object object = content.get( field.getName() );
+            if ( object == null ) {
+                throw new InvalidEntityException( "field " + field.getName() + " must be present and be non-null" );
+            }
+
+            field.getType().validate( object, field.getName() );
         }
     }
 
@@ -65,7 +108,7 @@ public class Dataset
     {
         this.validate();
         return new Document( "_id", this.getName() ).append( "fields", Field.toDocumentList( this.getFields() ) )
-            .append( "updateTime", this.getUpdateTime() );
+            .append( "updateTime", this.getUpdateTime() ).append( "strictValidation", this.strictValidation );
     }
 
 
@@ -78,6 +121,7 @@ public class Dataset
         dataset.setUpdateTime( document.getLong( "updateTime" ) );
         dataset.setFields( Field.fromDocumentList( (List<Document>) document.get( "fields" ) ) );
         dataset.setName( document.getString( "_id" ) );
+        dataset.setStrictValidation( document.getBoolean( "strictValidation" ) );
         dataset.validate();
         return dataset;
     }
@@ -88,6 +132,7 @@ public class Dataset
     {
         return "Dataset{" +
             "name='" + name + '\'' +
+            ", strictValidation=" + strictValidation +
             ", fields=" + fields +
             ", updateTime=" + updateTime +
             '}';

@@ -77,12 +77,8 @@ def post_record(dataset):
         if valid:
             return render_template("add_record.html", dataset=dataset, success="Record added successfully", errno=None)
         else:
-            # TODO add more desc message
-                if status['statusCode'] == 404:
-                    return render_template("add_record.html", error=status["message"], errno=status["statusCode"])
-                else:   
-                    return render_template("add_record.html", dataset=dataset, error="Some Error Occurred", errno = None)
-
+            return render_template("add_record.html", error=status["message"], errno=status["statusCode"])
+            
     except ValueError, e:
         return render_template("add_record.html", dataset=dataset,  stats=stats, error=e.message)
 
@@ -100,7 +96,7 @@ def post_dataset():
     #   if key in keys:
     #       if key is None or len(key) == 0:
     #              raise ValueError("{} cannot be empty".format(key))
-        
+
         new_dataset = {
             "name" : data["DatasetName"]
         }

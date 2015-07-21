@@ -20,7 +20,12 @@ public class Util
         if ( object instanceof Number ) {
             return ( (Number) object ).doubleValue();
         } else {
-            return Double.parseDouble( object.toString() );
+            try {
+                return Double.parseDouble( object.toString() );
+            } catch ( NumberFormatException e ) {
+                // Ignore exception
+                return null;
+            }
         }
     }
 }
