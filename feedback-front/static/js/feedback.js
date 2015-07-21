@@ -39,28 +39,9 @@ var FeedBackClient = function(name) {
         json = {
           "name" : rawJSON["DatasetName"],
           "fields" : []
-<<<<<<< HEAD
         }
-
-        if(rawJSON['field'] instanceof Array){
-          for(var i=0; i<rawJSON['field'].length;i++){
-            console.log(rawJSON['field'][i]);
-            console.log(rawJSON['fieldType'][i]);
-            json.fields.push({
-              "name" : rawJSON['field'][i],
-              "type" : rawJSON['fieldType'][i]
-            });
-          }
-        }
-        else{
-          json.fields.push({
-            "name" : rawJSON['field'],
-            "type" : rawJSON['fieldType']
-          });
-=======
->>>>>>> 403dd01e6ea6be25e075df43c6fc6f82d80a0554
-        }
-
+        
+        // checking if the rawJSON['field'] is of Array instance
         if(rawJSON['field'] instanceof Array){
           for(var i=0; i<rawJSON['field'].length;i++){
             console.log(rawJSON['field'][i]);
@@ -77,8 +58,6 @@ var FeedBackClient = function(name) {
             "type" : rawJSON['fieldType']
           });
         }
-
-
 
         console.log(json);
         console.log(rawJSON['field'].length);
