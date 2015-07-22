@@ -23,7 +23,7 @@
           </div>
           <br>
           <div>
-            <a href="#"><button class="uk-button uk-button-danger" data-uk-modal="{target:'#deleteDataset'}" onclick='client.removeDataset("{{ stat.dataset }}")'>Delete</button></a>
+            <a href="#"><button class="uk-button uk-button-danger" data-uk-modal="{target:'#deleteDataset'}">Delete</button></a>
             <a href="{{ url_for('add_record_page', dataset=stat.dataset) }}"><button class="uk-button uk-button-success">Add Record</button></a>
           </div>            
         </div>
@@ -32,21 +32,22 @@
     </div>
   {% endfor %}
 
-    <!-- divison of modal to delete a dataset -->
-    <div id="deleteDataset" class="uk-modal">
-      <div class="uk-modal-dialog">
-          <a class="uk-modal-close uk-close"></a>
-          <form class="uk-form">
-            <legend>Are you sure?</legend>
-            <button class="uk-button uk-button-success">Yes</button>
-            <button class="uk-button uk-button-danger">No</button>
-          </form>
-      </div>
+  <!-- divison of modal to delete a dataset -->
+  <div id="deleteDataset" class="uk-modal">
+    <div class="uk-modal-dialog">
+        <a class="uk-modal-close uk-close"></a>
+        <form class="uk-form">
+          <legend>Are you sure?</legend>
+          <button class="uk-button uk-button-success" onclick='client.removeDataset("{{ stat.dataset }}")'>Yes</button>
+          <button class="uk-button uk-button-danger">No</button>
+        </form>
     </div>
+  </div>
 
     
 
     <!-- division of modal to edit a dataset-->
+  <div>
     {% for stat_chunk in stat_chunks %}
       {% for stat in stat_chunk %}
         <div id="editDataset{{ stat.dataset }}" class="uk-modal">

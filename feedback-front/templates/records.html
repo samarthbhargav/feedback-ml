@@ -33,7 +33,7 @@
             {% endif %}
 
             <td><button class="uk-button uk-button-primary" data-uk-modal="{target:'#editRecord{{record.id}}'}" type="button">Edit</button></td>
-            <td><button class="uk-button uk-button-danger" data-uk-modal="{target:'#deleteRecord'}" type="button">Delete</button></td>
+            <td><button class="uk-button uk-button-danger" data-uk-modal="{target:'#deleteRecord{{record.id}}'}" type="button">Delete</button></td>
         </tr>
     {% endfor %}
     </div>
@@ -51,6 +51,20 @@
         </form>
     </div>
   </div>
+
+  <!-- divison of modal to delete a record -->
+  {% for record in records %}
+    <div id="deleteRecord{{record.id}}" class="uk-modal">
+      <div class="uk-modal-dialog">
+          <a class="uk-modal-close uk-close"></a>
+          <form class="uk-form">
+            <legend>Are you sure to delete {{record.id}}?</legend>
+            <button class="uk-button uk-button-success" onclick="client.removeRecord('{{record.id}}', '{{record.label}}', 'dataset', 'skip', 'limit')">Yes</button>
+            <button class="uk-button uk-button-danger">No</button>
+          </form>
+      </div>
+    </div>
+  {% endfor %}
 
 
   {% for record in records%}  
@@ -82,19 +96,6 @@
       </div>
     </div>
   {% endfor %}
-
-
-  <!-- divison of modal to delete a record -->
-  <div id="deleteRecord" class="uk-modal">
-    <div class="uk-modal-dialog">
-        <a class="uk-modal-close uk-close"></a>
-        <form class="uk-form">
-          <legend>Are you sure?</legend>
-          <button class="uk-button uk-button-success">Yes</button>
-          <button class="uk-button uk-button-danger">No</button>
-        </form>
-    </div>
-  </div>
 
   <ul class="uk-pagination" data-uk-pagination="{items:100, itemsOnPage:10, currentPage:2 }">
     <li><a href="">Previous</a></li>
