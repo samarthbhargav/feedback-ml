@@ -1,9 +1,11 @@
 from flask import Flask
 from flask import render_template
 from flask import request, flash
+from flask import redirect
 import json
 import requests
 from client import FeedBackClient
+from math import ceil
 
 
 app = Flask(__name__)
@@ -26,8 +28,8 @@ def index():
     datasetFields = client.fetch_dataset_fields()
     # break it up into chunks of 3
     stat_chunks = chunks(stats, 3)
+    limit = 9
     return render_template("index.html", stats = stats, datasetFields = datasetFields, stat_chunks = stat_chunks)
-
 
 @app.route("/stats/")
 def stats_page():

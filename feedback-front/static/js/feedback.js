@@ -95,6 +95,47 @@ var FeedBackClient = function(name) {
 
         return false;
     };
+
+    /** Function to delete a dataset by accessing the data from the API by making an AJAX call **/
+    this.removeDataset = function(dataset) {
+
+      $.ajax({
+                type: "DELETE",
+                url: this.baseURL + "/dataset/" + dataset,
+                contentType: "application/json",
+                crossDomain: true,
+                dataType: "json",
+                success: function( dataset ){
+                    // Put the plain text in the PRE tag.
+                    $( "#deleteStatus" ).text( response );
+                },
+                error: function( error ){
+                    // Log any error.
+                    $( "#deleteStatus" ).text( error );
+                    console.log( "ERROR:", error );
+                }
+            });
+    };
+
+
+    /** Function to delete a record from a dataset by accessing the data from the API by making an AJAX call **/
+    this.removeRecord = function(recordID, recordLabel, dataset, skip, limit) {
+
+      $.ajax({
+                type: "DELETE",
+                url: this.baseURL +"/dataset/"+ dataset +"/record/"+ recordID,
+                success: function( record ){
+                    // Put the plain text in the PRE tag.
+                    $( "#deleteStatus" ).text( response );
+                },
+                error: function( error ){
+                    // Log any error.
+                    $( "#deleteStatus" ).text( error );
+                    console.log( "ERROR:", error );
+                }
+            });
+    };
+
 };
 
 

@@ -55,3 +55,19 @@ html {
     padding: .1em .25em;
     font-size: 150%;
 }
+
+#fieldName{
+    display: inline-block;
+}
+
+#fieldType{
+    display: inline-block;
+}
+
+#fieldName label{
+    display: block;
+}
+
+#fieldType label{
+    display: block;
+}

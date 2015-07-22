@@ -23,7 +23,7 @@
           </div>
           <br>
           <div>
-            <a href="#"><button class="uk-button uk-button-primary" data-uk-modal="{target:'#deleteDataset'}">Delete</button></a>
+            <a href="#"><button class="uk-button uk-button-danger" data-uk-modal="{target:'#deleteDataset'}">Delete</button></a>
             <a href="{{ url_for('add_record_page', dataset=stat.dataset) }}"><button class="uk-button uk-button-success">Add Record</button></a>
           </div>            
         </div>
@@ -32,21 +32,22 @@
     </div>
   {% endfor %}
 
-    <!-- divison of modal to delete a dataset -->
-    <div id="deleteDataset" class="uk-modal">
-      <div class="uk-modal-dialog">
-          <a class="uk-modal-close uk-close"></a>
-          <form class="uk-form">
-            <legend>Are you sure?</legend>
-            <button class="uk-button uk-button-success">Yes</button>
-            <button class="uk-button uk-button-danger">No</button>
-          </form>
-      </div>
+  <!-- divison of modal to delete a dataset -->
+  <div id="deleteDataset" class="uk-modal">
+    <div class="uk-modal-dialog">
+        <a class="uk-modal-close uk-close"></a>
+        <form class="uk-form">
+          <legend>Are you sure?</legend>
+          <button class="uk-button uk-button-success" onclick='client.removeDataset("{{ stat.dataset }}")'>Yes</button>
+          <button class="uk-button uk-button-danger">No</button>
+        </form>
     </div>
+  </div>
 
     
 
     <!-- division of modal to edit a dataset-->
+  <div>
     {% for stat_chunk in stat_chunks %}
       {% for stat in stat_chunk %}
         <div id="editDataset{{ stat.dataset }}" class="uk-modal">
@@ -62,15 +63,15 @@
             {% for field_obj in datasetFields %}
               {% if stat.dataset == field_obj.name %}
                 {% for field_data in field_obj.fields %}
-                  <div class="uk-grid">
-                    <div class="uk-width-1-2">
-                      <label class="uk-form-label" for="ID">Field Name</label>
-                      <input id="ID" type="text" value="{{field_data.name}}" autofocus disabled>
-                    </div>
-                    <div class="uk-width-1-2">
-                      <label class="uk-form-label" for="ID">Field Type</label>
-                      <input id="ID" type="text" value="{{field_data.type}}" autofocus disabled>
-                    </div>
+                  <div class="uk-grid-row">
+                      <div id="fieldName">
+                        <label class="uk-form-label" for="ID">Field Name</label>
+                        <input id="ID" type="text" value="{{field_data.name}}" autofocus disabled>
+                      </div>
+                      <div id="fieldType">
+                        <label class="uk-form-label" for="ID">Field Type</label>
+                        <input id="ID" type="text" value="{{field_data.type}}" autofocus disabled>
+                      </div>
                   </div>
                 {% endfor %}
               {% endif %}
@@ -85,4 +86,17 @@
       {% endfor %}
     {% endfor %}
   </div>
+
+  <ul class="uk-pagination" data-uk-pagination="{ items:{{ stats|length }}, itemsOnPage:9, displayedPages : 5 }">
+    <li><a href="">Previous</a></li>
+    <li class="uk-active"><span>1</span></li>
+    <li class="uk-disabled"><span>2</span></li>
+    <li><a href="">Next</a></li>
+  </ul>
+
+  <script>
+    $('[data-uk-pagination]').on('select.uk.pagination', function(e, pageIndex){
+    alert('You have selected page: ' + (pageIndex+1));
+  });
+  </script>
 {% endblock %}
