@@ -65,7 +65,7 @@
             </div>
             <div class="uk-form-row">
               <label class="uk-form-label" for="label">Label</label>
-              <input id="label" type="text" placeholder="Label" value="{{record.label}}">
+              <input id="label" type="text" placeholder="Label" value="{{record.label}}" autofocus disabled>
             </div>
             {% if record.content %}
                 {% for key, value in record.content.iteritems() %}

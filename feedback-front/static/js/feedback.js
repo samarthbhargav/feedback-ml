@@ -95,6 +95,27 @@ var FeedBackClient = function(name) {
 
         return false;
     };
+
+    this.removeDataset = function(dataset) {
+
+      $.ajax({
+                type: "DELETE",
+                url: this.baseURL + "/dataset/" + dataset,
+                contentType: "application/json",
+                crossDomain: true,
+                dataType: "json",
+                success: function( response ){
+                    // Put the plain text in the PRE tag.
+                    $( "#deleteStatus" ).text( response );
+                },
+                error: function( error ){
+                    // Log any error.
+                    $( "#deleteStatus" ).text( error );
+                    console.log( "ERROR:", error );
+                }
+            });
+    };
+
 };
 
 
