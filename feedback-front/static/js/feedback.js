@@ -27,6 +27,48 @@ var FeedBackClient = function(name) {
         // TODO:Mahesh use the next function as a template and complete this
     };
 
+    /** Function to add new label to a record **/
+    this.addLabelValue = function(formID, dataset, recordName) {
+        var rawJSON = $("#" + formID).serializeObject();
+
+       labelValue = rawJSON['newLabelName'];
+       console.log(labelValue);
+       if(labelValue){
+
+        $.ajax({
+          type: "post",
+          url: this.baseURL + "/dataset/" + dataset + "/record/" + recordName + "/label/"+ labelValue,
+          headers: {
+            "Content-Type" : "application/json"
+          },
+          success: function(data) {
+            // Display success message in UI
+            console.log(data);
+            console.log("Success!");
+          }
+        }).fail(function (jqxhr) {
+            // Display failure message in UI
+            console.log(" Adding new label value failed!");
+
+            if(jqxhr.getResponseHeader('Content-Type') == "text/plain") {
+                // Plain Text error - display in UI
+                console.log(jqxhr.responseText);
+            } else if(jqxhr.getResponseHeader('Content-Type') == "application/json") {
+                // Display error message in UI
+                var errorJSON = $.parseJSON(jqxhr.responseText);
+                console.log(errorJSON);
+            }
+
+        });
+
+        return false;
+       }
+       else{
+            // no labelvalue
+       }
+
+    };
+
     /** Function to parse a form and post the parsed JSON data to the API **/
     this.addDataset = function(formID) {
         var rawJSON = $("#" + formID).serializeObject();

@@ -7,6 +7,7 @@ RECORDS_STATS_RESOURCE = "http://localhost:9999/stats/datasets/{}"
 POST_RECORDS_RESOURCE = "http://localhost:9999/dataset/{}/record/"
 RECORDS_PAGE_RESOURCE = "http://localhost:9999/dataset/{}/records/{}/{}"
 POST_DATASET_RESOURCE = "http://localhost:9999/dataset/"
+RECORDS_OF_A_DATASET = "http://localhost:9999/dataset/{}/records"
 
 JSON_HEADERS = {'Content-Type': 'application/json'}
 
@@ -61,7 +62,7 @@ class FeedBackClient(object):
     def get_records(self, dataset, skip, limit):
         endpoint = RECORDS_PAGE_RESOURCE.format(dataset, skip, limit)
         response = requests.get(endpoint)
-	print response.text
+	   #print response.text
         if response.status_code == 200:
             return True, response.json()
         else:
