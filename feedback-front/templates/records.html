@@ -8,7 +8,7 @@
           {% if error %}<div class="uk-alert uk-alert-danger">{{ error }} </div>{% endif %}
       </div>
       <div class="uk-width-1-1">
-          <h3>Showing records {{records|length}} of {{records|length}}</h3>
+          <h3>Showing records {{records|length}} of {{totalRecords}}</h3>
       </div>
   </div>
 
@@ -41,16 +41,21 @@
   </table>
 
   <!-- divison of modal to edit the label name -->
-  <div id="addLabel" class="uk-modal">
-    <div class="uk-modal-dialog">
-        <a class="uk-modal-close uk-close"></a>
-        <form class="uk-form">
-          <legend>Enter the Label Name</legend>
-          <input id="label-name" type="text" placeholder="label name" autofocus>
-          <button id="add-label-btn" class="uk-button uk-button-primary" onclick="addLabelValue()">Submit</button>
-        </form>
-    </div>
-  </div>
+  {% for record in records %}
+    <form class="uk-form" id="add-label-value"  onclick="client.addLabelValue('add-label-value', '{{ dataset }}', '{{ record.id }}'); return false;">
+      <div id="addLabel" class="uk-modal">
+        <div class="uk-modal-dialog">
+            <a class="uk-modal-close uk-close"></a>
+            <form class="uk-form">
+              <legend>Enter the Label Name</legend>
+              <input id="label-name" type="text" name="newLabelName" placeholder="label name" autofocus>
+              <button id="add-label-btn" class="uk-button uk-button-primary">Submit</button>
+            </form>
+        </div>
+      </div>
+    </form>
+  {% endfor %}
+  
 
   <!-- divison of modal to delete a record -->
   {% for record in records %}
@@ -96,7 +101,34 @@
       </div>
     </div>
   {% endfor %}
+  {% if start %}
+    {% set begin = start %}
+  {% else %}
+    {% set begin = 0 %}
+  {% endif %}
+    <ul class="uk-pagination" data-uk-pagination="{items:{{ totalRecords }}, itemsOnPage:{{ limit }}}">
+      {% if begin == 0 %}
+        <li><button class="uk-button" type="button" disabled>Previous</button></li>
+      {% else %}
+        <li><button class="uk-button" type="button">Previous</button></li>
+      {% endif %}
+      {% if totalRecords > 10 %}
+        {% for i in range((totalRecords/limit)|int + 1) %}
+          <li class="uk-active"><button class="uk-button uk-button-primary" type="button">{{ i+1 }}</button></li>
+        {% endfor %}
+      {% else %}
+          <li class="uk-active"><button class="uk-button uk-button-primary" type="button">{{ begin+1 }}</button></li>
+      {% endif %}
+      {% if begin == totalRecords/limit %}
+        <li><button class="uk-button" type="button" disabled>Next</button></li>
+      {% else %}
+        <li><a href="{{ url_for('nextRecords', dataset=dataset,  start=begin, limit=limit) }}"><button class="uk-button" type="button">Next</button></a></li>
+      {% endif %}
+    </ul>
+  
+  
 
+  <!--
   <ul class="uk-pagination" data-uk-pagination="{items:100, itemsOnPage:10, currentPage:2 }">
     <li><a href="">Previous</a></li>
     <li class="uk-active"><span>1</span></li>
@@ -109,5 +141,6 @@
       alert('You have selected page: ' + (pageIndex+1));
     });
   </script>
+-->
 
 {% endblock %}
