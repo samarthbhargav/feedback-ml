@@ -81,6 +81,7 @@ public class RecordDAO
     {
 
         this.metaDataDAO.getDataset( dataset ).validateRecordForDataset( record );
+        record.setLastModified( System.currentTimeMillis() );
         this.getCollection( dataset )
             .replaceOne( new Document( "_id", record.getId() ), record.toDocument(), DAOUtil.UPSERT_TRUE );
     }
@@ -94,14 +95,25 @@ public class RecordDAO
         Dataset dset = this.metaDataDAO.getDataset( dataset );
         for ( Record record : records ) {
             dset.validateRecordForDataset( record );
+
         }
         List<WriteModel<Document>> replaceOneModels = new ArrayList<>( records.size() );
+        long modificationTime = System.currentTimeMillis();
         for ( Record record : records ) {
+            record.setLastModified( modificationTime );
             replaceOneModels
                 .add( new ReplaceOneModel( new Document( "_id", record.getId() ), record.toDocument(), DAOUtil.UPSERT_TRUE ) );
         }
 
         this.getCollection( dataset ).bulkWrite( replaceOneModels );
+    }
+
+
+    public void labelRecord( String dataset, String id, String newLabel )
+        throws DatasetNotFoundException, InvalidEntityException
+    {
+        this.getCollection( dataset ).updateOne( new Document( "_id", id ),
+            new Document( "$set", new Document( "label", newLabel ).append( "lastModified", System.currentTimeMillis() ) ) );
     }
 
 
