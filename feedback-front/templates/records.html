@@ -2,14 +2,28 @@
 {% block body %}
 
   <div class="uk-grid" data-uk-grid-margin>
-      <div class="uk-width-1-1">
-          <h2>Records</h2>
-          <a href="{{ url_for('add_record_page', dataset=dataset) }}"><button class="uk-button uk-button-primary">Add Record</button></a>
-          {% if error %}<div class="uk-alert uk-alert-danger">{{ error }} </div>{% endif %}
-      </div>
-      <div class="uk-width-1-1">
-          <h3>Showing records {{records|length}} of {{totalRecords}}</h3>
-      </div>
+    <div class="uk-width-1-1">
+        <h2>Records</h2>
+        <a href="{{ url_for('add_record_page', dataset=dataset) }}"><button class="uk-button uk-button-primary">Add Record</button></a>
+        {% if error %}<div class="uk-alert uk-alert-danger">{{ error }} </div>{% endif %}
+    </div>
+    <div class="uk-width-1-1">
+      <h3>Showing records {{skip}} - {{skip+limit}}</h3>
+      
+      <!-- select dropdown to display the selected records -->
+      <select id="page">
+        <option selected="true" disabled="disabled">Choose Records</option>    
+        <script> 
+          for(var i={{skip+limit}};i<={{totalRecords}};i+={{limit}}){
+              document.write("<option value = "+ i +" >"+Math.round(i/{{limit}} , 1)+"</option>");
+          }
+          $('#page').change(function() {
+            var skip = $(this).val();
+            window.location="/records/{{dataset}}/"+skip+"/{{limit}}";
+          });
+        </script>
+      </select>
+    </div>
   </div>
 
   <table class="uk-table uk-table-hover uk-table-striped">
@@ -71,7 +85,7 @@
     </div>
   {% endfor %}
 
-
+  <!-- divison of modal to edit a record -->
   {% for record in records%}  
     <div id="editRecord{{record.id}}" class="uk-modal">
       <div class="uk-modal-dialog">
@@ -100,47 +114,23 @@
           </form>
       </div>
     </div>
-  {% endfor %}
-  {% if start %}
-    {% set begin = start %}
-  {% else %}
-    {% set begin = 0 %}
-  {% endif %}
-    <ul class="uk-pagination" data-uk-pagination="{items:{{ totalRecords }}, itemsOnPage:{{ limit }}}">
-      {% if begin == 0 %}
-        <li><button class="uk-button" type="button" disabled>Previous</button></li>
-      {% else %}
-        <li><button class="uk-button" type="button">Previous</button></li>
-      {% endif %}
-      {% if totalRecords > 10 %}
-        {% for i in range((totalRecords/limit)|int + 1) %}
-          <li class="uk-active"><button class="uk-button uk-button-primary" type="button">{{ i+1 }}</button></li>
-        {% endfor %}
-      {% else %}
-          <li class="uk-active"><button class="uk-button uk-button-primary" type="button">{{ begin+1 }}</button></li>
-      {% endif %}
-      {% if begin == totalRecords/limit %}
-        <li><button class="uk-button" type="button" disabled>Next</button></li>
-      {% else %}
-        <li><a href="{{ url_for('nextRecords', dataset=dataset,  start=begin, limit=limit) }}"><button class="uk-button" type="button">Next</button></a></li>
-      {% endif %}
-    </ul>
+  {% endfor %} 
+
+  <!-- select dropdown to display the selected records -->
+  <div class="uk-grid" data-uk-grid-margin> 
+    <select id="pagination">
+      <option selected="true" disabled="disabled">Choose Records</option>    
+      <script> 
+        for(var i={{skip+limit}};i<={{totalRecords}};i+={{limit}}){
+            document.write("<option value = "+ i +" >"+Math.round(i/{{limit}} , 1)+"</option>");
+        }
+        $('#pagination').change(function() {
+          var skip = $(this).val();
+          console.log(skip);
+          window.location="/records/{{dataset}}/"+skip+"/{{limit}}";
+        });
+      </script>
+    </select>
+  </div>  
   
-  
-
-  <!--
-  <ul class="uk-pagination" data-uk-pagination="{items:100, itemsOnPage:10, currentPage:2 }">
-    <li><a href="">Previous</a></li>
-    <li class="uk-active"><span>1</span></li>
-    <li class="uk-disabled"><span>2</span></li>
-    <li><a href="">Next</a></li>
-  </ul>
-
-  <script>
-    $('[data-uk-pagination]').on('select.uk.pagination', function(e, pageIndex){
-      alert('You have selected page: ' + (pageIndex+1));
-    });
-  </script>
--->
-
 {% endblock %}
