@@ -2,14 +2,28 @@
 {% block body %}
 
   <div class="uk-grid" data-uk-grid-margin>
-      <div class="uk-width-1-1">
-          <h2>Records</h2>
-          <a href="{{ url_for('add_record_page', dataset=dataset) }}"><button class="uk-button uk-button-primary">Add Record</button></a>
-          {% if error %}<div class="uk-alert uk-alert-danger">{{ error }} </div>{% endif %}
-      </div>
-      <div class="uk-width-1-1">
-          <h3>Showing records {{records|length}} of {{records|length}}</h3>
-      </div>
+    <div class="uk-width-1-1">
+        <h2>Records</h2>
+        <a href="{{ url_for('add_record_page', dataset=dataset) }}"><button class="uk-button uk-button-primary">Add Record</button></a>
+        {% if error %}<div class="uk-alert uk-alert-danger">{{ error }} </div>{% endif %}
+    </div>
+    <div class="uk-width-1-1">
+      <h3>Showing records {{skip}} - {{skip+limit}}</h3>
+      
+      <!-- select dropdown to display the selected records -->
+      <select id="page">
+        <option selected="true" disabled="disabled">Choose Records</option>    
+        <script> 
+          for(var i={{skip+limit}};i<={{totalRecords}};i+={{limit}}){
+              document.write("<option value = "+ i +" >"+Math.round(i/{{limit}} , 1)+"</option>");
+          }
+          $('#page').change(function() {
+            var skip = $(this).val();
+            window.location="/records/{{dataset}}/"+skip+"/{{limit}}";
+          });
+        </script>
+      </select>
+    </div>
   </div>
 
   <table class="uk-table uk-table-hover uk-table-striped">
@@ -41,16 +55,21 @@
   </table>
 
   <!-- divison of modal to edit the label name -->
-  <div id="addLabel" class="uk-modal">
-    <div class="uk-modal-dialog">
-        <a class="uk-modal-close uk-close"></a>
-        <form class="uk-form">
-          <legend>Enter the Label Name</legend>
-          <input id="label-name" type="text" placeholder="label name" autofocus>
-          <button id="add-label-btn" class="uk-button uk-button-primary" onclick="addLabelValue()">Submit</button>
-        </form>
-    </div>
-  </div>
+  {% for record in records %}
+    <form class="uk-form" id="add-label-value"  onclick="client.addLabelValue('add-label-value', '{{ dataset }}', '{{ record.id }}'); return false;">
+      <div id="addLabel" class="uk-modal">
+        <div class="uk-modal-dialog">
+            <a class="uk-modal-close uk-close"></a>
+            <form class="uk-form">
+              <legend>Enter the Label Name</legend>
+              <input id="label-name" type="text" name="newLabelName" placeholder="label name" autofocus>
+              <button id="add-label-btn" class="uk-button uk-button-primary">Submit</button>
+            </form>
+        </div>
+      </div>
+    </form>
+  {% endfor %}
+  
 
   <!-- divison of modal to delete a record -->
   {% for record in records %}
@@ -66,7 +85,7 @@
     </div>
   {% endfor %}
 
-
+  <!-- divison of modal to edit a record -->
   {% for record in records%}  
     <div id="editRecord{{record.id}}" class="uk-modal">
       <div class="uk-modal-dialog">
@@ -95,19 +114,23 @@
           </form>
       </div>
     </div>
-  {% endfor %}
+  {% endfor %} 
 
-  <ul class="uk-pagination" data-uk-pagination="{items:100, itemsOnPage:10, currentPage:2 }">
-    <li><a href="">Previous</a></li>
-    <li class="uk-active"><span>1</span></li>
-    <li class="uk-disabled"><span>2</span></li>
-    <li><a href="">Next</a></li>
-  </ul>
-
-  <script>
-    $('[data-uk-pagination]').on('select.uk.pagination', function(e, pageIndex){
-      alert('You have selected page: ' + (pageIndex+1));
-    });
-  </script>
-
+  <!-- select dropdown to display the selected records -->
+  <div class="uk-grid" data-uk-grid-margin> 
+    <select id="pagination">
+      <option selected="true" disabled="disabled">Choose Records</option>    
+      <script> 
+        for(var i={{skip+limit}};i<={{totalRecords}};i+={{limit}}){
+            document.write("<option value = "+ i +" >"+Math.round(i/{{limit}} , 1)+"</option>");
+        }
+        $('#pagination').change(function() {
+          var skip = $(this).val();
+          console.log(skip);
+          window.location="/records/{{dataset}}/"+skip+"/{{limit}}";
+        });
+      </script>
+    </select>
+  </div>  
+  
 {% endblock %}

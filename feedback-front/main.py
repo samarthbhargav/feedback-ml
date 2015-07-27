@@ -111,16 +111,18 @@ def post_dataset():
     except ValueError, e:
             return render_template("add_dataset.html", error=e.message)
 
-
 @app.route("/records/<string:dataset>/<int:skip>/<int:limit>")
 def records(dataset, skip, limit):
     valid, data =  client.get_records(dataset, skip, limit)
     if valid:
         records = data["records"]
-        return render_template("records.html", dataset=dataset, records=records)
+        totalRecords = data["totalNumberOfRecords"]
+        limit = data["limit"]
+        skip = data["skip"]
+        return render_template("records.html", dataset=dataset, records=records, totalRecords=totalRecords, skip=skip, limit=limit)
     else:
         # TODO
-        return render_template("records.html", dataset=dataset, records=[], error="Some error occurred")
+        return render_template("records.html", dataset=dataset, records=[], error="Some error occurred" , totalRecords=totalRecords, limit=limit)
 
 if __name__ == "__main__":
     app.run(debug=True)

@@ -71,3 +71,25 @@ html {
 #fieldType label{
     display: block;
 }
+
+#page{
+    padding: 5px;
+    background-color: #D2FD00;
+    border: 0px;
+    font-family: "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", "DejaVu Sans", Verdana, sans-serif;
+    font-size: 14px;
+}
+
+#page :hover{
+    border: 0px solid white;
+}
+
+#pagination{
+    padding: 5px;
+    background-color: #D2FD00;
+    border: 0px;
+    font-family: "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", "DejaVu Sans", Verdana, sans-serif;
+    font-size: 14px;
+    margin-left: 40%;
+    margin-top: 5%;
+}
