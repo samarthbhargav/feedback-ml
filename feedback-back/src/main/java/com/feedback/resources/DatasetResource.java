@@ -214,7 +214,11 @@ public class DatasetResource
         String id )
     {
         try {
-            return Response.ok( recordDAO.getRecord( dataset, id ) ).build();
+            Record record = recordDAO.getRecord( dataset, id );
+            if ( record == null ) {
+                return ResourceUtil.buildErrorEntity( "record with id " + id + " not found", Response.Status.NOT_FOUND );
+            }
+            return Response.ok( record ).build();
         } catch ( DatasetNotFoundException e ) {
             return ResourceUtil.buildErrorEntity( e.getMessage(), Response.Status.NOT_FOUND );
         } catch ( InvalidEntityException e ) {
@@ -240,6 +244,36 @@ public class DatasetResource
     {
         try {
             this.recordDAO.save( dataset, record );
+            return Response.ok().build();
+        } catch ( DatasetNotFoundException e ) {
+            return ResourceUtil.buildErrorEntity( e.getMessage(), Response.Status.NOT_FOUND );
+        } catch ( InvalidEntityException e ) {
+            return ResourceUtil.buildErrorEntity( e.getMessage(), Response.Status.BAD_REQUEST );
+        }
+    }
+
+
+    /**
+     * Sets the label for a record. This operation is idempotent
+     * @param dataset
+     * @param recordID
+     * @param newLabel
+     * @return
+     */
+    @POST
+    @Path ("/{dataset}/record/{id}/label/{newLabel}")
+    @Consumes (MediaType.APPLICATION_JSON)
+    @Produces (MediaType.APPLICATION_JSON)
+    public Response setLabel(
+        @PathParam ("dataset")
+        String dataset,
+        @PathParam ("id")
+        String recordID,
+        @PathParam ("newLabel")
+        String newLabel )
+    {
+        try {
+            this.recordDAO.labelRecord( dataset, recordID, newLabel );
             return Response.ok().build();
         } catch ( DatasetNotFoundException e ) {
             return ResourceUtil.buildErrorEntity( e.getMessage(), Response.Status.NOT_FOUND );
