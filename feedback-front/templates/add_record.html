@@ -13,7 +13,7 @@
   {% endif %}
   {% if success %}<div class="uk-alert">{{ success }}</div>{% endif %}
 
-  <form class="uk-form" action="{{ url_for('post_record', dataset=dataset) }}" method="post" id="add-record-form">
+  <form class="uk-form" action="{{ url_for('post_record', dataset=dataset, mydata=mydata) }}" method="post" id="add-record-form">
       <fieldset>
           <legend>Add Record</legend>
           <div class="uk-form-row">
@@ -25,34 +25,48 @@
           <div class="uk-form-row" id="content">
           </div>
           <div class="uk-form-row">
-            <button id="content" class="uk-button" type="button" onclick="addContentDiv()">Add Content</button>
+            <button id="content" class="uk-button" type="button" onclick="addContentDiv()" onclick="processBeforePost()">Add Content</button>
           </div>
           <br>
           <div class="uk-form-row">
             <button class="uk-button" value="Submit" onclick="processBeforePost()">Submit</button>
           </div>
       </fieldset>
-  </form>
+  
   <!-- Not able to add Key:Value values to the database -->
   <script>
     function addContentDiv() {
       var newdiv = document.createElement('div');
-      newdiv.innerHTML = "<div class='uk-form-row'><input value='' type='text' placeholder='Content-Key' value='Content-'>"
+      newdiv.innerHTML = "<div class='uk-form-row' id='content'><input value='' type='text' id='content-key' placeholder='Content-Key' value='Content-'>"
       document.getElementById("content").appendChild(newdiv);
 
       var newdiv = document.createElement('div');
-      newdiv.innerHTML = "<input type='text' placeholder='Content-Value' value=''></form><br>"
+      newdiv.innerHTML = "<input type='text' placeholder='Content-Value' id='content-value' value=''></form><br>"
       document.getElementById("content").appendChild(newdiv);
     }
 
-    function processBeforePost(){
-      var key = document.getElementById('contentDivKey').value;
-      var value = document.getElementById('contentDivValue').value;
+    $('#add-record-form').submit(function() {
+    // get all the inputs into an array.
+      var $inputs = $('#add-record-form :input');
 
-      mydata = JSON.stringify($('#contentForm').serialize());
-      alert(mydata);
+      // not sure if you wanted this, but I thought I'd add it.
+      // get an associative array of just the values.
+      var values = {};
+      $inputs.each(function() {
+          values[this.name] = $(this).val();
+        });
+      alert(values);
+    });
+
+    function processBeforePost(){
+      var key = $('#content-key').val();
+      var value = $('#content-value').val();
+
+      mydata = JSON.stringify($('#content').serialize());
+      /*alert(mydata);
       alert(key);
-      alert(value);
+      alert(value); */
     }
   </script>
+</form>
 {% endblock %}

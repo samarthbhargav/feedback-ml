@@ -297,4 +297,28 @@ public class RecordDAOTest
         Record record = new Record();
         RecordDAO.getInstance().save( DATASET, record );
     }
+
+
+    @Test
+    public void testLabelRecord() throws Exception
+    {
+        createDataset();
+        RecordDAO recordDAO = RecordDAO.getInstance();
+        recordDAO.labelRecord( DATASET, "someID", "newLabel" );
+
+        // No document should be created if label is set for non-existent record
+        Assert.assertEquals( 0, DB.getCollection( DATASET ).count() );
+
+        Record record = new Record();
+        record.setId( "someID" );
+        record.setLabel( null );
+
+        recordDAO.save( DATASET, record );
+
+        recordDAO.labelRecord( DATASET, "someID", "newLabel" );
+        Assert.assertEquals( "newLabel", recordDAO.getRecord( DATASET, "someID" ).getLabel() );
+
+        recordDAO.labelRecord( DATASET, "someID", "newerLabel" );
+        Assert.assertEquals( "newerLabel", recordDAO.getRecord( DATASET, "someID" ).getLabel() );
+    }
 }
