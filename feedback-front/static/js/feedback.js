@@ -43,12 +43,40 @@ var FeedBackClient = function(name) {
           },
           success: function(data) {
             // Display success message in UI
-            console.log(data);
-            console.log("Success!");
+            if(data.status == 400){
+                document.write("Label Added Successfully. Redirecting to the page ......");
+                window.setTimeout(function(){location.reload()},900);
+            }
+            else{
+                document.write("Some Error Occurred. Redirecting to the page ......");
+                window.setTimeout(function(){location.reload()},900);
+            }
           }
-        }).fail(function (jqxhr) {
+        }).fail(function (jqxhr, exception) {
             // Display failure message in UI
-            console.log(" Adding new label value failed!");
+                console.log(" Adding new label value failed!");
+              if (jqXHR.status === 0) {
+                  document.write("Not connect.\n Verify Network.\n Redirecting to the page ......");
+                  window.setTimeout(function(){location.reload()},900);
+              } else if (jqXHR.status == 404) {
+                  document.write("Requested page not found [404].\n Redirecting to the page ......");
+                  window.setTimeout(function(){location.reload()},900);
+              } else if (jqXHR.status == 500) {
+                  document.write("Internal Server Error [500].\n Redirecting to the page ......");
+                  window.setTimeout(function(){location.reload()},900);
+              } else if (exception === 'parsererror') {
+                  document.write("Requested JSON parse failed.\n Redirecting to the page ......");
+                  window.setTimeout(function(){location.reload()},900);
+              } else if (exception === 'timeout') {
+                  document.write("Time out error.\n Redirecting to the page ......");
+                  window.setTimeout(function(){location.reload()},900);
+              } else if (exception === 'abort') {
+                  document.write("Ajax request aborted.\n Redirecting to the page ......");
+                  window.setTimeout(function(){location.reload()},900);
+              } else {
+                  document.write("Uncaught Error.\n" + jqXHR.responseText +".\n Redirecting to the page ......");
+                  window.setTimeout(function(){location.reload()},900);
+              }
 
             if(jqxhr.getResponseHeader('Content-Type') == "text/plain") {
                 // Plain Text error - display in UI

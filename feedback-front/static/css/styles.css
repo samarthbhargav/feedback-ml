@@ -74,22 +74,20 @@ html {
 
 #page{
     padding: 5px;
-    background-color: #D2FD00;
+    background-color: #00a8e6;
     border: 0px;
     font-family: "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", "DejaVu Sans", Verdana, sans-serif;
     font-size: 14px;
-}
-
-#page :hover{
-    border: 0px solid white;
+    color: white;
 }
 
 #pagination{
     padding: 5px;
-    background-color: #D2FD00;
+    background-color: #00a8e6;
     border: 0px;
     font-family: "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", "DejaVu Sans", Verdana, sans-serif;
     font-size: 14px;
     margin-left: 40%;
     margin-top: 5%;
+    color: white
 }

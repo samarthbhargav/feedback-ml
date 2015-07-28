@@ -43,7 +43,7 @@
             {% if record.label %}
               <td class="uk-text-bold">{{record.label}}</id>
             {% else %}
-              <td id = "label-name-td" class="uk-text-muted"><button class="uk-button uk-button-success" data-uk-modal="{target:'#addLabel'}" type="button">Add Label</button></td>
+              <td id = "label-name-td" class="uk-text-muted"><button class="uk-button uk-button-success" data-uk-modal="{target:'#addLabel{{record.id}}'}" type="button">Add Label</button></td>
             {% endif %}
 
             <td><button class="uk-button uk-button-primary" data-uk-modal="{target:'#editRecord{{record.id}}'}" type="button">Edit</button></td>
@@ -56,8 +56,8 @@
 
   <!-- divison of modal to edit the label name -->
   {% for record in records %}
-    <form class="uk-form" id="add-label-value"  onclick="client.addLabelValue('add-label-value', '{{ dataset }}', '{{ record.id }}'); return false;">
-      <div id="addLabel" class="uk-modal">
+    <form class="uk-form" id="add-label-value-{{record.id}}"  onclick="client.addLabelValue('add-label-value-{{record.id}}', '{{ dataset }}', '{{ record.id }}'); return false;">
+      <div id="addLabel{{record.id}}" class="uk-modal">
         <div class="uk-modal-dialog">
             <a class="uk-modal-close uk-close"></a>
             <form class="uk-form">
