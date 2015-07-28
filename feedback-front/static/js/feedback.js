@@ -29,11 +29,10 @@ var FeedBackClient = function(name) {
 
     /** Function to add new label to a record **/
     this.addLabelValue = function(formID, dataset, recordName) {
-        var rawJSON = $("#" + formID).serializeObject();
-
-       labelValue = rawJSON['newLabelName'];
-       console.log(labelValue);
-       if(labelValue){
+      var rawJSON = $("#" + formID).serializeObject();
+      labelValue = rawJSON['newLabelName'];
+      console.log(labelValue);
+      if(labelValue){
 
         $.ajax({
           type: "post",
@@ -41,56 +40,57 @@ var FeedBackClient = function(name) {
           headers: {
             "Content-Type" : "application/json"
           },
-          success: function(jqxhr) {
+          success: function() {
             // Display success message in UI
-            $('#labelNameStatus').html("<div style='color:green'>Label Name was added successfully.</div>");
-            window.setTimeout(function(){location.reload()}, 1500);
+            success("Label Name Added Successfully");
           }
+        
         }).fail(function (jqxhr, exception) {
             // Display failure message in UI
-                console.log(" Adding new label value failed!");
-              if (jqXHR.status === 0) {
-                  $('#labelNameStatus').html("<div style='color:red'>Not connecting, verify your network</div>");
-                  window.setTimeout(function(){location.reload()}, 2000);
-              } else if (jqXHR.status == 404) {
-                  $('#labelNameStatus').html("<div style='color:red'>Requested page not found [404]</div>");
-                  window.setTimeout(function(){location.reload()}, 2000);
-              } else if (jqXHR.status == 500) {
-                  $('#labelNameStatus').html("<div style='color:red'>Internal Server Error [500].</div>");
-                  window.setTimeout(function(){location.reload()}, 2000);
-              } else if (exception === 'parsererror') {
-                  $('#labelNameStatus').html("<div style='color:red'>Requested JSON parse failed.</div>");
-                  window.setTimeout(function(){location.reload()}, 2000);
-              } else if (exception === 'timeout') {
-                  $('#labelNameStatus').html("<div style='color:red'>Time out error.</div>");
-                  window.setTimeout(function(){location.reload()}, 2000);
-              } else if (exception === 'abort') {
-                  $('#labelNameStatus').html("<div style='color:red'>Ajax request aborted.</div>");
-                  window.setTimeout(function(){location.reload()}, 2000);
-              } else {
-                  $('#labelNameStatus').html("<div style='color:red'>Uncaught Error.</div>");
-                  window.setTimeout(function(){location.reload()}, 2000);
-              }
-
+            console.log(" Adding new label value failed!");
+                
+            if (jqXHR.status === 0) {
+                failure("Not connecting, verify your network");
+            } else if (jqXHR.status == 404) {
+                failure("Requesting page not found [404]");
+            } else if (jqXHR.status == 500) {
+                failure("Internal Error [500]");
+            } else if (exception === 'parsererror') {
+                failure("Requested JSON parser failed");
+            } else if (exception === 'timeout') {
+                failure("Time Out Error");
+            } else if (exception === 'abort') {
+                failure("AJAX request aborted");
+            } else {
+                failure("Uncaught Error");
+            }
+              
             if(jqxhr.getResponseHeader('Content-Type') == "text/plain") {
                 // Plain Text error - display in UI
-                console.log(jqxhr.responseText);
-            } else if(jqxhr.getResponseHeader('Content-Type') == "application/json") {
+              console.log(jqxhr.responseText);
+            } 
+            else if(jqxhr.getResponseHeader('Content-Type') == "application/json") {
                 // Display error message in UI
                 var errorJSON = $.parseJSON(jqxhr.responseText);
                 console.log(errorJSON);
             }
 
-        });
-
-        return false;
+          });
       }
       else{
             // no labelvalue
-          $('#labelNameStatus').html("<div style='color:red'>No Label Name</div>");
-            window.setTimeout(function(){location.reload()}, 1000);
+            failure("No Label Name");
+         // $('#labelNameStatus').html("<div style='color:red'>No Label Name</div>");
+           // window.setTimeout(function(){location.reload()}, 1000);
       }
-
+      function success(msg){
+        $('#labelNameStatus').html("<div style='color:green'>"+msg+"</div>");
+            window.setTimeout(function(){location.reload()}, 1500);
+      }
+      function failure(msg){
+        $('#labelNameStatus').html("<div style='color:red'>"+msg+"</div>");            
+          window.setTimeout(function(){location.reload()}, 2000);
+      }
     };
 
     /** Function to parse a form and post the parsed JSON data to the API **/
