@@ -24,6 +24,7 @@
         </script>
       </select>
     </div>
+    <div id="labelNameStatus"></div>
   </div>
 
   <table class="uk-table uk-table-hover uk-table-striped">
@@ -57,29 +58,32 @@
   <!-- divison of modal to edit the label name -->
   {% for record in records %}
     <form class="uk-form" id="add-label-value-{{record.id}}"  onclick="client.addLabelValue('add-label-value-{{record.id}}', '{{ dataset }}', '{{ record.id }}'); return false;">
-      <div id="addLabel{{record.id}}" class="uk-modal">
-        <div class="uk-modal-dialog">
-            <a class="uk-modal-close uk-close"></a>
+      <div id="label-value">
+        <div id="addLabel{{record.id}}" class="uk-modal">
+          <div class="uk-modal-dialog">
+            <a class="uk-close uk-close-alt uk-modal-close"></a>
+            <div id="labelResult">
+            </div>
             <form class="uk-form">
               <legend>Enter the Label Name</legend>
               <input id="label-name" type="text" name="newLabelName" placeholder="label name" autofocus>
-              <button id="add-label-btn" class="uk-button uk-button-primary">Submit</button>
+              <button id="add-label-btn" class="uk-button uk-button-primary uk-modal-close">Submit</button>
             </form>
         </div>
       </div>
+      </div>
     </form>
   {% endfor %}
-  
 
   <!-- divison of modal to delete a record -->
   {% for record in records %}
     <div id="deleteRecord{{record.id}}" class="uk-modal">
       <div class="uk-modal-dialog">
-          <a class="uk-modal-close uk-close"></a>
-          <form class="uk-form">
+          <a class="uk-close uk-close-alt uk-modal-close"></a>
+          <form class="uk-form" onclick="client.removeRecord('{{record.id}}', '{{record.label}}', 'dataset', 'skip', 'limit')">
             <legend>Are you sure to delete {{record.id}}?</legend>
-            <button class="uk-button uk-button-success" onclick="client.removeRecord('{{record.id}}', '{{record.label}}', 'dataset', 'skip', 'limit')">Yes</button>
-            <button class="uk-button uk-button-danger">No</button>
+            <button class="uk-button uk-button-success uk-modal-close">Yes</button>
+            <button class="uk-button uk-button-danger uk-modal-close">No</button>
           </form>
       </div>
     </div>
@@ -89,7 +93,7 @@
   {% for record in records%}  
     <div id="editRecord{{record.id}}" class="uk-modal">
       <div class="uk-modal-dialog">
-          <a class="uk-modal-close uk-close"></a>
+          <a class="uk-close uk-close-alt uk-modal-close"></a>
           <form class="uk-form uk-form-stacked">
             <legend>Edit Record {{record.id}}</legend>
             <div class="uk-form-row">
@@ -109,7 +113,7 @@
                 {% endfor %}
             {% endif %}
             <div class="uk-form-row">
-              <button id="add-label-btn" class="uk-button uk-button-primary" onclick="console.log('moooo')">Submit</button>
+              <button id="add-label-btn" class="uk-button uk-button-primary uk-modal-close" onclick="console.log('moooo')" >Submit</button>
             </div>
           </form>
       </div>
