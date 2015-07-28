@@ -87,10 +87,10 @@ def post_record(dataset):
 
 # code for adding new record
 @app.route("/post_dataset", methods=["POST"])
-def post_dataset():
+def post_dataset(mydata):
     try:
         data = request.form
-        print data
+        print mydata
         keys = ["DatasetName"]
         for key in keys:
             chkNotNoneAndNotEmpty(data.get(key), key)
