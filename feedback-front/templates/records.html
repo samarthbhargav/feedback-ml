@@ -84,7 +84,7 @@
     <div id="deleteRecord{{record.id}}" class="uk-modal">
       <div class="uk-modal-dialog">
           <a class="uk-close uk-close-alt uk-modal-close"></a>
-          <form class="uk-form" onclick="client.removeRecord('{{record.id}}', '{{record.label}}', 'dataset', 'skip', 'limit')">
+          <form class="uk-form" onclick="client.removeRecord('{{record.id}}', '{{record.label}}', '{{dataset}}')">
             <legend>Are you sure to delete {{record.id}}?</legend>
             <button class="uk-button uk-button-success uk-modal-close">Yes</button>
             <button class="uk-button uk-button-danger uk-modal-close">No</button>
@@ -125,8 +125,7 @@
   {% endfor %} 
 
   <!-- select dropdown to display the selected records -->
-  <div class="uk-grid" data-uk-grid-margin> 
-    <select id="pagination">
+  <select id="pagination">
       <option selected="true" disabled="disabled">Choose Records</option>    
       <script> 
         for(var i={{skip+limit}};i<={{totalRecords}};i+={{limit}}){
@@ -139,6 +138,5 @@
         });
       </script>
     </select>
-  </div>  
   
 {% endblock %}
