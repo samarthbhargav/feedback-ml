@@ -74,7 +74,7 @@ def post_record(dataset):
             "label" : data.get("label"),
             "content" : content
         }
-
+        print record
         valid, status  =  client.save_record(record, dataset)
         if valid:
             return render_template("add_record.html", dataset=dataset, success="Record added successfully", errno=None)
