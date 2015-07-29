@@ -91,12 +91,12 @@ var FeedBackClient = function(name) {
         
         function success(msg){
         $('#recordStatus').html("<div style='color:green'>"+msg+"</div>");
-            window.setTimeout(function(){location.reload()}, 1500);
+            window.setTimeout(function(){location.reload()}, 100);
         }
         
         function failure(msg){
           $('#recordStatus').html("<div style='color:red'>"+msg+"</div>");            
-            window.setTimeout(function(){location.reload()}, 2000);
+            window.setTimeout(function(){location.reload()}, 100);
         }
     };
 
@@ -155,12 +155,12 @@ var FeedBackClient = function(name) {
 
       function success(msg){
         $('#labelNameStatus').html("<div style='color:green'>"+msg+"</div>");
-            window.setTimeout(function(){location.reload()}, 1500);
+            window.setTimeout(function(){location.reload()}, 100);
       }
       
       function failure(msg){
         $('#labelNameStatus').html("<div style='color:red'>"+msg+"</div>");            
-          window.setTimeout(function(){location.reload()}, 2000);
+          window.setTimeout(function(){location.reload()}, 100);
       }
 
     };
@@ -203,11 +203,11 @@ var FeedBackClient = function(name) {
           data: JSON.stringify(json),
           success: function(data) {
             $('#datasetStatus').html("<div style='color:green'>Dataset was added successfully</div>");
-            window.setTimeout(function(){location.reload()}, 1500);
+            window.setTimeout(function(){location.reload()}, 100);
           }
         }).fail(function (jqxhr) {
             $('#datasetStatus').html("<div style='color:red'>Some Error Occurred</div>");
-            window.setTimeout(function(){location.reload()}, 1500);
+            window.setTimeout(function(){location.reload()}, 100);
 
             if(jqxhr.getResponseHeader('Content-Type') == "text/plain") {
                 // TODO:Mahesh Plain Text error - display in UI
@@ -222,7 +222,7 @@ var FeedBackClient = function(name) {
 
         return false;
         $('#datasetStatus').html("<div style='color:red'>Some Error Occurred</div>");
-          window.setTimeout(function(){location.reload()}, 1500);
+          window.setTimeout(function(){location.reload()}, 100);
     };
 
     /** Function to delete a dataset by accessing the data from the API by making an AJAX call **/
@@ -231,40 +231,67 @@ var FeedBackClient = function(name) {
       $.ajax({
         type: "DELETE",
         url: this.baseURL + "/dataset/" + dataset,
-        contentType: "application/json",
         crossDomain: true,
         dataType: "json",
         success: function( dataset ){
             // Put the plain text in the PRE tag.
-            $( "#deleteStatus" ).text( response );
+            success("Deletion Successful");            
         },
         error: function( error ){
             // Log any error.
-            $( "#deleteStatus" ).text( error );
-            console.log( "ERROR:", error );
+            if(error.status==200){
+              success("Deletion Successful");
+            }
+            else{
+              failure("Deletion Failed");
+            }
         }
       });
+      function success(msg){
+        $('#datasetStatus').html("<div style='color:green'>"+msg+"</div>");
+      }
+      function failure(msg){
+        $('#datasetStatus').html("<div style='color:green'>"+msg+"</div>");
+      }
+      window.setTimeout(function(){location.reload()}, 100);
     };
 
 
     /** Function to delete a record from a dataset by accessing the data from the API by making an AJAX call **/
-    this.removeRecord = function(recordID, recordLabel, dataset, skip, limit) {
+    this.removeRecord = function(recordID, recordLabel, dataset) {
+      console.log(recordID);
+      console.log(recordLabel);
+      console.log(dataset);
 
       $.ajax({
         type: "DELETE",
         url: this.baseURL +"/dataset/"+ dataset +"/record/"+ recordID,
-        success: function( record ){
+        crossDomain: true,
+        dataType: "json",
+        success: function( dataset ){
             // Put the plain text in the PRE tag.
-            $( "#deleteStatus" ).text( response );
+            success("Deletion Successful");            
         },
         error: function( error ){
             // Log any error.
-            $( "#deleteStatus" ).text( error );
-            console.log( "ERROR:", error );
+            if(error.status==200){
+              success("Deletion Successful");
+            }
+            else{
+              failure("Deletion Failed");
+            }
         }
       });
+      function success(msg){
+        $('#labelNameStatus').html("<div style='color:green'>"+msg+"</div>");
+      }
+      function failure(msg){
+        $('#labelNameStatus').html("<div style='color:green'>"+msg+"</div>");
+      }
+      window.setTimeout(function(){location.reload()}, 100);
     };
 
+// end of the FeedbackClient()    
 };
 
 

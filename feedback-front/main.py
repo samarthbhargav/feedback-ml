@@ -29,7 +29,8 @@ def index():
     # break it up into chunks of 3
     stat_chunks = chunks(stats, 3)
     limit = 9
-    return render_template("index.html", stats = stats, datasetFields = datasetFields, stat_chunks = stat_chunks)
+    totalDatasets = len(stats)
+    return render_template("index.html", stats = stats, totalDatasets=totalDatasets, datasetFields = datasetFields, stat_chunks = stat_chunks)
 
 @app.route("/stats/")
 def stats_page():
