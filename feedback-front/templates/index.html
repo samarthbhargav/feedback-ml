@@ -6,6 +6,23 @@
           <h4> Total {{ stats|length }} datasets </h4>
       </div>
   </div>
+  {% set limit = 9 %}
+  {% set skip = 9 %}
+  <div class="uk-grid" data-uk-grid-margin> 
+    <select id="page">
+      <option selected="true" disabled="disabled">Choose Datasets</option>    
+      <script> 
+        for(var i={{skip+limit}};i<={{stats|length}};i+={{limit}}){
+            document.write("<option value = "+ i +" >"+Math.round(i/{{limit}} , 1)+"</option>");
+        }
+        $('#pagination').change(function() {
+          var skip = $(this).val();
+          console.log(skip);
+          window.location="/";
+        });
+      </script>
+    </select>
+  </div>
 
   <div class="uk-block">
   <!-- Group in 3 items-->
@@ -89,16 +106,21 @@
     {% endfor %}
   </div>
 
-  <ul class="uk-pagination" data-uk-pagination="{ items:{{ stats|length }}, itemsOnPage:9, displayedPages : 5 }">
-    <li><a href="">Previous</a></li>
-    <li class="uk-active"><span>1</span></li>
-    <li class="uk-disabled"><span>2</span></li>
-    <li><a href="">Next</a></li>
-  </ul>
-
-  <script>
-    $('[data-uk-pagination]').on('select.uk.pagination', function(e, pageIndex){
-    alert('You have selected page: ' + (pageIndex+1));
-  });
-  </script>
+  {% set limit = 9 %}
+  {% set skip = 9 %}
+  <div class="uk-grid" data-uk-grid-margin> 
+    <select id="pagination">
+      <option selected="true" disabled="disabled">Choose Datasets</option>    
+      <script> 
+        for(var i={{skip+limit}};i<={{stats|length}};i+={{limit}}){
+            document.write("<option value = "+ i +" >"+Math.round(i/{{limit}} , 1)+"</option>");
+        }
+        $('#pagination').change(function() {
+          var skip = $(this).val();
+          console.log(skip);
+          window.location="/";
+        });
+      </script>
+    </select>
+  </div>  
 {% endblock %}

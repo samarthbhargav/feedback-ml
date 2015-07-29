@@ -12,8 +12,8 @@
     </div>
   {% endif %}
   {% if success %}<div class="uk-alert">{{ success }}</div>{% endif %}
-
-  <form class="uk-form" action="{{ url_for('post_record', dataset=dataset, mydata=mydata) }}" method="post" id="add-record-form">
+<!--
+  <form class="uk-form" id="add-record-form" onsubmit="client.addRecord('add-record-form'); return false;">
       <fieldset>
           <legend>Add Record</legend>
           <div class="uk-form-row">
@@ -25,48 +25,70 @@
           <div class="uk-form-row" id="content">
           </div>
           <div class="uk-form-row">
-            <button id="content" class="uk-button" type="button" onclick="addContentDiv()" onclick="processBeforePost()">Add Content</button>
+            <button class="uk-button" type="button" onclick="addContentDiv()">Add Content</button>
           </div>
           <br>
           <div class="uk-form-row">
-            <button class="uk-button" value="Submit" onclick="processBeforePost()">Submit</button>
+            <input type="submit" class="uk-button" value="Submit">
           </div>
       </fieldset>
   
   <!-- Not able to add Key:Value values to the database -->
+  <div id="recordStatus">
+
+  </div>
+  <form class="uk-form" id="add-record-form" onsubmit="client.addRecord('add-record-form', '{{dataset}}'); return false;">
+    <fieldset>
+        <legend>Add Record</legend>
+        <div class="uk-form-row">
+          <input type="text" name="RecordID" placeholder="Record ID" autofocus enabled>
+        </div>
+        <div class="uk-form-row">
+          <input type="text" name="RecordLabel" placeholder="Label(optional)">
+        </div>
+        <div class="uk-form-row" id="addField">
+        </div>
+        <br>
+        <div class="uk-form-row">
+          <input type="button" class="uk-button" value="Add Content" onclick="addFieldDiv()"/>
+        </div>
+        <div class="uk-form-row">
+          <button class="uk-button" onclick="">Submit</button>
+        </div>
+        <!-- Not able to print the select tag multiple times -->
+        <script>
+          function addFieldDiv(){
+            var fieldDiv = document.createElement('div');
+            var start = "<div class='uk-form-row'><input type='text' name='content-key' value='' placeholder='Content-Key' autofocus enabled/>";
+            start += "<input type='text' name='content-value' value='' placeholder='Content-Value'/>";
+            start += "</div>";
+            fieldDiv.innerHTML = start;
+            document.getElementById("addField").appendChild(fieldDiv);
+          }
+        </script>
+    </fieldset>
+  </form>
   <script>
+
+    function addContentDiv(){
+      var fieldDiv = document.createElement('div');
+      var start = "<div class='uk-form-row'><input type='text' placeholder='Content-Key' value=''>";
+      start += "<input type='text' placeholder='Content-Value' value=''>"
+      start += "</div>";
+      fieldDiv.innerHTML = start;
+      document.getElementById("content").appendChild(fieldDiv);
+    }
+/*
     function addContentDiv() {
       var newdiv = document.createElement('div');
-      newdiv.innerHTML = "<div class='uk-form-row' id='content'><input value='' type='text' id='content-key' placeholder='Content-Key' value='Content-'>"
+      newdiv.innerHTML = "<input type='text' placeholder='Content-Key' value='content-'>"
       document.getElementById("content").appendChild(newdiv);
 
       var newdiv = document.createElement('div');
-      newdiv.innerHTML = "<input type='text' placeholder='Content-Value' id='content-value' value=''></form><br>"
+      newdiv.innerHTML = "<input type='text' placeholder='Content-Value' value='content-'><br>"
       document.getElementById("content").appendChild(newdiv);
     }
-
-    $('#add-record-form').submit(function() {
-    // get all the inputs into an array.
-      var $inputs = $('#add-record-form :input');
-
-      // not sure if you wanted this, but I thought I'd add it.
-      // get an associative array of just the values.
-      var values = {};
-      $inputs.each(function() {
-          values[this.name] = $(this).val();
-        });
-      alert(values);
-    });
-
-    function processBeforePost(){
-      var key = $('#content-key').val();
-      var value = $('#content-value').val();
-
-      mydata = JSON.stringify($('#content').serialize());
-      /*alert(mydata);
-      alert(key);
-      alert(value); */
-    }
+*/
   </script>
 </form>
 {% endblock %}
