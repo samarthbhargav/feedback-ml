@@ -2,13 +2,13 @@ import requests
 import json
 
 IRIS_DATASET_URL = 'https://archive.ics.uci.edu/ml/machine-learning-databases/iris/iris.data'
-
+HOST_PORT = "http://localhost:9999"
 DATASET_NAME = "iris"
-URL = "http://localhost:9999/dataset/{}/record/".format(DATASET_NAME)
+
 # creates dataset
 
 datasetJSON = {
-  "name" : "iris",
+  "name" : DATASET_NAME,
   "strictValidation" : True,
   "fields": [
     { "name" : "sepal-length", "type" : "NUMERICAL"},
@@ -18,7 +18,7 @@ datasetJSON = {
   ]
 }
 
-resp = requests.post("http://localhost:9999/dataset/",
+resp = requests.post("{}/dataset/".format(HOST_PORT),
               data=json.dumps(datasetJSON), 
               headers={'Content-Type': 'application/json'})
               
@@ -46,7 +46,7 @@ for i, line in enumerate(requests.get(IRIS_DATASET_URL).text.split('\n')):
     }
     jsons = json.dumps(record)
     resp = requests.post(
-        URL, 
+        "{}/dataset/{}/record/".format(HOST_PORT, DATASET_NAME), 
         data=jsons, 
         headers={'Content-Type': 'application/json'})
         
