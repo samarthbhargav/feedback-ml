@@ -74,7 +74,7 @@ def post_record(dataset):
             "label" : data.get("label"),
             "content" : content
         }
-
+        print record
         valid, status  =  client.save_record(record, dataset)
         if valid:
             return render_template("add_record.html", dataset=dataset, success="Record added successfully", errno=None)
@@ -87,10 +87,10 @@ def post_record(dataset):
 
 # code for adding new record
 @app.route("/post_dataset", methods=["POST"])
-def post_dataset():
+def post_dataset(mydata):
     try:
         data = request.form
-        print data
+        print mydata
         keys = ["DatasetName"]
         for key in keys:
             chkNotNoneAndNotEmpty(data.get(key), key)
@@ -111,16 +111,18 @@ def post_dataset():
     except ValueError, e:
             return render_template("add_dataset.html", error=e.message)
 
-
 @app.route("/records/<string:dataset>/<int:skip>/<int:limit>")
 def records(dataset, skip, limit):
     valid, data =  client.get_records(dataset, skip, limit)
     if valid:
         records = data["records"]
-        return render_template("records.html", dataset=dataset, records=records)
+        totalRecords = data["totalNumberOfRecords"]
+        limit = data["limit"]
+        skip = data["skip"]
+        return render_template("records.html", dataset=dataset, records=records, totalRecords=totalRecords, skip=skip, limit=limit)
     else:
         # TODO
-        return render_template("records.html", dataset=dataset, records=[], error="Some error occurred")
+        return render_template("records.html", dataset=dataset, records=[], error="Some error occurred" , totalRecords=totalRecords, limit=limit)
 
 if __name__ == "__main__":
     app.run(debug=True)

@@ -3,11 +3,13 @@
   {% if error %}<div class="uk-alert uk-alert-danger">{{ error }} </div>{% endif %}
   {% if success %}<div class="uk-alert">{{ success }}</div>{% endif %}
 
+  <div id="datasetStatus">
+  </div>
   <form class="uk-form" id="add-dataset-form" onsubmit="client.addDataset('add-dataset-form'); return false;">
       <fieldset>
           <legend>Add Dataset</legend>
           <div class="uk-form-row">
-            <input type="text" name="DatasetName" placeholder="Dataset Name">
+            <input type="text" name="DatasetName" placeholder="Dataset Name" autofocus enabled>
           </div>
           <div class="uk-form-row" id="addField">
           </div>
@@ -22,7 +24,7 @@
           <script>
             function addFieldDiv(){
               var fieldDiv = document.createElement('div');
-              var start = "<div class='uk-form-row'><input type='text' name='field' name='Field' placeholder='Field'/>";
+              var start = "<div class='uk-form-row'><input type='text' name='field' placeholder='Field' autofocus enabled/>";
               start += "<select name='fieldType'>"
               for(var i = 0; i < availableFieldTypes.length; i++) {
                   start += "<option>" + availableFieldTypes[i] + "</option>";
@@ -37,6 +39,6 @@
 
   <script>
     var availableFieldTypes = client.getAvailableFieldTypes();
-
   </script>
+  
 {% endblock %}
