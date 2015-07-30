@@ -9,12 +9,16 @@
     </div>
     <div class="uk-width-1-1">
       <h3>Showing records {{skip}} - {{skip+limit}}</h3>
+      <p>Show <a onclick="newPage(10)">10</a> / <a onclick="newPage(50)">50</a> /<a onclick="newPage(100)"> 100</a> /<a onclick="newPage(500)"> 500</a> records per page</p>
       
       <!-- select dropdown to display the selected records -->
       <select id="page">
-        <option selected="true" disabled="disabled">Choose Records</option>    
+        <option selected="true" disabled="disabled">Choose Page</option>    
         <script> 
-          for(var i={{skip+limit}};i<={{totalRecords}};i+={{limit}}){
+          function newPage(limit){
+            window.location="/records/{{dataset}}/{{skip}}/"+limit;
+          }
+          for(var i=0;i<{{totalRecords}};i+={{limit}}){
               document.write("<option value = "+ i +" >"+Math.round(i/{{limit}} , 1)+"</option>");
           }
           $('#page').change(function() {
@@ -30,7 +34,6 @@
       </div>
     </div>
   </div>
-
   <table class="uk-table uk-table-hover uk-table-striped">
     <thead>
         <tr>
@@ -61,7 +64,7 @@
 
   <!-- divison of modal to edit the label name -->
   {% for record in records %}
-    <form class="uk-form" id="add-label-value-{{record.id}}"  onclick="client.addLabelValue('add-label-value-{{record.id}}', '{{ dataset }}', '{{ record.id }}'); return false;">
+    <form class="uk-form" id="add-label-value-{{record.id}}" onclick="client.addLabelValue('add-label-value-{{record.id}}', '{{ dataset }}', '{{ record.id }}'); return false;">
       <div id="label-value">
         <div id="addLabel{{record.id}}" class="uk-modal">
           <div class="uk-modal-dialog">
@@ -84,9 +87,9 @@
     <div id="deleteRecord{{record.id}}" class="uk-modal">
       <div class="uk-modal-dialog">
           <a class="uk-close uk-close-alt uk-modal-close"></a>
-          <form class="uk-form" onclick="client.removeRecord('{{record.id}}', '{{record.label}}', 'dataset', 'skip', 'limit')">
+          <form class="uk-form">
             <legend>Are you sure to delete {{record.id}}?</legend>
-            <button class="uk-button uk-button-success uk-modal-close">Yes</button>
+            <button onclick="client.removeRecord('{{record.id}}', '{{record.label}}', '{{dataset}}', 'skip', 'limit')" class="uk-button uk-button-success uk-modal-close">Yes</button>
             <button class="uk-button uk-button-danger uk-modal-close">No</button>
           </form>
       </div>
@@ -98,38 +101,73 @@
     <div id="editRecord{{record.id}}" class="uk-modal">
       <div class="uk-modal-dialog">
           <a class="uk-close uk-close-alt uk-modal-close"></a>
-          <form class="uk-form uk-form-stacked">
-            <legend>Edit Record {{record.id}}</legend>
-            <div class="uk-form-row">
-              <label class="uk-form-label" for="ID">Record ID</label>
-              <input id="ID" type="text" placeholder="ID" value="{{record.id}}" autofocus disabled>
-            </div>
-            <div class="uk-form-row">
-              <label class="uk-form-label" for="label">Label</label>
-              <input id="label" type="text" placeholder="Label" value="{{record.label}}" autofocus disabled>
-            </div>
-            {% if record.content %}
-                {% for key, value in record.content.iteritems() %}
-                  <div class="uk-form-row">
-                    <label class="uk-form-label" for="content-Key : {{key}}">Content-Key : {{key}}</label>
-                    <input type='text' name='content-Value : {{value}}' placeholder='Content-Value : {{value}}' value={{value}} autofocus disabled/>
-                  </div>
-                {% endfor %}
-            {% endif %}
-            <div class="uk-form-row">
-              <button id="add-label-btn" class="uk-button uk-button-primary uk-modal-close" onclick="console.log('moooo')" >Submit</button>
-            </div>
+          <form class="uk-form" id="add-record-form" onsubmit="client.addRecord('add-record-form', '{{dataset}}'); return false;">
+            <fieldset>
+                <legend>Edit Record {{record.id}}</legend>
+                <div class="uk-form-row">
+                  <input type="text" name="RecordID" placeholder="Record ID" value="{{record.id}}">
+                </div>
+                <div class="uk-form-row">
+                  <input type="text" name="RecordLabel" placeholder="Label(optional)" value="{{record.label}}">
+                </div>
+                <div class="uk-form-row">
+                  {% if record.content %}
+                    {% for key, values in record.content.iteritems() %}
+                      <div class="uk-form-row">
+                        <input type='text' name='content-key' value={{key}} placeholder='Content-Key : {{key}}'>
+                        <input type='text' name='content-value' value={{values}} placeholder='Content-Value : {{value}}'>
+                      </div>
+                    {% endfor %}
+                  {% endif %}
+                </div>
+                <br>
+                <div class="uk-form-row">
+                  <button class="uk-button" onclick="">Submit</button>
+                </div>
+                </script>
+            </fieldset>
           </form>
       </div>
     </div>
   {% endfor %} 
 
+  <div>
+    <a href="#0" class="cd-top">Top</a>
+    <script>
+      jQuery(document).ready(function($){
+        var offset = 300,
+        offset_opacity = 1200,
+        scroll_top_duration = 700,
+        $back_to_top = $('.cd-top');
+
+        $(window).scroll(function(){
+          ( $(this).scrollTop() > offset ) ? $back_to_top.addClass('cd-is-visible') : $back_to_top.removeClass('cd-is-visible cd-fade-out');
+          if( $(this).scrollTop() > offset_opacity ) { 
+            $back_to_top.addClass('cd-fade-out');
+          }
+        });
+
+        //smooth scroll to top
+        $back_to_top.on('click', function(event){
+          event.preventDefault();
+          $('body,html').animate({
+            scrollTop: 0 ,
+            }, scroll_top_duration
+          );
+        });
+      });
+
+
+      jQuery('#cody-info ul li').eq(1).on('click', function(){
+        $('#cody-info').hide();
+      });
+    </script>
+  </div>
   <!-- select dropdown to display the selected records -->
-  <div class="uk-grid" data-uk-grid-margin> 
     <select id="pagination">
-      <option selected="true" disabled="disabled">Choose Records</option>    
+      <option selected="true" disabled="disabled">Choose Page</option>        
       <script> 
-        for(var i={{skip+limit}};i<={{totalRecords}};i+={{limit}}){
+        for(var i=0;i<{{totalRecords}};i+={{limit}}){
             document.write("<option value = "+ i +" >"+Math.round(i/{{limit}} , 1)+"</option>");
         }
         $('#pagination').change(function() {
