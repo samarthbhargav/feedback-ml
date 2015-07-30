@@ -235,16 +235,26 @@ var FeedBackClient = function(name) {
         contentType: "application/json",
         crossDomain: true,
         dataType: "json",
-        success: function( dataset ){
-            // Put the plain text in the PRE tag.
-            $( "#deleteStatus" ).text( response );
+        success: function( record ){
+          failure("Record was successfully deleted.")  
         },
         error: function( error ){
             // Log any error.
-            $( "#deleteStatus" ).text( error );
-            console.log( "ERROR:", error );
+            if(error.status == 200){
+              success("Record was deleted successfully")
+            }
+            else{
+              failure("Some Error Occurred")
+            }
         }
       });
+        function success(msg){
+          $('#datasetStatus').html("<div style='color:green'>"+ msg +"</div>");
+        }
+        function failure(msg){
+          $('#datasetStatus').html("<div style='color:red'>"+ msg +"</div>"); 
+        }
+        window.setTimeout(function(){location.reload()}, 100);
     };
 
 
@@ -255,17 +265,28 @@ var FeedBackClient = function(name) {
         type: "DELETE",
         url: this.baseURL +"/dataset/"+ dataset +"/record/"+ recordID,
         success: function( record ){
-            // Put the plain text in the PRE tag.
-            $( "#deleteStatus" ).text( response );
+          failure("Record was successfully deleted.")  
         },
         error: function( error ){
             // Log any error.
-            $( "#deleteStatus" ).text( error );
-            console.log( "ERROR:", error );
+            if(error.status == 200){
+              success("Record was deleted successfully")
+            }
+            else{
+              failure("Some Error Occurred")
+            }
         }
       });
+        function success(msg){
+          $('#labelNameStatus').html("<div style='color:green'>"+ msg +"</div>");
+        }
+        function failure(msg){
+          $('#labelNameStatus').html("<div style='color:red'>"+ msg +"</div>"); 
+        }
+        window.setTimeout(function(){location.reload()}, 100);
     };
 
+/* end of FeedBackClient function */
 };
 
 

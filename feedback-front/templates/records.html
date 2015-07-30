@@ -60,7 +60,7 @@
 
   <!-- divison of modal to edit the label name -->
   {% for record in records %}
-    <form class="uk-form" id="add-label-value-{{record.id}}"  onclick="client.addLabelValue('add-label-value-{{record.id}}', '{{ dataset }}', '{{ record.id }}'); return false;">
+    <form class="uk-form" id="add-label-value-{{record.id}}" onclick="client.addLabelValue('add-label-value-{{record.id}}', '{{ dataset }}', '{{ record.id }}'); return false;">
       <div id="label-value">
         <div id="addLabel{{record.id}}" class="uk-modal">
           <div class="uk-modal-dialog">
@@ -83,9 +83,9 @@
     <div id="deleteRecord{{record.id}}" class="uk-modal">
       <div class="uk-modal-dialog">
           <a class="uk-close uk-close-alt uk-modal-close"></a>
-          <form class="uk-form" onclick="client.removeRecord('{{record.id}}', '{{record.label}}', 'dataset', 'skip', 'limit')">
+          <form class="uk-form">
             <legend>Are you sure to delete {{record.id}}?</legend>
-            <button class="uk-button uk-button-success uk-modal-close">Yes</button>
+            <button onclick="client.removeRecord('{{record.id}}', '{{record.label}}', '{{dataset}}', 'skip', 'limit')" class="uk-button uk-button-success uk-modal-close">Yes</button>
             <button class="uk-button uk-button-danger uk-modal-close">No</button>
           </form>
       </div>
@@ -97,27 +97,31 @@
     <div id="editRecord{{record.id}}" class="uk-modal">
       <div class="uk-modal-dialog">
           <a class="uk-close uk-close-alt uk-modal-close"></a>
-          <form class="uk-form uk-form-stacked" id="add-record-form" onsubmit="client.addRecord('add-record-form', '{{dataset}}'); return false;">
-            <legend>Edit Record {{record.id}}</legend>
-            <div class="uk-form-row">
-              <label class="uk-form-label" for="ID">Record ID</label>
-              <input id="ID" type="text" name="RecordID" placeholder="Record ID" value="{{record.id}}" >
-            </div>
-            <div class="uk-form-row">
-              <label class="uk-form-label" for="label">Label</label>
-              <input id="label" type="text" name="RecordLabel" placeholder="Label(optional)" value="{{record.label}}">
-            </div>
-            {% if record.content %}
-                {% for key, values in record.content.iteritems() %}
-                  <div class="uk-form-row">
-                    <input type='text' name='content-key' placeholder='Content-Key : {{key}}' value={{key}}>
-                    <input type='text' name='content-value' placeholder='Content-Value' value={{values}}>
-                  </div>
-                {% endfor %}
-            {% endif %}
-            <div class="uk-form-row">
-              <button class="uk-button" onclick="">Submit</button>
-            </div>
+          <form class="uk-form" id="add-record-form" onsubmit="client.addRecord('add-record-form', '{{dataset}}'); return false;">
+            <fieldset>
+                <legend>Edit Record {{record.id}}</legend>
+                <div class="uk-form-row">
+                  <input type="text" name="RecordID" placeholder="Record ID" value="{{record.id}}">
+                </div>
+                <div class="uk-form-row">
+                  <input type="text" name="RecordLabel" placeholder="Label(optional)" value="{{record.label}}">
+                </div>
+                <div class="uk-form-row">
+                  {% if record.content %}
+                    {% for key, values in record.content.iteritems() %}
+                      <div class="uk-form-row">
+                        <input type='text' name='content-key' value={{key}} placeholder='Content-Key : {{key}}'>
+                        <input type='text' name='content-value' value={{values}} placeholder='Content-Value : {{value}}'>
+                      </div>
+                    {% endfor %}
+                  {% endif %}
+                </div>
+                <br>
+                <div class="uk-form-row">
+                  <button class="uk-button" onclick="">Submit</button>
+                </div>
+                </script>
+            </fieldset>
           </form>
       </div>
     </div>
