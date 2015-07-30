@@ -9,11 +9,15 @@
     </div>
     <div class="uk-width-1-1">
       <h3>Showing records {{skip}} - {{skip+limit}}</h3>
+      <p>Show <a onclick="newPage(10)">10</a> / <a onclick="newPage(50)">50</a> /<a onclick="newPage(100)"> 100</a> /<a onclick="newPage(500)"> 500</a> records per page</p>
       
       <!-- select dropdown to display the selected records -->
       <select id="page">
-        <option selected="true" disabled="disabled">Choose Records Page</option>    
+        <option selected="true" disabled="disabled">Choose Page</option>    
         <script> 
+          function newPage(limit){
+            window.location="/records/{{dataset}}/{{skip}}/"+limit;
+          }
           for(var i=0;i<{{totalRecords}};i+={{limit}}){
               document.write("<option value = "+ i +" >"+Math.round(i/{{limit}} , 1)+"</option>");
           }
@@ -127,9 +131,41 @@
     </div>
   {% endfor %} 
 
+  <div>
+    <a href="#0" class="cd-top">Top</a>
+    <script>
+      jQuery(document).ready(function($){
+        var offset = 300,
+        offset_opacity = 1200,
+        scroll_top_duration = 700,
+        $back_to_top = $('.cd-top');
+
+        $(window).scroll(function(){
+          ( $(this).scrollTop() > offset ) ? $back_to_top.addClass('cd-is-visible') : $back_to_top.removeClass('cd-is-visible cd-fade-out');
+          if( $(this).scrollTop() > offset_opacity ) { 
+            $back_to_top.addClass('cd-fade-out');
+          }
+        });
+
+        //smooth scroll to top
+        $back_to_top.on('click', function(event){
+          event.preventDefault();
+          $('body,html').animate({
+            scrollTop: 0 ,
+            }, scroll_top_duration
+          );
+        });
+      });
+
+
+      jQuery('#cody-info ul li').eq(1).on('click', function(){
+        $('#cody-info').hide();
+      });
+    </script>
+  </div>
   <!-- select dropdown to display the selected records -->
     <select id="pagination">
-      <option selected="true" disabled="disabled">Choose Records Page</option>        
+      <option selected="true" disabled="disabled">Choose Page</option>        
       <script> 
         for(var i=0;i<{{totalRecords}};i+={{limit}}){
             document.write("<option value = "+ i +" >"+Math.round(i/{{limit}} , 1)+"</option>");
