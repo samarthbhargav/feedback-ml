@@ -9,6 +9,7 @@ import java.util.Map;
 
 
 /**
+ * POJO for Dataset. Also Contains validation methods
  * Created by Samarth Bhargav on 8/7/15.
  */
 public class Dataset
@@ -73,7 +74,7 @@ public class Dataset
             throw new InvalidEntityException( "name field cannot be null" );
         }
 
-        if ( this.strictValidation ) {
+        if ( this.isStrictValidation() ) {
             if ( this.fields == null || this.fields.isEmpty() ) {
                 throw new InvalidEntityException( "strictValidation is set - provide at least one field" );
             }
@@ -93,13 +94,14 @@ public class Dataset
             throw new InvalidEntityException( "content cannot be null or empty" );
         }
 
+        // Validate against all fields
         for ( Field field : this.fields ) {
             Object object = content.get( field.getName() );
             if ( object == null ) {
                 throw new InvalidEntityException( "field " + field.getName() + " must be present and be non-null" );
             }
-
             field.getType().validate( object, field.getName() );
+            content.put( field.getName(), field.getType().convert( object ) );
         }
     }
 

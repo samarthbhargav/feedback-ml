@@ -12,9 +12,9 @@
       
       <!-- select dropdown to display the selected records -->
       <select id="page">
-        <option selected="true" disabled="disabled">Choose Records</option>    
+        <option selected="true" disabled="disabled">Choose Records Page</option>    
         <script> 
-          for(var i={{skip+limit}};i<={{totalRecords}};i+={{limit}}){
+          for(var i=0;i<{{totalRecords}};i+={{limit}}){
               document.write("<option value = "+ i +" >"+Math.round(i/{{limit}} , 1)+"</option>");
           }
           $('#page').change(function() {
@@ -30,7 +30,6 @@
       </div>
     </div>
   </div>
-
   <table class="uk-table uk-table-hover uk-table-striped">
     <thead>
         <tr>
@@ -84,7 +83,7 @@
     <div id="deleteRecord{{record.id}}" class="uk-modal">
       <div class="uk-modal-dialog">
           <a class="uk-close uk-close-alt uk-modal-close"></a>
-          <form class="uk-form" onclick="client.removeRecord('{{record.id}}', '{{record.label}}', '{{dataset}}')">
+          <form class="uk-form" onclick="client.removeRecord('{{record.id}}', '{{record.label}}', 'dataset', 'skip', 'limit')">
             <legend>Are you sure to delete {{record.id}}?</legend>
             <button class="uk-button uk-button-success uk-modal-close">Yes</button>
             <button class="uk-button uk-button-danger uk-modal-close">No</button>
@@ -98,26 +97,26 @@
     <div id="editRecord{{record.id}}" class="uk-modal">
       <div class="uk-modal-dialog">
           <a class="uk-close uk-close-alt uk-modal-close"></a>
-          <form class="uk-form uk-form-stacked">
+          <form class="uk-form uk-form-stacked" id="add-record-form" onsubmit="client.addRecord('add-record-form', '{{dataset}}'); return false;">
             <legend>Edit Record {{record.id}}</legend>
             <div class="uk-form-row">
               <label class="uk-form-label" for="ID">Record ID</label>
-              <input id="ID" type="text" placeholder="ID" value="{{record.id}}" autofocus disabled>
+              <input id="ID" type="text" name="RecordID" placeholder="Record ID" value="{{record.id}}" >
             </div>
             <div class="uk-form-row">
               <label class="uk-form-label" for="label">Label</label>
-              <input id="label" type="text" placeholder="Label" value="{{record.label}}" autofocus disabled>
+              <input id="label" type="text" name="RecordLabel" placeholder="Label(optional)" value="{{record.label}}">
             </div>
             {% if record.content %}
-                {% for key, value in record.content.iteritems() %}
+                {% for key, values in record.content.iteritems() %}
                   <div class="uk-form-row">
-                    <label class="uk-form-label" for="content-Key : {{key}}">Content-Key : {{key}}</label>
-                    <input type='text' name='content-Value : {{value}}' placeholder='Content-Value : {{value}}' value={{value}} autofocus disabled/>
+                    <input type='text' name='content-key' placeholder='Content-Key : {{key}}' value={{key}}>
+                    <input type='text' name='content-value' placeholder='Content-Value' value={{values}}>
                   </div>
                 {% endfor %}
             {% endif %}
             <div class="uk-form-row">
-              <button id="add-label-btn" class="uk-button uk-button-primary uk-modal-close" onclick="console.log('moooo')" >Submit</button>
+              <button class="uk-button" onclick="">Submit</button>
             </div>
           </form>
       </div>
@@ -125,10 +124,10 @@
   {% endfor %} 
 
   <!-- select dropdown to display the selected records -->
-  <select id="pagination">
-      <option selected="true" disabled="disabled">Choose Records</option>    
+    <select id="pagination">
+      <option selected="true" disabled="disabled">Choose Records Page</option>        
       <script> 
-        for(var i={{skip+limit}};i<={{totalRecords}};i+={{limit}}){
+        for(var i=0;i<{{totalRecords}};i+={{limit}}){
             document.write("<option value = "+ i +" >"+Math.round(i/{{limit}} , 1)+"</option>");
         }
         $('#pagination').change(function() {
@@ -138,5 +137,6 @@
         });
       </script>
     </select>
+  </div>  
   
 {% endblock %}

@@ -12,31 +12,9 @@
     </div>
   {% endif %}
   {% if success %}<div class="uk-alert">{{ success }}</div>{% endif %}
-<!--
-  <form class="uk-form" id="add-record-form" onsubmit="client.addRecord('add-record-form'); return false;">
-      <fieldset>
-          <legend>Add Record</legend>
-          <div class="uk-form-row">
-            <input type="text" name="ID" placeholder="ID" autofocus enabled>
-          </div>
-          <div class="uk-form-row">
-            <input type="text" name="label" placeholder="Label (Optional)">
-          </div>
-          <div class="uk-form-row" id="content">
-          </div>
-          <div class="uk-form-row">
-            <button class="uk-button" type="button" onclick="addContentDiv()">Add Content</button>
-          </div>
-          <br>
-          <div class="uk-form-row">
-            <input type="submit" class="uk-button" value="Submit">
-          </div>
-      </fieldset>
-  
-  <!-- Not able to add Key:Value values to the database -->
-  <div id="recordStatus">
 
-  </div>
+  <div id="recordStatus"></div>
+
   <form class="uk-form" id="add-record-form" onsubmit="client.addRecord('add-record-form', '{{dataset}}'); return false;">
     <fieldset>
         <legend>Add Record</legend>
@@ -68,8 +46,8 @@
         </script>
     </fieldset>
   </form>
-  <script>
 
+  <script>
     function addContentDiv(){
       var fieldDiv = document.createElement('div');
       var start = "<div class='uk-form-row'><input type='text' placeholder='Content-Key' value=''>";
@@ -78,17 +56,7 @@
       fieldDiv.innerHTML = start;
       document.getElementById("content").appendChild(fieldDiv);
     }
-/*
-    function addContentDiv() {
-      var newdiv = document.createElement('div');
-      newdiv.innerHTML = "<input type='text' placeholder='Content-Key' value='content-'>"
-      document.getElementById("content").appendChild(newdiv);
-
-      var newdiv = document.createElement('div');
-      newdiv.innerHTML = "<input type='text' placeholder='Content-Value' value='content-'><br>"
-      document.getElementById("content").appendChild(newdiv);
-    }
-*/
   </script>
+  
 </form>
 {% endblock %}

@@ -29,8 +29,7 @@ def index():
     # break it up into chunks of 3
     stat_chunks = chunks(stats, 3)
     limit = 9
-    totalDatasets = len(stats)
-    return render_template("index.html", stats = stats, totalDatasets=totalDatasets, datasetFields = datasetFields, stat_chunks = stat_chunks)
+    return render_template("index.html", stats = stats, datasetFields = datasetFields, stat_chunks = stat_chunks)
 
 @app.route("/stats/")
 def stats_page():
@@ -117,7 +116,7 @@ def records(dataset, skip, limit):
     valid, data =  client.get_records(dataset, skip, limit)
     if valid:
         records = data["records"]
-        totalRecords = data["totalNumberOfRecords"]
+        totalRecords = int(data["totalNumberOfRecords"])
         limit = data["limit"]
         skip = data["skip"]
         return render_template("records.html", dataset=dataset, records=records, totalRecords=totalRecords, skip=skip, limit=limit)
