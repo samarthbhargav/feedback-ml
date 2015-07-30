@@ -117,7 +117,7 @@ def records(dataset, skip, limit):
     valid, data =  client.get_records(dataset, skip, limit)
     if valid:
         records = data["records"]
-        totalRecords = data["totalNumberOfRecords"]
+        totalRecords = int(data["totalNumberOfRecords"])
         limit = data["limit"]
         skip = data["skip"]
         return render_template("records.html", dataset=dataset, records=records, totalRecords=totalRecords, skip=skip, limit=limit)

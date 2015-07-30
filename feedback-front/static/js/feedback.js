@@ -24,6 +24,7 @@ var FeedBackClient = function(name) {
     /** Function to parse a form and post the parsed JSON data to the API **/
     this.addRecord = function(formID, dataset) {
         var rawJSON = $("#" + formID).serializeObject();
+        console.log(rawJSON)
         json = {
           "id" : rawJSON["RecordID"],
           "label" : rawJSON["RecordLabel"]
