@@ -47,8 +47,6 @@ public class StatsService
         }
         if ( total % 2 == 0 ) {
             // Even number - get 2 middle elements and split the difference
-            System.out.println( "Even" );
-            System.out.println( total / 2 );
             MongoCursor<Document> docs = collection.find( criteria ).sort( Sorts.ascending( fieldName ) )
                 .skip( (int) ( ( total / 2 ) - 1 ) ).limit( 2 ).batchSize( 2 ).iterator();
             Document left = docs.next();
@@ -86,6 +84,7 @@ public class StatsService
 
         fiveNumberSummary.setMin( min );
         fiveNumberSummary.setMax( max );
+
         if ( count > 0 ) {
             fiveNumberSummary.setMean( sum / count );
         } else {
@@ -93,6 +92,5 @@ public class StatsService
         }
 
         return fiveNumberSummary;
-
     }
 }
