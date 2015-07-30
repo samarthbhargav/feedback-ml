@@ -83,7 +83,7 @@
     <div id="deleteRecord{{record.id}}" class="uk-modal">
       <div class="uk-modal-dialog">
           <a class="uk-close uk-close-alt uk-modal-close"></a>
-          <form class="uk-form" onclick="client.removeRecord('{{record.id}}', '{{record.label}}', '{{dataset}}')">
+          <form class="uk-form" onclick="client.removeRecord('{{record.id}}', '{{record.label}}', 'dataset', 'skip', 'limit')">
             <legend>Are you sure to delete {{record.id}}?</legend>
             <button class="uk-button uk-button-success uk-modal-close">Yes</button>
             <button class="uk-button uk-button-danger uk-modal-close">No</button>
@@ -124,8 +124,8 @@
   {% endfor %} 
 
   <!-- select dropdown to display the selected records -->
-  <select id="pagination">
-      <option selected="true" disabled="disabled">Choose Records Page</option>    
+    <select id="pagination">
+      <option selected="true" disabled="disabled">Choose Records Page</option>        
       <script> 
         for(var i=0;i<{{totalRecords}};i+={{limit}}){
             document.write("<option value = "+ i +" >"+Math.round(i/{{limit}} , 1)+"</option>");
@@ -137,5 +137,6 @@
         });
       </script>
     </select>
+  </div>  
   
 {% endblock %}

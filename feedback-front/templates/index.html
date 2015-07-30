@@ -2,26 +2,26 @@
 {% block body %}
   <div class="uk-grid" data-uk-grid-margin>
       <div class="uk-width-1-1">
-        <h4 class="uk-heading-large">Datasets</h4>
-        <h4> Total {{ totalDatasets }} datasets </h4>
-        {% set limit = 9 %}
-        {% set skip = 9 %}
-          <select id="page">
-            <option selected="true" disabled="disabled">Choose Datasets</option>    
-            <script> 
-              for(var i={{skip+limit}};i<={{totalDatasets}};i+={{limit}}){
-                  document.write("<option value = "+ i +" >"+Math.round(i/{{limit}} , 1)+"</option>");
-              }
-              $('#pagination').change(function() {
-                var skip = $(this).val();
-                console.log(skip);
-                window.location="/";
-              });
-            </script>
-          </select>
-          <br>
-          <div id="datasetStatus"></div>
+          <h4 class="uk-heading-large">Datasets</h4>
+          <h4> Total {{ stats|length }} datasets </h4>
       </div>
+  </div>
+  {% set limit = 9 %}
+  {% set skip = 9 %}
+  <div class="uk-grid" data-uk-grid-margin> 
+    <select id="page">
+      <option selected="true" disabled="disabled">Choose Datasets</option>    
+      <script> 
+        for(var i={{skip+limit}};i<={{stats|length}};i+={{limit}}){
+            document.write("<option value = "+ i +" >"+Math.round(i/{{limit}} , 1)+"</option>");
+        }
+        $('#pagination').change(function() {
+          var skip = $(this).val();
+          console.log(skip);
+          window.location="/";
+        });
+      </script>
+    </select>
   </div>
 
   <div class="uk-block">
@@ -53,11 +53,11 @@
   {% for stat in stats%}
     <div id="deleteDataset" class="uk-modal">
       <div class="uk-modal-dialog">
-          <a class="uk-close-alt uk-modal-close uk-close"></a>
+          <a class="uk-modal-close uk-close"></a>
           <form class="uk-form">
             <legend>Are you sure?</legend>
-            <button class="uk-button uk-button-success uk-modal-close" onclick='client.removeDataset("{{ stat.dataset }}")'>Yes</button>
-            <button class="uk-button uk-button-danger uk-modal-close">No</button>
+            <button class="uk-button uk-button-success" onclick='client.removeDataset("{{ stat.dataset }}")'>Yes</button>
+            <button class="uk-button uk-button-danger">No</button>
           </form>
       </div>
     </div>
@@ -71,7 +71,7 @@
       {% for stat in stat_chunk %}
         <div id="editDataset{{ stat.dataset }}" class="uk-modal">
           <div class="uk-modal-dialog">
-            <a class="uk-modal-close uk-close uk-close-alt"></a>
+            <a class="uk-modal-close uk-close"></a>
             <form class="uk-form uk-form-stacked">
             <legend>Edit Record {{stat.dataset}}</legend>
             <div class="uk-form-row">
@@ -104,9 +104,11 @@
         </div>
       {% endfor %}
     {% endfor %}
+  </div>
 
-    {% set limit = 9 %}
-    {% set skip = 9 %}
+  {% set limit = 9 %}
+  {% set skip = 9 %}
+  <div class="uk-grid" data-uk-grid-margin> 
     <select id="pagination">
       <option selected="true" disabled="disabled">Choose Datasets</option>    
       <script> 
@@ -120,5 +122,5 @@
         });
       </script>
     </select>
-  </div>
+  </div>  
 {% endblock %}
