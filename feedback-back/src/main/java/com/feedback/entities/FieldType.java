@@ -34,4 +34,40 @@ public enum FieldType
                 throw new IllegalStateException();
         }
     }
+
+
+    public Object convert( Object object )
+    {
+        switch ( this ) {
+            case CATEGORICAL:
+                return toCategorical( object );
+            case NUMERICAL:
+                return toNumerical( object );
+            case TEXT:
+                return toText( object );
+            default:
+                throw new IllegalStateException();
+        }
+    }
+
+
+    private Object toCategorical( Object object )
+    {
+        return object;
+    }
+
+
+    private Double toNumerical( Object object )
+    {
+        return Util.getDouble( object );
+    }
+
+
+    private String toText( Object object )
+    {
+        if ( object == null ) {
+            return null;
+        }
+        return object.toString();
+    }
 }
