@@ -267,14 +267,17 @@ var FeedBackClient = function(name) {
         type: "DELETE",
         url: this.baseURL +"/dataset/"+ dataset +"/record/"+ recordID,
         success: function( record ){
+          window.setTimeout(function(){location.reload()}, 10);
           success("Record was successfully deleted.")  
         },
         error: function( error ){
             // Log any error.
             if(error.status == 200){
+              window.setTimeout(function(){location.reload()}, 10);
               success("Record was deleted successfully")
             }
             else{
+              window.setTimeout(function(){location.reload()}, 10);
               failure("Some Error Occurred")
             }
         }
@@ -285,7 +288,6 @@ var FeedBackClient = function(name) {
         function failure(msg){
           $('#labelNameStatus').html("<div style='color:red'>"+ msg +"</div>"); 
         }
-        window.setTimeout(function(){location.reload()}, 10);
     };
 
 /* end of FeedBackClient function */

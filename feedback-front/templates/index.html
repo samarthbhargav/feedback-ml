@@ -1,27 +1,33 @@
 {% extends "layout.html" %}
 {% block body %}
-  <div class="uk-grid" data-uk-grid-margin>
-      <div class="uk-width-1-1">
-        <h4 class="uk-heading-large">Datasets</h4>
-        <h4> Total {{ stats|length }} datasets </h4>
-        {% set limit = 9 %}
-        {% set skip = 9 %}
-        <select id="page">
-          <option selected="true" disabled="disabled">Choose Datasets</option>    
-          <script> 
-            for(var i=0;i<={{stats|length}};i+={{limit}}){
-                document.write("<option value = "+ i +" >"+Math.round(i/{{limit}} , 1)+"</option>");
-            }
-            $('#pagination').change(function() {
-              var skip = $(this).val();
-              console.log(skip);
-              window.location="http://localhost:5000";
-            });
-          </script>
-        </select> 
-        <div "datasetStatus"></div> 
-      </div>
+
+<div class="uk-grid">
+
+  <div class="uk-width-7-10">
+    <h4 class="uk-h1">Datasets</h4>
   </div>
+
+  <div class="uk-width-3-10">
+    <h4> Total {{ stats|length }} datasets </h4>
+    {% set limit = 9 %}
+    {% set skip = 9 %}
+    <select id="page">
+      <option selected="true" disabled="disabled">Choose Datasets</option>    
+      <script> 
+        for(var i=0;i<={{stats|length}};i+={{limit}}){
+            document.write("<option value = "+ i +" >"+Math.round(i/{{limit}} , 1)+"</option>");
+        }
+        $('#pagination').change(function() {
+          var skip = $(this).val();
+          console.log(skip);
+          window.location="http://localhost:5000";
+        });
+      </script>
+    </select>
+  </div>
+
+</div>      
+<div "datasetStatus"></div> 
   
   <div class="uk-block">
   <!-- Group in 3 items-->
@@ -151,20 +157,4 @@
     </script>
   </div>
 
-  
-  <!-- select dropdown to display the selected records -->
-    <select id="pagination">
-      <option selected="true" disabled="disabled">Choose Page</option>        
-      <script> 
-        for(var i=0;i<{{totalRecords}};i+={{limit}}){
-            document.write("<option value = "+ i +" >"+Math.round(i/{{limit}} , 1)+"</option>");
-        }
-        $('#pagination').change(function() {
-          var skip = $(this).val();
-          console.log(skip);
-          window.location="/records/{{dataset}}/"+skip+"/{{limit}}";
-        });
-      </script>
-    </select>
-  </div>
 {% endblock %}

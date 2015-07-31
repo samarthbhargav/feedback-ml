@@ -3,6 +3,11 @@
   {% if error %}<div class="uk-alert uk-alert-danger">{{ error }} </div>{% endif %}
   {% if success %}<div class="uk-alert">{{ success }}</div>{% endif %}
 
+ <ul class="uk-breadcrumb">
+    <li><a href="http://localhost:5000">Home</a></li>
+    <li class="uk-active"><span>Add Dataset</span></li>
+  </ul>
+ 
   <div id="datasetStatus">
   </div>
   <form class="uk-form" id="add-dataset-form" onsubmit="client.addDataset('add-dataset-form'); return false;">
