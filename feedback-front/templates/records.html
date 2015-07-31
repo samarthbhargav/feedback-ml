@@ -1,17 +1,23 @@
 {% extends "layout.html" %}
 {% block body %}
 
-  <div class="uk-grid" data-uk-grid-margin>
-    <div class="uk-width-1-1">
-        <h2>Records</h2>
-        <a href="{{ url_for('add_record_page', dataset=dataset) }}"><button class="uk-button uk-button-primary">Add Record</button></a>
+<div class="uk-grid">
+
+    <div class="uk-width-7-10">
+      <ul class="uk-breadcrumb">
+        <li><a href="http://localhost:5000">Home</a></li>
+        <li class="uk-active"><span>Records</span></li>
+      </ul>
+
+      <h2 class = "uk-table-hover2">Records</h2>
+        <a href="{{ url_for('add_record_page', dataset=dataset) }}"><button id="addRecord" class="uk-button uk-button-primary">Add Record</button></a>
         {% if error %}<div class="uk-alert uk-alert-danger">{{ error }} </div>{% endif %}
     </div>
-    <div class="uk-width-1-1">
+    
+    <div class="uk-width-3-10">
       <h3>Showing records {{skip}} - {{skip+limit}}</h3>
       <p>Show <a onclick="newPage(10)">10</a> / <a onclick="newPage(50)">50</a> /<a onclick="newPage(100)"> 100</a> /<a onclick="newPage(500)"> 500</a> records per page</p>
-      
-      <!-- select dropdown to display the selected records -->
+
       <select id="page">
         <option selected="true" disabled="disabled">Choose Page</option>    
         <script> 
@@ -28,7 +34,9 @@
         </script>
       </select>
     </div>
-    
+  </div>
+
+  <div class="uk-grid" data-uk-grid-margin>
     <div class="uk-row">
       <div id="labelNameStatus">
       </div>

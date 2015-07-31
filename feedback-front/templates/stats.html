@@ -5,11 +5,25 @@
   <script src="{{ url_for('static', filename='js/nv.d3.js') }}"></script>
   <script src="{{ url_for('static', filename='js/charts.js') }}"></script>
 
-  <div class="uk-grid" data-uk-grid-margin>
-      <div class="uk-width-1-1">
-          <h2>Datasets</h2>
-          <h4> Datasets {{stats|length}} / {{stats|length}} </h4>
+  <div class="uk-grid">
+    
+    <div class="uk-width-7-10">
+       <ul class="uk-breadcrumb">
+        <li><a href="http://localhost:5000">Home</a></li>
+        <li class="uk-active"><span>Statistics</span></li>
+      </ul>
+
+      <h2 class="uk-h2">Datasets</h2>
+    </div>
+
+    <div class="uk-width-3-10">
+      <div class="uk-grid" data-uk-grid-margin>
+        <div class="uk-width-1-1">
+            <h4> Showing datasets {{stats|length}} / {{stats|length}} </h4>
+        </div>
       </div>
+    </div>
+
   </div>
 
   {% set count = 1%}
@@ -32,7 +46,7 @@
       {% endfor %}  
   </table>
 
-  <h3>Dataset Statistics</h3>
+  <h2 class="uk-h2">Dataset Statistics</h2>
 
   <!-- javascript to convert the incoming data to JSON format -->
   <script>
