@@ -8,9 +8,31 @@
   <div class="uk-grid" data-uk-grid-margin>
       <div class="uk-width-1-1">
           <h2>Datasets</h2>
-          <h2> Found {{ stats|length }} datasets </h2>
+          <h4> Datasets {{stats|length}} / {{stats|length}} </h4>
       </div>
   </div>
+
+  {% set count = 1%}
+  
+  <table class="uk-table uk-table-hover uk-table-striped">
+      <tr>
+        <th>Index</th>
+        <th>Dataset</th>
+        <th>Total Records</th>
+        <th>Dataset Color</th>
+      </tr>
+      {% for stat in stats %}
+        <tr>
+          <td>{{count}}</td>
+          <td>{{stat.dataset}}</td>
+          <td>{{stat.numberOfRecords}}</td>
+          <td></td>
+        <tr>
+        {% set count = count +1 %}
+      {% endfor %}  
+  </table>
+
+  <h3>Dataset Statistics</h3>
 
   <!-- javascript to convert the incoming data to JSON format -->
   <script>
