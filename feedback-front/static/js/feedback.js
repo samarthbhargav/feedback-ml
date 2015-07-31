@@ -92,12 +92,12 @@ var FeedBackClient = function(name) {
         
         function success(msg){
         $('#recordStatus').html("<div style='color:green'>"+msg+"</div>");
-            window.setTimeout(function(){location.reload()}, 1500);
+            window.setTimeout(function(){location.reload()}, 150);
         }
         
         function failure(msg){
           $('#recordStatus').html("<div style='color:red'>"+msg+"</div>");            
-            window.setTimeout(function(){location.reload()}, 2000);
+            window.setTimeout(function(){location.reload()}, 200);
         }
     };
 
@@ -156,12 +156,12 @@ var FeedBackClient = function(name) {
 
       function success(msg){
         $('#labelNameStatus').html("<div style='color:green'>"+msg+"</div>");
-            window.setTimeout(function(){location.reload()}, 1500);
+            window.setTimeout(function(){location.reload()}, 150);
       }
       
       function failure(msg){
         $('#labelNameStatus').html("<div style='color:red'>"+msg+"</div>");            
-          window.setTimeout(function(){location.reload()}, 2000);
+          window.setTimeout(function(){location.reload()}, 200);
       }
 
     };
@@ -204,11 +204,11 @@ var FeedBackClient = function(name) {
           data: JSON.stringify(json),
           success: function(data) {
             $('#datasetStatus').html("<div style='color:green'>Dataset was added successfully</div>");
-            window.setTimeout(function(){location.reload()}, 1500);
+            window.setTimeout(function(){location.reload()}, 150);
           }
         }).fail(function (jqxhr) {
             $('#datasetStatus').html("<div style='color:red'>Some Error Occurred</div>");
-            window.setTimeout(function(){location.reload()}, 1500);
+            window.setTimeout(function(){location.reload()}, 150);
 
             if(jqxhr.getResponseHeader('Content-Type') == "text/plain") {
                 // TODO:Mahesh Plain Text error - display in UI
@@ -223,7 +223,7 @@ var FeedBackClient = function(name) {
 
         return false;
         $('#datasetStatus').html("<div style='color:red'>Some Error Occurred</div>");
-          window.setTimeout(function(){location.reload()}, 1500);
+          window.setTimeout(function(){location.reload()}, 150);
     };
 
     /** Function to delete a dataset by accessing the data from the API by making an AJAX call **/
@@ -236,12 +236,14 @@ var FeedBackClient = function(name) {
         crossDomain: true,
         dataType: "json",
         success: function( record ){
-          failure("Record was successfully deleted.")  
+          success("Record was successfully deleted.")  
         },
         error: function( error ){
             // Log any error.
+            console.log("Sucess");
             if(error.status == 200){
               success("Record was deleted successfully")
+              console.log("successfully deleted")
             }
             else{
               failure("Some Error Occurred")
@@ -254,7 +256,7 @@ var FeedBackClient = function(name) {
         function failure(msg){
           $('#datasetStatus').html("<div style='color:red'>"+ msg +"</div>"); 
         }
-        window.setTimeout(function(){location.reload()}, 100);
+        window.setTimeout(function(){location.reload()}, 10);
     };
 
 
@@ -265,7 +267,7 @@ var FeedBackClient = function(name) {
         type: "DELETE",
         url: this.baseURL +"/dataset/"+ dataset +"/record/"+ recordID,
         success: function( record ){
-          failure("Record was successfully deleted.")  
+          success("Record was successfully deleted.")  
         },
         error: function( error ){
             // Log any error.
@@ -283,7 +285,7 @@ var FeedBackClient = function(name) {
         function failure(msg){
           $('#labelNameStatus').html("<div style='color:red'>"+ msg +"</div>"); 
         }
-        window.setTimeout(function(){location.reload()}, 100);
+        window.setTimeout(function(){location.reload()}, 10);
     };
 
 /* end of FeedBackClient function */

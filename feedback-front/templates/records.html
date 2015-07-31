@@ -35,31 +35,26 @@
     </div>
   </div>
   <table class="uk-table uk-table-hover uk-table-striped">
-    <thead>
-        <tr>
-            <th>ID</th>
-            <th>Label</th>
-            <th>Edit/View</th>
-            <th>Delete</th>
-        </tr>
-    </thead>
-    <tbody>
+    <tr>
+      <th>ID</th>
+      <th>Label</th>
+      <th>Edit/View</th>
+      <th>Delete</th>
+    </tr>
     {% for record in records %}
-        <tr>
-            <td>{{record.id}}</td>
+      <tr>
+        <td>{{record.id}}</td>
 
-            {% if record.label %}
-              <td class="uk-text-bold">{{record.label}}</id>
-            {% else %}
-              <td id = "label-name-td" class="uk-text-muted"><button class="uk-button uk-button-success" data-uk-modal="{target:'#addLabel{{record.id}}'}" type="button">Add Label</button></td>
-            {% endif %}
+        {% if record.label %}
+          <td class="uk-text-bold">{{record.label}}</id>
+        {% else %}
+          <td id = "label-name-td" class="uk-text-muted"><button class="uk-button uk-button-success" data-uk-modal="{target:'#addLabel{{record.id}}'}" type="button">Add Label</button></td>
+        {% endif %}
 
-            <td><button class="uk-button uk-button-primary" data-uk-modal="{target:'#editRecord{{record.id}}'}" type="button">Edit</button></td>
-            <td><button class="uk-button uk-button-danger" data-uk-modal="{target:'#deleteRecord{{record.id}}'}" type="button">Delete</button></td>
-        </tr>
+        <td><button class="uk-button uk-button-primary" data-uk-modal="{target:'#editRecord{{record.id}}'}" type="button">Edit</button></td>
+        <td><button class="uk-button uk-button-danger" data-uk-modal="{target:'#deleteRecord{{record.id}}'}" type="button">Delete</button></td>
+      </tr>
     {% endfor %}
-    </div>
-    </tbody>
   </table>
 
   <!-- divison of modal to edit the label name -->
