@@ -10,7 +10,7 @@
       </ul>
 
       <h2 class = "uk-table-hover2">Records</h2>
-        <a href="{{ url_for('add_record_page', dataset=dataset, skip=skip, limit=limit) }}"><button id="addRecord" class="uk-button uk-button-primary">Add Record</button></a>
+        <a href="{{ url_for('add_record_page', dataset=dataset) }}"><button id="addRecord" class="uk-button uk-button-primary">Add Record</button></a>
         {% if error %}<div class="uk-alert uk-alert-danger">{{ error }} </div>{% endif %}
     </div>
     
