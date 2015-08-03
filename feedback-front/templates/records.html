@@ -10,8 +10,10 @@
       </ul>
 
       <h2 class = "uk-table-hover2">Records</h2>
-        <a href="{{ url_for('add_record_page', dataset=dataset) }}"><button id="addRecord" class="uk-button uk-button-primary">Add Record</button></a>
-        {% if error %}<div class="uk-alert uk-alert-danger">{{ error }} </div>{% endif %}
+      <a href="{{ url_for('add_record_page', dataset=dataset) }}"><button id="addRecord" class="uk-button uk-button-primary">Add Record</button></a>
+      {% if error %}<div class="uk-alert uk-alert-danger">{{ error }} </div>{% endif %}
+      <div id="recordStatus"></div>
+
     </div>
     
     <div class="uk-width-3-10">
@@ -100,13 +102,47 @@
   {% endfor %}
 
   <!-- divison of modal to edit a record -->
+  {% for record in records%}
+    <div id="editRecord{{record.id}}" class="uk-modal">
+      <div class="uk-modal-dialog">
+        <a class="uk-close uk-close-alt uk-modal-close"></a>
+        <form class="uk-form" id="add-record-form-{{record.id}}" onsubmit="client.addRecord('add-record-form-{{record.id}}', '{{dataset}}'); return false;">
+          <fieldset>
+              <legend>Edit Record {{record.id}}</legend>
+              <div class="uk-form-row">
+                  <input type="text" name="RecordID" placeholder="Record ID" value="{{record.id}}" autofocus enabled>
+              </div>
+              <div class="uk-form-row">
+                  <input type="text" name="RecordLabel" placeholder="Label(optional)" value="{{record.label}}">
+              </div>
+              <div class="uk-form-row">
+                {% if record.content %}
+                  {% for key, values in record.content.iteritems() %}
+                    <div class="uk-form-row">
+                      <input type='text' name='content-key' value={{key}} placeholder='Content-Key : {{key}}'>
+                      <input type='text' name='content-value' value={{values}} placeholder='Content-Value : {{value}}'>
+                    </div>
+                  {% endfor %}
+                {% endif %}
+              </div>
+              <br>
+              <div class="uk-form-row">
+                <button class="uk-button" onclick="">Submit</button>
+              </div>
+          </fieldset>
+        </form>
+      </div>
+    </div>
+  {% endfor %}
+
+  <!--
   {% for record in records%}  
     <div id="editRecord{{record.id}}" class="uk-modal">
       <div class="uk-modal-dialog">
           <a class="uk-close uk-close-alt uk-modal-close"></a>
           <form class="uk-form" id="add-record-form" onsubmit="client.addRecord('add-record-form', '{{dataset}}'); return false;">
             <fieldset>
-                <legend>Edit Record {{record.id}}</legend>
+                <legend>Edit Record </legend>
                 <div class="uk-form-row">
                   <input type="text" name="RecordID" placeholder="Record ID" value="{{record.id}}">
                 </div>
@@ -133,7 +169,7 @@
       </div>
     </div>
   {% endfor %} 
-
+-->
   <div>
     <a href="#0" class="cd-top">Top</a>
     <script>
