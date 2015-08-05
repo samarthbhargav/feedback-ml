@@ -13,6 +13,12 @@
   {% endif %}
   {% if success %}<div class="uk-alert">{{ success }}</div>{% endif %}
 
+  <ul class="uk-breadcrumb">
+    <li><a href="/">Home</a></li>
+    <li><a href="/records/{{dataset}}/0/10">{{dataset}}</a></li>
+    <li class="uk-active"><span>Add Record</span></li>
+  </ul>
+
   <div id="recordStatus"></div>
 
   <form class="uk-form" id="add-record-form" onsubmit="client.addRecord('add-record-form', '{{dataset}}'); return false;">

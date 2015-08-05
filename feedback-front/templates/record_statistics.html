@@ -5,6 +5,11 @@
   <script src="{{ url_for('static', filename='js/nv.d3.js') }}"></script>
   <script src="{{ url_for('static', filename='js/charts.js') }}"></script>
 
+  <ul class="uk-breadcrumb">
+    <li><a href="/">Home</a></li>
+    <li><a href="/records/{{dataset}}/0/10">{{dataset}}</a></li>
+    <li class="uk-active"><span>Records</span></li>
+  </ul>
 
   <div class="uk-grid" data-uk-grid-margin>
       <div class="uk-width-1-1">

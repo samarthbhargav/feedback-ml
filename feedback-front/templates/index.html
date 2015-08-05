@@ -1,27 +1,33 @@
 {% extends "layout.html" %}
 {% block body %}
-  <div class="uk-grid" data-uk-grid-margin>
-      <div class="uk-width-1-1">
-        <h4 class="uk-heading-large">Datasets</h4>
-        <h4> Total {{ stats|length }} datasets </h4>
-        {% set limit = 9 %}
-        {% set skip = 9 %}
-        <select id="page">
-          <option selected="true" disabled="disabled">Choose Datasets</option>    
-          <script> 
-            for(var i={{skip+limit}};i<={{stats|length}};i+={{limit}}){
-                document.write("<option value = "+ i +" >"+Math.round(i/{{limit}} , 1)+"</option>");
-            }
-            $('#pagination').change(function() {
-              var skip = $(this).val();
-              console.log(skip);
-              window.location="/";
-            });
-          </script>
-        </select> 
-        <div "datasetStatus"></div> 
-      </div>
+
+<div class="uk-grid">
+
+  <div class="uk-width-7-10">
+    <h4 class="uk-h1">Datasets</h4>
   </div>
+
+  <div class="uk-width-3-10">
+    <h4> Total {{ stats|length }} datasets </h4>
+    {% set limit = 10 %}
+    {% set skip = 0 %}
+    <select id="page">
+      <option selected="true" disabled="disabled">Choose Datasets</option>    
+      <script> 
+        for(var i=0;i<={{stats|length}};i+={{limit}}){
+            document.write("<option value = "+ i +" >"+Math.round(i/{{limit}} , 1)+"</option>");
+        }
+        $('#pagination').change(function() {
+          var skip = $(this).val();
+          console.log(skip);
+          window.location="/";
+        });
+      </script>
+    </select>
+  </div>
+
+</div>      
+<div "datasetStatus"></div> 
   
   <div class="uk-block">
   <!-- Group in 3 items-->
@@ -39,8 +45,8 @@
           </div>
           <br>
           <div>
-            <a href="#"><button class="uk-button uk-button-danger" data-uk-modal="{target:'#deleteDataset'}">Delete</button></a>
-            <a href="{{ url_for('add_record_page', dataset=stat.dataset) }}"><button class="uk-button uk-button-success">Add Record</button></a>
+            <td><button class="uk-button uk-button-danger" data-uk-modal="{target:'#deleteDataset{{stat.dataset}}'}" type="button">Delete</button></td>
+            <a href="{{ url_for('add_record_page', dataset=stat.dataset, skip=skip, limit=limit) }}"><button class="uk-button uk-button-success">Add Record</button></a>
           </div>            
         </div>
       </div>
@@ -49,17 +55,17 @@
   {% endfor %}
 
   <!-- divison of modal to delete a dataset -->
-  {% for stat in stats%}
-    <div id="deleteDataset" class="uk-modal">
-      <div class="uk-modal-dialog">
-          <a class="uk-modal-close uk-close"></a>
-          <form class="uk-form">
-            <legend>Are you sure?</legend>
-            <button onclick='client.removeDataset("{{ stat.dataset }}")' class="uk-button uk-button-success" >Yes</button>
-            <button class="uk-button uk-button-danger">No</button>
-          </form>
+  {% for stat_chunk in stats%}
+      <div id="deleteDataset{{stat_chunk.dataset}}" class="uk-modal">
+        <div class="uk-modal-dialog">
+            <a class="uk-close uk-close-alt uk-modal-close"></a>
+            <form class="uk-form">
+              <legend>Are you sure to delete {{stat_chunk.dataset}}?</legend>
+              <button onclick="client.removeDataset('{{stat_chunk.dataset}}')" class="uk-button uk-button-success uk-modal-close-alt">Yes</button>
+              <button class="uk-button uk-button-danger uk-modal-close">No</button>
+            </form>
+        </div>
       </div>
-    </div>
   {% endfor %}
 
     
@@ -70,7 +76,7 @@
       {% for stat in stat_chunk %}
         <div id="editDataset{{ stat.dataset }}" class="uk-modal">
           <div class="uk-modal-dialog">
-            <a class="uk-modal-close uk-close"></a>
+            <a class="uk-modal-close uk-close-alt uk-close"></a>
             <form class="uk-form uk-form-stacked">
             <legend>Edit Record {{stat.dataset}}</legend>
             <div class="uk-form-row">
@@ -96,7 +102,7 @@
             {% endfor %}
             </div>
             <div class="uk-form-row">
-              <button id="add-label-btn" class="uk-button uk-button-primary" onclick="console.log('moooo')">Submit</button>
+              <button id="add-label-btn" class= "uk-modal-close uk-button uk-button-primary" onclick="console.log('moooo')">Submit</button>
             </div>
           </form>
           </div>
@@ -117,4 +123,38 @@
       </script>
     </select>
   </div>
+
+  <div>
+    <a href="#0" class="cd-top">Top</a>
+    <script>
+      jQuery(document).ready(function($){
+        var offset = 300,
+        offset_opacity = 1200,
+        scroll_top_duration = 700,
+        $back_to_top = $('.cd-top');
+
+        $(window).scroll(function(){
+          ( $(this).scrollTop() > offset ) ? $back_to_top.addClass('cd-is-visible') : $back_to_top.removeClass('cd-is-visible cd-fade-out');
+          if( $(this).scrollTop() > offset_opacity ) { 
+            $back_to_top.addClass('cd-fade-out');
+          }
+        });
+
+        //smooth scroll to top
+        $back_to_top.on('click', function(event){
+          event.preventDefault();
+          $('body,html').animate({
+            scrollTop: 0 ,
+            }, scroll_top_duration
+          );
+        });
+      });
+
+
+      jQuery('#cody-info ul li').eq(1).on('click', function(){
+        $('#cody-info').hide();
+      });
+    </script>
+  </div>
+
 {% endblock %}
