@@ -13,6 +13,7 @@ import com.mongodb.Block;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.ReplaceOneModel;
+import com.mongodb.client.model.Sorts;
 import com.mongodb.client.model.WriteModel;
 import com.mongodb.client.result.DeleteResult;
 import org.bson.Document;
@@ -144,11 +145,18 @@ public class RecordDAO
     public RecordsPage getRecordsPage( String dataset, int skip, int limit )
         throws DatasetNotFoundException, InvalidEntityException
     {
+        return this.getRecordsPage( dataset, skip, limit, "lastModified" );
+    }
+
+
+    public RecordsPage getRecordsPage( String dataset, int skip, int limit, String sortField )
+        throws DatasetNotFoundException, InvalidEntityException
+    {
         if ( skip < 0 || limit < 0 ) {
             throw new IllegalArgumentException( "invalid skip or limit" );
         }
         List<Document> documents = new ArrayList<>();
-        this.getCollection( dataset ).find().skip( skip ).limit( limit ).into( documents );
+        this.getCollection( dataset ).find().sort( Sorts.ascending( sortField ) ).skip( skip ).limit( limit ).into( documents );
         List<Record> records = new ArrayList<>( documents.size() );
         for ( Document document : documents ) {
             records.add( Record.fromDocument( document ) );
